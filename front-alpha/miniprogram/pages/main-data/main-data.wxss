@@ -1,0 +1,6 @@
+/* pages/main-data/main-data.wxss */
+.chart-position {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+}

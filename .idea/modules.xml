@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/ADHD-Project.iml" filepath="$PROJECT_DIR$/.idea/ADHD-Project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/back-alpha/backbeta.iml" filepath="$PROJECT_DIR$/back-alpha/backbeta.iml" />
+    </modules>
+  </component>
+</project>

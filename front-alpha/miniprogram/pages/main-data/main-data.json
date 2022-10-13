@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "ec-canvas":"../../tools/ec-canvas/ec-canvas"
+  }
+}
