@@ -15,10 +15,10 @@ Page({
     this.setData({showBlueToothPage: true})
   },
   connectionFailed: function (){
-
+    this.setData({showBlueToothPage: false})
   },
   connectionSucceeded: function (){
-
+    this.setData({showBlueToothPage: false})
   },
   data: {
     showBlueToothPage: false,
@@ -50,7 +50,13 @@ Page({
     }
   },
   onReady() {
-  }
+  },
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onShow(options) {
+
+  },
 });
 
 

@@ -1,3 +1,5 @@
 <!--pages/main-main/index.wxml-->
-<text>pages/main-main/index.wxml</text>
-<text>testaaaaaaaaaaaaa</text>
+<button class="trainingA">综合脑波训练</button>
+<button class="trainingB">娱乐脑波训练</button>
+<button class="data">训练情况</button>
+<button class="issue">问题反馈</button>

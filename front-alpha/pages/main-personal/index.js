@@ -22,7 +22,9 @@ Page({
         canIUseGetUserProfile: true
       })
     }
+
   },
+
   submitLogin() {
     console.log('intoProcessA')
     // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
@@ -60,29 +62,30 @@ Page({
                 console.log('IntoProcessC')
                 console.log(JSON.stringify(res));
                 const data = JSON.parse(JSON.stringify(res)).data;
-                wx.setStorageSync("token",data.token)
+
                 console.log(data.token);
                 if(data.success){
-                  if(data.needRegister){
-                    wx.switchTab({
-                      url: '../register/register'
-                    })
-                  }else{
-                    wx.switchTab({
-                      url: '../main/main',
-                    })
-                  }
+                  wx.setStorageSync("token",data.token)
+                  wx.setStorageSync("login",true)
+                  wx.showToast({
+                    title: '登录成功',
+                    duration: 2000,
+                    icon: 'success',
+                    mask: true
+                  })
                 }else{
-
+                  wx.showToast({
+                    title: '登录失败',
+                    duration: 2000,
+                    icon: 'error',
+                    mask: true
+                  })
                 }
-
               }
             })
           }
         })
       }
     })
-
-
   }
 })

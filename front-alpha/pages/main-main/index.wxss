@@ -2,4 +2,49 @@
 ec-canvas {
     width: 100%;
     height: 100%;
+    background-color: #100964;
+}
+.data{
+    width: 45vw;
+    padding-top: 6vw;
+    height: 15vh;
+    background-color: #100964;
+    color: #FFF;
+    border-radius: 6vw;
+    position: absolute;
+    top: 1vh;
+    left: 1.5vw;
+}
+.issue{
+    width: 25vw;
+    height: 35vh;
+    background-color: #100964;
+    color: #FFF;
+    padding: 1vw;
+    border-radius: 6vw;
+    position: absolute;
+    top: 17vh;
+    left: 1.5vw;
+}
+.trainingA{
+    width: 50vw;
+    height: 25vh;
+    background-color: #100964;
+    color: #FFF;
+    padding: 4vw;
+    border-radius: 6vw;
+    position: absolute;
+    top: 1vh;
+    right: 1.5vw;
+}
+.trainingB{
+    width: 70vw;
+    height: 25vh;
+    background-color: #100964;
+    color: #FFF;
+    padding: 1vw;
+    border-radius: 6vw;
+    position: absolute;
+    top:27vh;
+    right: 1.5vw;
 }

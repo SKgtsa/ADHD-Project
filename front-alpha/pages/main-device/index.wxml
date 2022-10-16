@@ -11,7 +11,17 @@
     <button bind:tap="startTraining" class="trainingButton">开始训练</button>
     <page-container show="{{showBlueToothPage}}" overlay="{{true}}"  position="bottom" custom-style="">
         <view class="popOutWindow">
-            <text class="BlueToothLetter">将会在这个界面进行设备的蓝牙配对</text>
+            <text class="BlueToothLetter">将会在这个界面进行设备的蓝牙配对。</text>
+            <text class="BlueToothLetter">模块未开发，点击下方按钮继续流程</text>
+            <view class="buttonGroup">
+                <button bind:tap="connectionFailed">配对成功</button>
+                <button bind:tap="connectionSucceeded">配对失败</button>
+            </view>
+        </view>
+    </page-container>
+    <page-container show="{{showBlueToothPage}}" overlay="{{true}}"  position="bottom" custom-style="">
+        <view class="popOutWindow">
+            <text class="BlueToothLetter">将会在这个界面进行设备的蓝牙配对。</text>
             <text class="BlueToothLetter">模块未开发，点击下方按钮继续流程</text>
             <view class="buttonGroup">
                 <button bind:tap="connectionFailed">配对成功</button>

@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/main-personal/index",
     "pages/main-main/index",
     "pages/index/index",
     "pages/bar/index",
@@ -26,8 +27,7 @@
     "pages/move/index",
     "pages/saveCanvas/index",
     "pages/main-community/index",
-    "pages/main-device/index",
-    "pages/main-personal/index"
+    "pages/main-device/index"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -37,7 +37,7 @@
     "navigationBarTextStyle": "black"
   },
   "tabBar": {
-    "selectedColor": "#8C46AA",
+    "selectedColor": "#100964",
     "color": "black",
     "borderStyle": "white",
     "list": [
