@@ -3,6 +3,8 @@ package com.clankalliance.backbeta.utils.StatusManipulateUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 
 /**
  * 为适配微信做了小部分修改
@@ -21,10 +23,20 @@ public class ManipulateUtil {
     private static int STATUS_EXPIRE_TIME;
 
     //空节点,有效数据节点从headNode.next开始存储
-    public static StatusNode headNode = new StatusNode();
+    public static StatusNode headNode;
 
     //endNode == headNode代表链表长度为0
-    public static StatusNode endNode = headNode;
+    public static StatusNode endNode;
+
+    /**
+     * 初始化方法
+     */
+    @PostConstruct
+    private void init(){
+        headNode = new StatusNode();
+        endNode = headNode;
+    }
+
 
 //废弃
     /**
@@ -32,11 +44,10 @@ public class ManipulateUtil {
      * @param nodeBefore 被删除节点之前的节点
      */
     public static void deleteNextStatus(StatusNode nodeBefore){
-        if(nodeBefore.getNext().getToken().equals(nodeBefore.getNext().getNext().getToken())){
-            headNode = headNode.getNext();
-        }else{
-            nodeBefore.setNext(nodeBefore.getNext().getNext());
-        }
+        System.out.println(headNode);
+        System.out.println(endNode);
+        System.out.println(nodeBefore);
+        nodeBefore.setNext(nodeBefore.getNext().getNext());
     }
 
     /**
@@ -62,7 +73,12 @@ public class ManipulateUtil {
     public static void deleteExpiredStatus(){
         long currentTime = System.currentTimeMillis();
         while(headNode.getNext() != null && headNode.getNext().getNext() != null && currentTime - headNode.getNext().getUpdateTime() >= STATUS_EXPIRE_TIME){
-            headNode.setNext(headNode.getNext().getNext());
+            if(headNode.getNext().getNext().getToken() == null){
+                headNode.setNext(null);
+                endNode = headNode;
+            }else{
+                headNode.setNext(headNode.getNext().getNext());
+            }
         }
     }
 
@@ -71,8 +87,10 @@ public class ManipulateUtil {
      * @param userId 用户id
      */
     public static void appendStatus(String userId){
-        endNode.setNext(new StatusNode(userId));
-        endNode = endNode.getNext();
+
+            endNode.setNext(new StatusNode(userId));
+            endNode = endNode.getNext();
+
     }
 
     /**
@@ -89,9 +107,9 @@ public class ManipulateUtil {
             //进一步判定
             StatusNode lastNode = headNode;
             StatusNode result = new StatusNode();
-            StatusNode node = lastNode.getNext();
+            StatusNode node = headNode.getNext();
             boolean find = false;
-            while(node.getNext() != null && !find){
+            while(node != null && !find){
                 if(node.getToken().equals(token)){
                     result = node;
                     deleteNextStatus(lastNode);

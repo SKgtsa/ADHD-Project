@@ -1,5 +1,0 @@
-<!--pages/main-data/main-data.wxml-->
-<text>这里是设备页面</text>
-<view class="chart-position">
-<ec-canvas id="mychart-dom-bar" canvas-id="mychart-bar"></ec-canvas>
-</view>

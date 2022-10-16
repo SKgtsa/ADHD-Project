@@ -1,0 +1,25 @@
+/* pages/main-personal/index.wxss */
+.container{
+    text-align: center;
+    background-color: #100964;
+    padding-top: 5vh;
+}
+.userinfo{
+    padding-top: 10vh;
+    width: 80vw;
+    height: 75vh;
+    background-color: #FFF;
+    text-align: center;
+    border-radius: 10vw;
+}
+.userinfo-nickname{
+    width: 100%;
+}
+.userinfo-avatar{
+    width: 30vw;
+    height: 30vw;
+    border-radius: 15vw;
+}
+.loginButton{
+    width: 80%;
+}

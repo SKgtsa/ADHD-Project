@@ -1,0 +1,63 @@
+{
+  "pages": [
+    "pages/main-main/index",
+    "pages/index/index",
+    "pages/bar/index",
+    "pages/measureText/index",
+    "pages/line/index",
+    "pages/scatter/index",
+    "pages/sunburst/index",
+    "pages/funnel/index",
+    "pages/radar/index",
+    "pages/gauge/index",
+    "pages/pie/index",
+    "pages/k/index",
+    "pages/heatmap/index",
+    "pages/tree/index",
+    "pages/treemap/index",
+    "pages/map/index",
+    "pages/graph/index",
+    "pages/boxplot/index",
+    "pages/parallel/index",
+    "pages/sankey/index",
+    "pages/themeRiver/index",
+    "pages/lazyLoad/index",
+    "pages/multiCharts/index",
+    "pages/move/index",
+    "pages/saveCanvas/index",
+    "pages/main-community/index",
+    "pages/main-device/index",
+    "pages/main-personal/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "backgroundColor": "#eee",
+    "navigationBarBackgroundColor": "#eee",
+    "navigationBarTitleText": "早期测试",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "selectedColor": "#8C46AA",
+    "color": "black",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/main-main/index",
+        "text": "主页"
+      },
+      {
+        "pagePath": "pages/main-device/index",
+        "text": "设备"
+      },
+      {
+        "pagePath": "pages/main-community/index",
+        "text": "社区"
+      },
+      {
+        "pagePath": "pages/main-personal/index",
+        "text": "个人"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json"
+}

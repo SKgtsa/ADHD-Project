@@ -1,0 +1,23 @@
+<!--pages/main-community/index.wxml-->
+<view class="container">
+    <view class="community-note">
+        <text class="note">社区功能尚未开放，但您可以在此处反馈产品使用时的问题或是提出您的宝贵建议</text>
+    </view>
+    <button class="adviceButton" bind:tap="advice" >提出意见或问题</button>
+    <page-container show="{{showAdvicePage}}" overlay="{{true}}"  position="top" custom-style="">
+        <view class="popOutWindow">
+            <view>
+                <text class="textTop">您可以在这里反馈问题，或是提出建议</text>
+            </view>
+            <view>
+                <text class="textDown">这对我们来说非常重要</text>
+            </view>
+            <view class="inputArea">
+                <textarea bind:input="onChange" value="{{suggestion}}" class="input" auto-focus="true" />
+            </view>
+            <view class="submitButton">
+                <button bind:tap="adviceSubmit" >提交</button>
+            </view>
+        </view>
+    </page-container>
+</view>

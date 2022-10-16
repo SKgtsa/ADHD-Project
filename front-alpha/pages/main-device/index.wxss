@@ -1,0 +1,76 @@
+/* pages/main-device/index.wxss */
+ec-canvas {
+    width: 100%;
+    height: 100%;
+}
+.mainContainer{
+    text-align: center;
+    background-color: #FFF;
+}
+.container{
+    height: 69vh;
+    width: 100vw;
+}
+.lineChart{
+    padding: 0;
+    margin: 0;
+    height: 40vh;
+}
+.gaugeChart{
+    padding: 0;
+    width: 45vw;
+    height: 45vw;
+    background-color: #100964;
+    border-radius: 10vw;
+    position: absolute;
+    top: 45vh;
+    left: 3vw;
+}
+.detailedButton{
+    width: 45vw;
+    height: 45vw;
+    background-color: #100964;
+    border-radius: 10vw;
+    position: absolute;
+    top: 45vh;
+    right: 3vw;
+    color: #FFF;
+    font-size: 13vw;
+    padding-top: 3vh;
+    font-weight: bolder;
+}
+.title{
+    width: 100%;
+    background-color: #100964;
+    height: 5vh;
+    font-size: 3.5vh;
+    text-align: left;
+    z-index: 1;
+    color: #FFF;
+    font-weight: bold;
+}
+.trainingButton{
+    width: 94vw;
+    height: 45vw;
+    background-color: #100964;
+    border-radius: 10vw;
+    position: absolute;
+    bottom: 0;
+    right: 3vw;
+    color: #FFF;
+    font-size: 13vw;
+    padding-top: 3vh;
+    font-weight: bolder;
+}
+.popOutWindow{
+    background-color: #100964;
+    height: 27vh;
+}
+.BlueToothLetter{
+    color: #FFF;
+    font-size: 3vh;
+}
+.buttonGroup{
+    padding-left: 10vw;
+    width: 80vw;
+}

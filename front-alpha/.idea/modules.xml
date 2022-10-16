@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/front-alpha.iml" filepath="$PROJECT_DIR$/.idea/front-alpha.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/echarts-for-weixin-master.iml" filepath="$PROJECT_DIR$/.idea/echarts-for-weixin-master.iml" />
     </modules>
   </component>
 </project>
