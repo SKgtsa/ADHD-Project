@@ -64,7 +64,7 @@ ec-canvas {
 }
 .popOutWindow{
     background-color: #100964;
-    height: 27vh;
+    height: 60vh;
 }
 .BlueToothLetter{
     color: #FFF;

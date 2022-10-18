@@ -1,5 +1,10 @@
 <!--pages/main-main/index.wxml-->
-<button class="trainingA">综合脑波训练</button>
-<button class="trainingB">娱乐脑波训练</button>
-<button class="data">训练情况</button>
-<button class="issue">问题反馈</button>
+<view class="container">
+  <view class="upperButtonGroup">
+    <button class="trainingA">综合脑波训练</button>
+    <button class="trainingB">娱乐脑波训练</button>
+    <button class="data">训练情况</button>
+    <button class="issue">问题反馈</button>
+  </view>
+  <button class="checkIn">每日签到</button>
+</view>
