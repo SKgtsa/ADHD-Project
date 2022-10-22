@@ -1,0 +1,12 @@
+<!--pages/main-checkIn/index.wxml-->
+<view class="container">
+  <view class="window">
+    <view class="checkInHistory">
+      <text>{{checkInDays}}</text>
+    </view>
+    <view class="messageArea">
+      <text class="message">{{message}}</text>
+    </view>
+  </view>
+  <button class="checkInButton" bind:tap="tapCheckInButton">{{checkInButton}}</button>
+</view>

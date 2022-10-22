@@ -27,7 +27,10 @@
     "pages/move/index",
     "pages/saveCanvas/index",
     "pages/main-community/index",
-    "pages/main-device/index"
+    "pages/main-device/index",
+    "pages/main-checkIn/index",
+    "pages/main-device-detail/index",
+    "pages/main-ble-control/index"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -50,8 +53,8 @@
         "text": "设备"
       },
       {
-        "pagePath": "pages/main-community/index",
-        "text": "社区"
+        "pagePath": "pages/main-checkIn/index",
+        "text": "签到"
       },
       {
         "pagePath": "pages/main-personal/index",

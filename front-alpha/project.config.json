@@ -32,7 +32,7 @@
     "userConfirmedBundleSwitch": false,
     "packNpmManually": false,
     "packNpmRelationList": [],
-    "minifyWXSS": true,
+    "minifyWXSS": false,
     "lazyloadPlaceholderEnable": false,
     "useStaticServer": true,
     "showES6CompileOption": false,

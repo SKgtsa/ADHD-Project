@@ -1,6 +1,9 @@
 //app.js
 App({
   onLaunch: function () {
+   
+    //获取系统信息
+    this.globalData.sysinfo = wx.getSystemInfoSync()
     // 展示本地存储能力
     const logs = wx.getStorageSync('logs') || [];
     logs.unshift(Date.now())
@@ -34,6 +37,23 @@ App({
     })
   },
   globalData: {
-    userInfo: null
-  }
+    userInfo: null,
+    sysinfo: null
+  },
+  getModel: function () { //获取手机型号
+    return this.globalData.sysinfo["model"]
+  },
+  getVersion: function () { //获取微信版本号
+      return this.globalData.sysinfo["version"]
+  },
+  getSystem: function () { //获取操作系统版本
+      return this.globalData.sysinfo["system"]
+  },
+  getPlatform: function () { //获取客户端平台
+      return this.globalData.sysinfo["platform"]
+  },
+  getSDKVersion: function () { //获取客户端基础库版本
+      return this.globalData.sysinfo["SDKVersion"]
+  },
+  
 })

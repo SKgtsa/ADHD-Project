@@ -1,10 +1,34 @@
 <!--pages/main-main/index.wxml-->
 <view class="container">
   <view class="upperButtonGroup">
-    <button class="trainingA">综合脑波训练</button>
-    <button class="trainingB">娱乐脑波训练</button>
-    <button class="data">训练情况</button>
-    <button class="issue">问题反馈</button>
+    <button class="quickGuide" bind:tap="quickGuide">快速指南</button>
+    <button class="dataSync" bind:tap="toDataSync">同步数据</button>
+    <button class="data" bind:tap="toDeviceDetail">训练情况</button>
+    <button class="issue" bind:tap="advice">问题反馈</button>
   </view>
-  <button class="checkIn">每日签到</button>
+  <button class="checkIn" bind:tap="toCheckInPage">每日签到</button>
 </view>
+<!-- <page-container bind:enter="startCheckIn" bind:leave="finishCheckIn" show="{{showCheckInPage}}" overlay="{{true}}" position="top">
+  <view class="popUpWindow">
+    <text>您已连续签到</text>
+    <text>{{checkInHistory}}</text>
+    <text>天</text>
+    <text>{{message}}</text>
+  </view>
+</page-container> -->
+<page-container show="{{showAdvicePage}}" overlay="{{true}}"  position="top" custom-style="">
+        <view class="popOutWindow">
+            <view>
+                <text class="textTop">您可以在这里反馈问题，或是提出建议</text>
+            </view>
+            <view>
+                <text class="textDown">这对我们来说非常重要</text>
+            </view>
+            <view class="inputArea">
+                <textarea bind:input="onChange" value="{{suggestion}}" class="input" auto-focus="true" />
+            </view>
+            <view class="submitButton">
+                <button bind:tap="adviceSubmit" >提交</button>
+            </view>
+        </view>
+    </page-container>

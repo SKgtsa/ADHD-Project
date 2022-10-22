@@ -1,0 +1,23 @@
+/* pages/main-checkIn/index.wxss */
+.container{
+  background-color: #100964;
+}
+.window{
+  border-radius: 5vw;
+  background-color: #FFF;
+  width: 90vw;
+  height: 60vh;
+  position: absolute;
+  top: 10vh;
+  text-align: center;
+}
+.checkInButton{
+  position: absolute;
+  top: 75vh;
+  font-weight: bold;
+  width: 60vw;
+  height: 10vh;
+  border-radius: 3vw;
+  font-size: 8vh;
+  line-height: 8vh;
+}

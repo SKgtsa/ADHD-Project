@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -21,7 +21,7 @@ public class CheckInBody {
     @JsonSerialize(using= ToStringSerializer.class)
     private long id;
 
-    private Date date;
+    private LocalDate date;
 
     @ManyToOne
     private User user;

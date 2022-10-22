@@ -17,10 +17,11 @@ public class TokenUtil {
         StatusNode status =  ManipulateUtil.findStatusByToken(token);
         if(status.getToken() != null){
             //正常查找到状态
+            //没有删除旧状态
             ManipulateUtil.appendStatus(status.getUserId());
             response.setSuccess(true);
             response.setToken(ManipulateUtil.endNode.getToken());
-            response.setMessage(status.getUserId());
+            response.setMessage(ManipulateUtil.endNode.getUserId());
         }else{
             response.setSuccess(false);
             response.setMessage("登录失效");

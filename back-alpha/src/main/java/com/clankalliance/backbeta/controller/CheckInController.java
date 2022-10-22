@@ -21,5 +21,4 @@ public class CheckInController {
     public CommonResponse saveCheckIn(@RequestBody TokenCheckRequest request){
         return checkInService.handleSave(request.getToken());
     }
-
 }
