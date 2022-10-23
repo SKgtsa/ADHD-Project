@@ -1,2 +1,26 @@
 <!--pages/main-device-detail/index.wxml-->
-<text>pages/main-device-detail/index.wxml</text>
+<view class="container">
+  <view class="buttonList">
+    <button class="infoButton" bind:tap="but0">{{list[0].startTime}}</button>
+    <button class="infoButton" bind:tap="but1">{{list[1].startTime}}</button>
+    <button class="infoButton" bind:tap="but2">{{list[2].startTime}}</button>
+    <button class="infoButton" bind:tap="but3">{{list[3].startTime}}</button>
+    <button class="infoButton" bind:tap="but4">{{list[4].startTime}}</button>
+    <button class="infoButton" bind:tap="but5">{{list[5].startTime}}</button>
+  </view>
+  <view class="pageManager">
+    <button class="lastPage" bind:tap="lastPage">上一页</button>
+    <button class="currentPage" bind:tap="currentPage">第{{pageNum}}页</button>
+    <button class="nextPage" bind:tap="nextPage">下一页</button>
+  </view>
+</view>
+<page-container position="top" show="{{showInfo}}" overlay="true">
+  <view class="detailPage">
+    <text>开始时间</text>
+    <text>{{targetTraining.startTime}}</text>
+    <text>结束时间</text>
+    <text>{{targetTraining.endTime}}</text>
+    <text>专注率</text>
+    <text>{{targetTraining.concentrationRate}}</text>
+  </view>
+</page-container>

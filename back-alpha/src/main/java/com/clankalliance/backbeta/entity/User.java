@@ -29,4 +29,7 @@ public class User {
     @OneToMany
     private Set<CheckInBody> checkInSet;
 
+    @OneToMany
+    private Set<Training> trainingSet;
+
 }

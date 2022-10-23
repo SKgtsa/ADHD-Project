@@ -1,13 +1,11 @@
-// pages/main-checkIn/index.js
+// pages/main-device-detail-info/index.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    message:'test',
-    checkInButton: '测试',
-    checkInDays: '5'
+
   },
 
   /**
