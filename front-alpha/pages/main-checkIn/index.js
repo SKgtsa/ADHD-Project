@@ -6,7 +6,7 @@ Page({
    */
   data: {
     message:'test',
-    checkInButton: '测试',
+    checkInButton: '签到成功',
     checkInDays: '5'
   },
 
@@ -14,7 +14,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    
   },
 
   /**

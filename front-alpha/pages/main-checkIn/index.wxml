@@ -2,7 +2,7 @@
 <view class="container">
   <view class="window">
     <view class="checkInHistory">
-      <text>{{checkInDays}}</text>
+      <text>你已连续签到了{{checkInDays}}天</text>
     </view>
     <view class="messageArea">
       <text class="message">{{message}}</text>

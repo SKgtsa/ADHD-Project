@@ -18,6 +18,6 @@
   width: 60vw;
   height: 10vh;
   border-radius: 3vw;
-  font-size: 8vh;
+  font-size: 5vh;
   line-height: 8vh;
 }

@@ -38,7 +38,14 @@ App({
   },
   globalData: {
     userInfo: null,
-    sysinfo: null
+    sysinfo: null,
+    login: false,
+  },
+  getLogin: function() {
+    return this.globalData.login
+  },
+  setLogin: function(login) {
+    this.globalData.setLogin(login);
   },
   getModel: function () { //获取手机型号
     return this.globalData.sysinfo["model"]

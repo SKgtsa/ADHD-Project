@@ -1,4 +1,5 @@
 // pages/main-personal/index.js
+
 Page({
   data: {
     code: '',
@@ -67,11 +68,19 @@ Page({
                 if(data.success){
                   wx.setStorageSync("token",data.token)
                   wx.setStorageSync("login",true)
+                  // app.setLogin(true)
                   wx.showToast({
                     title: '登录成功',
                     duration: 2000,
                     icon: 'success',
-                    mask: true
+                    mask: true,
+                    success: function() {
+                      setTimeout(function() {
+                        wx.navigateTo({
+                          url: '../main-main/index'
+                        })
+                      }, 1900)
+                    }
                   })
                 }else{
                   wx.showToast({
