@@ -1,12 +1,22 @@
 <!--pages/main-checkIn/index.wxml-->
 <view class="container">
-  <view class="window">
+
+  <!--已签到时展现的内容-->
+  <view class="hadCheckedWindow">
     <view class="checkInHistory">
-      <text>你已连续签到了{{checkInDays}}天</text>
+      <text>您本周已签到了{{checkInDays}}天</text>
     </view>
     <view class="messageArea">
       <text class="message">{{message}}</text>
     </view>
   </view>
-  <button class="checkInButton" bind:tap="tapCheckInButton">{{checkInButton}}</button>
+  <!--未签到时展现的内容-->
+  <view class="notCheckedWindow">
+    <view class="messageArea">
+      <text>{{notCheckedMessage}}</text>
+    </view>
+    
+  </view>
+
+  <!-- <button class="checkInButton" bind:tap="tapCheckInButton">{{checkInButton}}</button> -->
 </view>

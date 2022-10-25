@@ -40,6 +40,7 @@ App({
     userInfo: null,
     sysinfo: null,
     login: false,
+    userInfo: {avatarUrl: '../../img/default-avatar.png', nickName: '请登录'}
   },
   getLogin: function() {
     return this.globalData.login

@@ -14,11 +14,6 @@
         <!--用户名-->
         <view>
             <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-        </view>
-            <!--登录按钮
-            使用了profile方法-->
-        <view style="padding-top: 10vh">
-            <button bindtap="submitLogin" class="loginButton" >登录</button>
-        </view>
+        </view>  
     </view>
 </view>

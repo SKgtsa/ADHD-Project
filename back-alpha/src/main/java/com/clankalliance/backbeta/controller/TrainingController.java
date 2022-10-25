@@ -1,12 +1,10 @@
 package com.clankalliance.backbeta.controller;
 
 
-import com.clankalliance.backbeta.entity.Training;
 import com.clankalliance.backbeta.request.CommonPageableRequest;
 import com.clankalliance.backbeta.request.TrainingSyncRequest;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.service.TrainingService;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

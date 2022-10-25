@@ -1,6 +1,6 @@
 package com.clankalliance.backbeta.service.impl;
 
-import com.clankalliance.backbeta.entity.Training;
+import com.clankalliance.backbeta.entity.training.Training;
 import com.clankalliance.backbeta.entity.User;
 import com.clankalliance.backbeta.repository.TrainingRepository;
 import com.clankalliance.backbeta.repository.UserRepository;
@@ -8,14 +8,10 @@ import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.service.TrainingService;
 import com.clankalliance.backbeta.utils.TokenUtil;
 import com.clankalliance.backbeta.utils.TrainingIdGenerator;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 

@@ -1,14 +1,12 @@
 // pages/main-personal/index.js
 
+const app = getApp();
+
+
 Page({
   data: {
     code: '',
-    motto: 'Hello World',
     userInfo: {avatarUrl: '../../img/default-avatar.png', nickName: '请登录'},
-    hasUserInfo: false,
-    canIUse: wx.canIUse('button.open-type.getUserInfo'),
-    canIUseGetUserProfile: false,
-    canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName') // 如需尝试获取用户信息可改为false
   },
   // 事件处理函数
   bindViewTap() {
@@ -17,15 +15,8 @@ Page({
     })
   },
   onLoad() {
-    // @ts-ignore
-    if (wx.getUserProfile) {
-      this.setData({
-        canIUseGetUserProfile: true
-      })
-    }
-
+    
   },
-
   submitLogin() {
     console.log('intoProcessA')
     // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
@@ -36,11 +27,9 @@ Page({
         //微信获取数据成功后的回调函数
         console.log('intoProcessB')
         console.log(res)
-
-
+        app.globalData.userInfo = res.userInfo
         this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true
+          userInfo: res.userInfo
         })
         const signature = res.signature;
         const rawData = res.rawData;
@@ -67,7 +56,7 @@ Page({
                 console.log(data.token);
                 if(data.success){
                   wx.setStorageSync("token",data.token)
-                  wx.setStorageSync("login",true)
+                  app.globalData.login = true;
                   // app.setLogin(true)
                   wx.showToast({
                     title: '登录成功',
@@ -76,8 +65,8 @@ Page({
                     mask: true,
                     success: function() {
                       setTimeout(function() {
-                        wx.navigateTo({
-                          url: '../main-main/index'
+                        wx.switchTab({
+                          url: '../main-main/index',
                         })
                       }, 1900)
                     }
@@ -96,5 +85,22 @@ Page({
         })
       }
     })
+  },
+  onShow(){
+    const login = app.globalData.login;
+    if(login){
+      this.setData({userInfo: app.globalData.userInfo})
+    }else{
+      wx.showModal({
+        title: '请先登录',
+        content: '为了更好为您提供服务，我们需要您登录微信账号',
+        showCancel: false,
+        success :(res) => {
+          if(res.confirm){
+            this.submitLogin();
+          }
+        }
+      })  
+    }
   }
 })

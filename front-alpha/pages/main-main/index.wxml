@@ -1,7 +1,7 @@
 <!--pages/main-main/index.wxml-->
 <view class="container">
   <view class="upperButtonGroup">
-    <button class="quickGuide" bind:tap="quickGuide">快速指南</button>
+    <button class="quickGuide" bind:tap="quickGuide">指南社区</button>
     <button class="dataSync" bind:tap="toDataSync">同步数据</button>
     <button class="data" bind:tap="toDeviceDetail">训练情况</button>
     <button class="issue" bind:tap="advice">问题反馈</button>

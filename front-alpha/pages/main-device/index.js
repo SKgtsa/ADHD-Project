@@ -418,16 +418,22 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onShow(options) {
-
+  onShow() {
+    if(!app.globalData.login){
+      wx.switchTab({
+        url: '../main-personal/index',
+      })
+    }
   },
   onLoad(){
-    console.log(this.options.showBlueToothPage)
-    this.setData({
-      showBlueToothPage: this.options.showBlueToothPage,
-    })
-    if(this.options.showDetail){
-      this.detailedButton();
+    if(this.options){
+      console.log(this.options.showBlueToothPage)
+      this.setData({
+        showBlueToothPage: this.options.showBlueToothPage,
+      })
+      if(this.options.showDetail){
+        this.detailedButton();
+      }
     }
   }
 });
@@ -514,7 +520,7 @@ function getGaugeOption() {
       },
       data: [{
         value: 90,
-        name: '专注率',
+        name: '平均专注率',
         textStyle: {
           color: '#FFF'
         }

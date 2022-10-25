@@ -49,9 +49,10 @@ ec-canvas {
     color: #FFF;
     font-weight: bold;
 }
+
 .trainingButton{
     width: 94vw;
-    height: 45vw;
+    height: 23vh;
     background-color: #100964;
     border-radius: 10vw;
     position: absolute;
@@ -59,7 +60,7 @@ ec-canvas {
     right: 3vw;
     color: #FFF;
     font-size: 13vw;
-    padding-top: 3vh;
+    padding-top: 1.5vh;
     font-weight: bolder;
 }
 .popOutWindow{
