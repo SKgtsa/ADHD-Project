@@ -6,8 +6,10 @@ import java.util.Date;
 
 public interface TrainingService {
 
-    CommonResponse handleSave(String token, Date startTime, Date endTime, Double concentrationRate);
+    CommonResponse handleSave(String token, String rawData);
 
     CommonResponse handleFind(String token, int pageNum, int pageSize);
+
+    CommonResponse handleFindGraph(String token, String id);
 
 }

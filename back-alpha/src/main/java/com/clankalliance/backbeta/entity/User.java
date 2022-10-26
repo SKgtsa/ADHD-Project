@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -30,6 +31,6 @@ public class User {
     private Set<CheckInBody> checkInSet;
 
     @OneToMany
-    private Set<Training> trainingSet;
+    private List<Training> trainingList;
 
 }

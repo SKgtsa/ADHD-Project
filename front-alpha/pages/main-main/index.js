@@ -84,7 +84,9 @@ Page({
     })
   },
   quickGuide: function() {
-    console.log('会进入一个页面，显示一些说明')
+    wx.navigateTo({
+      url: '../main-community/index',
+    })    
   },
   toDataSync: function() {
     //实现按按钮跳转页面并开始同步

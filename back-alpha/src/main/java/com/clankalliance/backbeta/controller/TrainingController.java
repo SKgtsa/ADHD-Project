@@ -1,6 +1,7 @@
 package com.clankalliance.backbeta.controller;
 
 
+import com.clankalliance.backbeta.request.CommonFindRequest;
 import com.clankalliance.backbeta.request.CommonPageableRequest;
 import com.clankalliance.backbeta.request.TrainingSyncRequest;
 import com.clankalliance.backbeta.response.CommonResponse;
@@ -21,12 +22,16 @@ public class TrainingController {
 
     @RequestMapping("/save")
     public CommonResponse save(@RequestBody TrainingSyncRequest request){
-        return trainingService.handleSave(request.getToken(), request.getStartTime(),request.getEndTime(), request.getConcentrationRate());
+        return trainingService.handleSave(request.getToken(), request.getRawData());
     }
 
     @RequestMapping("/find")
     public CommonResponse find(@RequestBody CommonPageableRequest request){
         return trainingService.handleFind(request.getToken(), request.getPageNum(), request.getSize());
+    }
+    @RequestMapping("/findGraph")
+    public CommonResponse findGraph(@RequestBody CommonFindRequest request){
+        return trainingService.handleFindGraph(request.getToken(), request.getId());
     }
 
 }

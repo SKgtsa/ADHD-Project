@@ -1,6 +1,9 @@
 // pages/main-community/index.js
-Page({
 
+Page({
+  showDetail :function (index){
+    this.setData({postPresent: post[index], showDetailPage: true})
+  },
   advice : function (){
     console.log('intoProcess')
     this.setData({showAdvicePage: true})
@@ -53,8 +56,30 @@ Page({
    * 页面的初始数据
    */
   data: {
-    showAdvicePage: false,
-    suggestion: ''
+    showDetailPage: false,
+    suggestion: '',
+    post: [
+      {
+        title: 'A',
+        content: 'This is the content of A'
+      },{
+        title: 'B',
+        content: 'This is the content of B'
+      },{
+        title: 'C',
+        content: 'This is the content of C'
+      },{
+        title: 'D',
+        content: 'This is the content of D'
+      },{
+        title: 'E',
+        content: 'This is the content of E'
+      }
+    ],
+    postPresent: {
+      title: '',
+      content: ''
+    }
   },
 
   /**
@@ -63,7 +88,7 @@ Page({
   onLoad(options) {
 
   },
-
+  
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

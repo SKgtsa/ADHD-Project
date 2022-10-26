@@ -1,26 +1,35 @@
 package com.clankalliance.backbeta.entity.training;
 
-import lombok.AllArgsConstructor;
+import com.clankalliance.backbeta.utils.SnowFlake;
+import com.clankalliance.backbeta.utils.TrainingIdGenerator;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Date;
 
 //每次训练的一个点数据
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class Dot {
 
     @Id
-    private long id;
+    private String id;
 
     //时间戳
-    private long time;
+    private Date time;
 
     //专注值
-    private Double concentrationValue;
+    private Integer concentrationValue;
+
+
+
+    public Dot(String id, Integer concentrationValue, Date time){
+        this.id = id + System.currentTimeMillis();
+        this.concentrationValue = concentrationValue;
+        this.time = time;
+    }
 
 }

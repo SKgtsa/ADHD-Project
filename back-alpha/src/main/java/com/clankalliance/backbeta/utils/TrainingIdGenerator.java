@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TrainingIdGenerator {
-    public String nextId(String wxOpenId){
+    public static String nextId(String wxOpenId){
         return wxOpenId + System.currentTimeMillis();
     }
 }
