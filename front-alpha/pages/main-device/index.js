@@ -1,9 +1,7 @@
 import * as echarts from '../../ec-canvas/echarts';
 
 const app = getApp();
-
 Page({
-
   bleConnection(deviceId){
     wx.createBLEConnection({
       deviceId, // 搜索到设备的 deviceId
@@ -375,7 +373,11 @@ Page({
     blueToothAdapterStart: false,
     onBlueToothAdapterStateChange: false,
     onBLECharaValueChange: false,
-
+    targetTraining: {
+      graph: [
+        50,60,30,40,90,80,20
+      ]
+    },
     showGauge: false,
     'deviceId':'',
     'serviceId':'',
@@ -419,11 +421,11 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onShow() {
-    if(!app.globalData.login){
-      wx.switchTab({
-        url: '../main-personal/index',
-      })
-    }
+    // if(!app.globalData.login){
+    //   wx.switchTab({
+    //     url: '../main-personal/index',
+    //   })
+    // }
   },
   onLoad(){
     if(this.options){
@@ -472,7 +474,7 @@ function getLineOption() {
     series: [{
       type: 'line',
       smooth: true,
-      data: [2, 4, 3, 5, 1, 8, 3]
+      data: Page.data.targetTraining.graph
     }]
   };
 }
@@ -528,3 +530,20 @@ function getGaugeOption() {
 
     }]};
 }
+//数据备份
+// {
+//   time: 'a',
+//   concentrationRate: 50
+// },{
+//   time: 'a',
+//   concentrationRate: 70
+// },{
+//   time: 'a',
+//   concentrationRate: 80
+// },{
+//   time: 'a',
+//   concentrationRate: 10
+// },{
+//   time: 'a',
+//   concentrationRate: 30
+// }

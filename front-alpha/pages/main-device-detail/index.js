@@ -12,40 +12,38 @@ Page({
     targetTraining: {
       id: '',
       startTime: 'time1',
-      endTime: '',
-      concentrationRate: 0.1
+      gold: 40,
+      graph : [
+        {
+          time: null,
+          concentrationRate: 50
+        }
+      ]
+    },
+    ecLine: {
+      onInit: function (canvas, width, height, dpr) {
+        const lineChart = echarts.init(canvas, null, {
+          width: width,
+          height: height,
+          devicePixelRatio: dpr // new
+        });
+        canvas.setChart(lineChart);
+        lineChart.setOption(getLineOption());
+
+        return lineChart;
+      }
     },
     list: [{
       id: '',
       startTime: 'time1',
-      endTime: 'time1E',
-      concentrationRate: 0.1
     },{
       id: '',
-      startTime: 'time2',
-      endTime: 'time2E',
-      concentrationRate: 0.1
+      startTime: 'time2'
     },{
       id: '',
-      startTime: 'time3',
-      endTime: 'time3E',
-      concentrationRate: 0.1
-    },{
-      id: '',
-      startTime: 'time4',
-      endTime: 'time4E',
-      concentrationRate: 0.1
-    },{
-      id: '',
-      startTime: 'time5',
-      endTime: 'time5E',
-      concentrationRate: 0.1
-    },{
-      id: '',
-      startTime: 'time6',
-      endTime: 'time6E',
-      concentrationRate: 0.1
-    },],
+      startTime: 'time3'
+    }
+  ],
 
   },
   jump: function(target){
@@ -93,12 +91,7 @@ Page({
       }
     })
   },
-  but0(){this.jump(0)},
-  but1(){this.jump(1)},
-  but2(){this.jump(2)},
-  but3(){this.jump(3)},
-  but4(){this.jump(4)},
-  but5(){this.jump(5)},
+  
   /**
    * 生命周期函数--监听页面加载
    */
@@ -155,3 +148,40 @@ Page({
 
   }
 })
+function getLineOption() {
+  return {
+
+    grid: {
+      containLabel: true,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      top: 38
+    },
+    tooltip: {
+      show: true,
+      trigger: 'axis'
+    },
+    xAxis: {
+      type: 'category',
+      boundaryGap: true,
+      data: ['x.1', 'x.2', 'x.3', 'x.4', 'x.5', 'x.6', 'x.7'],
+      // show: false
+    },
+    yAxis: {
+      x: 'center',
+      type: 'value',
+      splitLine: {
+        lineStyle: {
+          type: 'dashed'
+        }
+      }
+      // show: false
+    },
+    series: [{
+      type: 'line',
+      smooth: true,
+      data: targetTraining.graph
+    }]
+  };
+}

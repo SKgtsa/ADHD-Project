@@ -2,6 +2,7 @@ package com.clankalliance.backbeta.entity.training;
 
 import com.clankalliance.backbeta.utils.SnowFlake;
 import com.clankalliance.backbeta.utils.TrainingIdGenerator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,7 @@ import java.util.Date;
 public class Dot {
 
     @Id
+    @JsonIgnore
     private String id;
 
     //时间戳

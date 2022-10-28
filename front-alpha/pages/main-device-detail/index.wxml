@@ -1,12 +1,9 @@
 <!--pages/main-device-detail/index.wxml-->
 <view class="container">
   <view class="buttonList">
-    <button class="infoButton" bind:tap="but0">{{list[0].startTime}}</button>
-    <button class="infoButton" bind:tap="but1">{{list[1].startTime}}</button>
-    <button class="infoButton" bind:tap="but2">{{list[2].startTime}}</button>
-    <button class="infoButton" bind:tap="but3">{{list[3].startTime}}</button>
-    <button class="infoButton" bind:tap="but4">{{list[4].startTime}}</button>
-    <button class="infoButton" bind:tap="but5">{{list[5].startTime}}</button>
+    <block wx:for="{{list}}" wx:key="index">
+          <button class="infoButton" bind:tap="jump({{index}})">{{item.startTime}}</button>
+    </block>
   </view>
   <view class="pageManager">
     <button class="lastPage" bind:tap="lastPage">上一页</button>
@@ -16,6 +13,9 @@
 </view>
 <page-container position="top" show="{{showInfo}}" overlay="true">
   <view class="detailPage">
+    <view class="container">
+        <ec-canvas class="lineChart" id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>
+    </view>
     <text>开始时间</text>
     <text>{{targetTraining.startTime}}</text>
     <text>结束时间</text>

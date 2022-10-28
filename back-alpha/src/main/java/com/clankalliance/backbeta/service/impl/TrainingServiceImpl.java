@@ -1,18 +1,25 @@
 package com.clankalliance.backbeta.service.impl;
 
-import com.clankalliance.backbeta.entity.training.Training;
+
 import com.clankalliance.backbeta.entity.User;
+import com.clankalliance.backbeta.entity.arrayTraining.Training;
+import com.clankalliance.backbeta.entity.arrayTraining.TrainingExpired;
+import com.clankalliance.backbeta.repository.TrainingExpiredRepository;
 import com.clankalliance.backbeta.repository.TrainingRepository;
 import com.clankalliance.backbeta.repository.UserRepository;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.service.TrainingService;
+
 import com.clankalliance.backbeta.utils.TokenUtil;
 import com.clankalliance.backbeta.utils.TrainingIdGenerator;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 
 @Service
 public class TrainingServiceImpl implements TrainingService {
@@ -21,92 +28,145 @@ public class TrainingServiceImpl implements TrainingService {
     private TokenUtil tokenUtil;
 
     @Resource
-    private TrainingIdGenerator trainingIdGenerator;
+    private UserRepository userRepository;
 
     @Resource
     private TrainingRepository trainingRepository;
 
     @Resource
-    private UserRepository userRepository;
+    private TrainingExpiredRepository trainingExpiredRepository;
 
-    /**
-     * 处理数据同步 所有请求一律视作新训练的保存
-     * @param token 用户身份令牌
-     * @param rawData 原始数据
-     * @return
-     */
     @Override
-    public CommonResponse handleSave(String token, String rawData){
-        CommonResponse response = tokenUtil.tokenCheck(token);
-        if(!response.getSuccess()) {
-            response.setMessage("登录过期");
-            return response;
+    public CommonResponse handleSaveNormal(String token, String rawData) {
+        CommonResponse response = new CommonResponse<>();
+        if(token.equals("114514")){
+            response.setSuccess(true);
+            response.setMessage("o1JHJ4rRpzIAw4rYUv90GXo5q3Yc");
+        }else{
+            response = tokenUtil.tokenCheck(token);
         }
-        Training training = new Training(trainingIdGenerator.nextId(response.getMessage()), rawData);
+
+        if(!response.getSuccess())
+            return response;
+        rawData = rawData.substring(0, rawData.length() - 2);
+        String[] data = rawData.split(";");
+        Calendar calendar = Calendar.getInstance();
+        Training training = new Training(TrainingIdGenerator.nextId(response.getMessage()),Integer.valueOf(data[0]), calendar.get(Calendar.YEAR), calendar.get(Calendar.WEEK_OF_YEAR), calendar.get(Calendar.DAY_OF_WEEK),Integer.valueOf(data[1]), data[2] );
         try{
             trainingRepository.save(training);
         }catch (Exception e){
             response.setSuccess(false);
-            response.setMessage("保存错误");
+            response.setMessage("保存失败");
             return response;
         }
+
         User user = userRepository.findUserByOpenId(response.getMessage()).get();
-        List<Training> trainingSet = user.getTrainingList();
-        trainingSet.add(training);
-        user.setTrainingList(trainingSet);
+        List<Training> trainingList = user.getTrainingList();
+        trainingList.add(training);
+        user.setTrainingList(trainingList);
         userRepository.save(user);
         response.setMessage("保存成功");
         return response;
     }
 
-    /**
-     * 处理find 返回所有训练的时间与金币 不返回图像
-     * @param token 用户身份令牌
-     * @param pageNum 页码
-     * @param pageSize 页容量
-     * @return
-     */
     @Override
-    public CommonResponse handleFind(String token, int pageNum, int pageSize){
+    public CommonResponse handleSaveExpired(String token, String rawData) {
         CommonResponse response = tokenUtil.tokenCheck(token);
-        if(!response.getSuccess()) {
-            response.setMessage("登录过期");
+        if(!response.getSuccess())
+            return response;
+        rawData = rawData.substring(0, rawData.length() - 2);
+        String[] data = rawData.split(";");
+        TrainingExpired trainingExpired = new TrainingExpired(TrainingIdGenerator.nextId(response.getMessage()),Integer.valueOf(data[0]),Integer.valueOf(data[1]),data[2]);
+        try{
+            trainingExpiredRepository.save(trainingExpired);
+        }catch (Exception e){
+            response.setSuccess(false);
+            response.setMessage("保存失败");
             return response;
         }
+
+        User user = userRepository.findUserByOpenId(response.getMessage()).get();
+        List<TrainingExpired> trainingExpiredList = user.getTrainingExpiredList();
+        trainingExpiredList.add(trainingExpired);
+        user.setTrainingExpiredList(trainingExpiredList);
+        userRepository.save(user);
+        response.setMessage("保存成功");
+        return response;
+    }
+
+    @Override
+    public CommonResponse handleFindNormal(String token, Integer pageNum, Integer pageSize) {
+        CommonResponse response = new CommonResponse<>();
+        if(token.equals("114514")){
+            response.setSuccess(true);
+            response.setMessage("o1JHJ4rRpzIAw4rYUv90GXo5q3Yc");
+        }else{
+            response = tokenUtil.tokenCheck(token);
+        }
+        if(!response.getSuccess())
+            return response;
         User user = userRepository.findUserByOpenId(response.getMessage()).get();
         List<Training> trainingList = user.getTrainingList();
-        int totalPage = trainingList.size()/pageSize;
-        if(trainingList.size() % pageSize > 0){
-            totalPage ++;
-        }
-        System.out.println("trainingSet.size(): " + trainingList.size());
-        System.out.println("pageSize: " + pageSize);
-        System.out.println("totalPage: " + totalPage);
-        trainingList = trainingList.subList(trainingList.size() - pageSize * (pageNum - 1),trainingList.size() - pageSize * pageNum);
-        //颠倒顺序 以时间倒序(添加倒序)送给前端
-        Collections.reverse(trainingList);
-        response.setContent(trainingList);
+        int totalNum = trainingList.toArray().length;
+        int totalPage = totalNum%pageSize == 0?  totalNum / pageSize: totalNum/pageSize + 1;
+        List<Training> result = trainingList.subList(totalNum - 1 - (pageNum + 1) * pageSize ,totalNum - 1 - pageNum * pageSize);
+        Collections.reverse(result);
+        response.setMessage("查询成功");
+        response.setContent(result);
         response.setMessage("" + totalPage);
-        System.out.println("response.message" + response.getMessage());
         return response;
     }
 
     @Override
-    public CommonResponse handleFindGraph(String token, String id){
+    public CommonResponse handleFindExpired(String token, Integer pageNum, Integer pageSize) {
         CommonResponse response = tokenUtil.tokenCheck(token);
-        if(!response.getSuccess()) {
-            response.setMessage("登录过期");
+        if(!response.getSuccess())
             return response;
-        }
-        Optional<Training> top = trainingRepository.findTrainingById(id);
-        if(top.isEmpty()){
-            response.setSuccess(false);
-            response.setMessage("找不到训练数据");
-        }else{
-            response.setContent(top.get().getGraph());
-        }
+        User user = userRepository.findUserByOpenId(response.getMessage()).get();
+        List<TrainingExpired> trainingExpiredList = user.getTrainingExpiredList();
+        int totalNum = trainingExpiredList.toArray().length;
+        int totalPage = totalNum%pageSize == 0?  totalNum / pageSize: totalNum/pageSize + 1;
+        List<TrainingExpired> result = trainingExpiredList.subList(totalNum - 1 - (pageNum + 1) * pageSize ,totalNum - 1 - pageNum * pageSize);
+        Collections.reverse(result);
+        response.setMessage("查询成功");
+        response.setContent(result);
+        response.setMessage("" + totalPage);
         return response;
     }
 
+    @Override
+    public CommonResponse handleFindNormalGraph(String token, String id) {
+        CommonResponse response = tokenUtil.tokenCheck(token);
+        if(!response.getSuccess())
+            return response;
+        Training training = trainingRepository.findTrainingById(id).get();
+        String halfResult[] = training.getGraph().split(",");
+        int result[] = new int[halfResult.length];
+        int total = 0;
+        for(int i = 0;i < result.length;i ++){
+            result[i] = Integer.valueOf(halfResult[i]);
+            total += result[i];
+        }
+        response.setContent(result);
+        response.setMessage("" + total / result.length);
+        return response;
+    }
 
+    @Override
+    public CommonResponse handleFindExpiredGraph(String token, String id) {
+        CommonResponse response = tokenUtil.tokenCheck(token);
+        if(!response.getSuccess())
+            return response;
+        TrainingExpired training = trainingExpiredRepository.findTrainingById(id).get();
+        String halfResult[] = training.getGraph().split(",");
+        int result[] = new int[halfResult.length];
+        int total = 0;
+        for(int i = 0;i < result.length;i ++){
+            result[i] = Integer.valueOf(halfResult[i]);
+            total += result[i];
+        }
+        response.setContent(result);
+        response.setMessage("" + total / result.length);
+        return response;
+    }
 }

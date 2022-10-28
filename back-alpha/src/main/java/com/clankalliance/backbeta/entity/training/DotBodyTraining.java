@@ -1,7 +1,6 @@
 package com.clankalliance.backbeta.entity.training;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +17,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-public class Training {
+public class DotBodyTraining {
 
     @Id
     private String id;
@@ -41,7 +40,7 @@ public class Training {
     private List<Dot> graph;
 
 
-    public Training(String id,String rawData){
+    public DotBodyTraining(String id, String rawData){
         int iterA = 0;
         int iterB = rawData.indexOf(',', iterA);
         this.gold = Integer.valueOf(rawData.substring(iterA,iterB - 1));

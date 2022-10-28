@@ -20,18 +20,34 @@ public class TrainingController {
     private TrainingService trainingService;
 
 
-    @RequestMapping("/save")
-    public CommonResponse save(@RequestBody TrainingSyncRequest request){
-        return trainingService.handleSave(request.getToken(), request.getRawData());
+    @RequestMapping("/saveNormal")
+    public CommonResponse saveNormal(@RequestBody TrainingSyncRequest request){
+        return trainingService.handleSaveNormal(request.getToken(), request.getRawData());
     }
 
-    @RequestMapping("/find")
-    public CommonResponse find(@RequestBody CommonPageableRequest request){
-        return trainingService.handleFind(request.getToken(), request.getPageNum(), request.getSize());
+    @RequestMapping("/saveExpired")
+    public CommonResponse saveExpired(@RequestBody TrainingSyncRequest request){
+        return trainingService.handleSaveExpired(request.getToken(), request.getRawData());
     }
-    @RequestMapping("/findGraph")
-    public CommonResponse findGraph(@RequestBody CommonFindRequest request){
-        return trainingService.handleFindGraph(request.getToken(), request.getId());
+
+    @RequestMapping("/findNormal")
+    public CommonResponse findNormal(@RequestBody CommonPageableRequest request){
+        return trainingService.handleFindNormal(request.getToken(), request.getPageNum(), request.getSize());
+    }
+
+    @RequestMapping("/findExpired")
+    public CommonResponse findExpired(@RequestBody CommonPageableRequest request){
+        return trainingService.handleFindExpired(request.getToken(), request.getPageNum(), request.getSize());
+    }
+
+    @RequestMapping("/findNormalGraph")
+    public CommonResponse findNormalGraph(@RequestBody CommonFindRequest request){
+        return trainingService.handleFindNormalGraph(request.getToken(), request.getId());
+    }
+
+    @RequestMapping("/findExpiredGraph")
+    public CommonResponse findExpiredGraph(@RequestBody CommonFindRequest request){
+        return trainingService.handleFindExpiredGraph(request.getToken(), request.getId());
     }
 
 }
