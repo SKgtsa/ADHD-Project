@@ -25,6 +25,12 @@ public class Training {
     //训练年份
     private Integer year;
 
+    //月
+    private Integer month;
+
+    //日
+    private Integer day;
+
     //训练时间位于一年的第几个周
     private Integer weekOfTheYear;
 

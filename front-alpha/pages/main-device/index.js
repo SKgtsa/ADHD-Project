@@ -458,7 +458,7 @@ function getLineOption() {
     xAxis: {
       type: 'category',
       boundaryGap: true,
-      data: ['x.1', 'x.2', 'x.3', 'x.4', 'x.5', 'x.6', 'x.7'],
+      data: ['x.1', 'x.2', 'x.3', 'x.4', 'x.5', 'x.6', 'x.7','','',''],
       // show: false
     },
     yAxis: {
@@ -474,7 +474,7 @@ function getLineOption() {
     series: [{
       type: 'line',
       smooth: true,
-      data: Page.data.targetTraining.graph
+      data: [50,60,70,30,20,80,90,60,40,50]
     }]
   };
 }

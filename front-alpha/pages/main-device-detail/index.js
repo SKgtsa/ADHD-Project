@@ -1,24 +1,37 @@
 // pages/main-device-detail/index.js
+import * as echarts from '../../ec-canvas/echarts';
+
+const app = getApp();
+
 Page({
   
   /**
    * 页面的初始数据
    */
   data: {
-    pageSize: 6,
-    pageNum: 1,
-    maxPage: 1,
+    expired: false,
+    pageSize: 5,
+    pageNumE: 1,
+    pageNumN: 1,
+    maxPageE: 1,
+    maxPageN: 1,
     showInfo: false,
-    targetTraining: {
+    targetTrainingE: {
       id: '',
-      startTime: 'time1',
-      gold: 40,
-      graph : [
-        {
-          time: null,
-          concentrationRate: 50
-        }
-      ]
+      mark: 0,
+      gold: 0,
+      graph : [10,20]
+    },
+    targetTrainingN: {
+      id: '',
+      mark: 0,
+      year: 0,
+      month: 0,
+      day: 0,
+      weekOfTheYear: 0,
+      dayOfTheWeek: 0,
+      gold: 0,
+      graph : [10,20]
     },
     ecLine: {
       onInit: function (canvas, width, height, dpr) {
@@ -29,22 +42,115 @@ Page({
         });
         canvas.setChart(lineChart);
         lineChart.setOption(getLineOption());
-
         return lineChart;
       }
     },
     list: [{
-      id: '',
-      startTime: 'time1',
-    },{
-      id: '',
-      startTime: 'time2'
-    },{
-      id: '',
-      startTime: 'time3'
+        id: null,
+        mark: null,
+        year: 2022,
+        month: 6,
+        day: 10,
+        weekOfTheYear: null,
+        dayOfTheWeek: null,
+        gold: null,
+        message: null
+      },{
+        id: null,
+        mark: null,
+        year: 2022,
+        month: 6,
+        day: 10,
+        weekOfTheYear: null,
+        dayOfTheWeek: null,
+        gold: null,
+        message: null
+      },{
+        id: null,
+        mark: null,
+        year: 2022,
+        month: 6,
+        day: 10,
+        weekOfTheYear: null,
+        dayOfTheWeek: null,
+        gold: null,
+        message: null
+      }
+    ],
+  },
+  nextPage: function(){
+    if(this.data.expired){
+      if(this.data.pageNumE == this.data.maxPageE){
+        wx.showToast({
+          title: '没有下一页了',
+          icon: 'error'
+        })
+      }else{
+        this.setData({pageNumE: this.data.pageNumE + 1})
+        this.refreshList();
+      }
+    }else{
+      if(this.data.pageNumN == this.data.maxPageN){
+      wx.showToast({
+        title: '没有下一页了',
+        icon: 'error'
+      })
+      }else{
+        this.setData({pageNumN: this.data.pageNumN + 1})
+        this.refreshList();
+      }
     }
-  ],
+  },
+  lastPage: function(){
+    if(this.data.expired){
+      if(this.data.pageNumE == 1){
+        wx.showToast({
+          title: '没有上一页了',
+          icon: 'error'
+        })
+      }else{
+        this.setData({pageNumE: this.data.pageNumE - 1})
+        this.refreshList();
+      }
+    }else{
+      if(this.data.pageNumN == 1){
+        wx.showToast({
+          title: '没有上一页了',
+          icon: 'error'
+        })
+      }else{
+        this.setData({pageNumN: this.data.pageNumN - 1})
+        this.refreshList();
+      }
+    }
+  },
 
+  refreshList(){
+    if(this.data.expired){
+      wx.request({
+        url: 'http://localhost:5174/api/training/findExpired',
+        method :'POST',
+        data: {token: wx.getStorageSync('token'),pageNum: this.data.pageNum - 1, size:this.data.pageSize},
+        success: (res) => {
+          console.log(res);
+          this.setData({list: res.data.content, maxPage: res.data.message});
+          console.log(this.data.maxPage);
+          console.log(res.message);
+          wx.setStorageSync('token', res.data.token)
+        }
+      })
+    }else{
+      wx.request({
+        url: 'http://localhost:5174/api/training/findNormal',
+        method :'POST',
+        data: {token: wx.getStorageSync('token'),pageNum: this.data.pageNum - 1, size:this.data.pageSize},
+        success: (res) => {
+          console.log(res);
+          this.setData({list: res.data.content, maxPage: res.data.message});
+          wx.setStorageSync('token', res.data.token)
+        }
+      })
+    }
   },
   jump: function(target){
     const data = this.data.list[target];
@@ -55,43 +161,6 @@ Page({
     //   url: '../main-device-detail-info/index?startTime=' + data.startTime + '&endTime=' + data.endTime + '&concentrationRate' + data.concentrationRate
     // })
   },
-  nextPage: function(){
-    if(this.data.pageNum == this.data.maxPage){
-      wx.showToast({
-        title: '没有下一页了',
-        icon: 'error'
-      })
-    }else{
-      this.setData({pageNum: this.data.pageNum + 1})
-      this.refreshList();
-    }
-  },
-  lastPage: function(){
-    if(this.data.pageNum == 1){
-      wx.showToast({
-        title: '没有上一页了',
-        icon: 'error'
-      })
-    }else{
-      this.setData({pageNum: this.data.pageNum - 1})
-      this.refreshList();
-    }
-  },
-  refreshList(){
-    wx.request({
-      url: 'http://localhost:5174/api/training/find',
-      method :'POST',
-      data: {token: wx.getStorageSync('token'),pageNum: this.data.pageNum - 1, size:this.data.pageSize},
-      success: (res) => {
-        console.log(res);
-        this.setData({list: res.data.content, maxPage: res.data.message});
-        console.log(this.data.maxPage);
-        console.log(res.message);
-        wx.setStorageSync('token', res.data.token)
-      }
-    })
-  },
-  
   /**
    * 生命周期函数--监听页面加载
    */
@@ -148,9 +217,10 @@ Page({
 
   }
 })
+
+
 function getLineOption() {
   return {
-
     grid: {
       containLabel: true,
       left: 0,
@@ -181,7 +251,7 @@ function getLineOption() {
     series: [{
       type: 'line',
       smooth: true,
-      data: targetTraining.graph
+      data: [20,30,40,50,60,50,10]
     }]
   };
 }

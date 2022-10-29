@@ -41,3 +41,23 @@
   background-color: #100964;
   color: #FFF;
 }
+.modeSwitch{
+  height: 20vh;
+  width: 90vw;
+  text-align: center;
+  padding-top: 2vh;
+}
+.expired{
+  width: 43vw;
+  height: 10vh;
+  float:right;
+}
+.inTime{
+  width: 43vw;
+  height: 10vh;
+  float:left;
+}
+.mark{
+  text-align: left;
+  font-weight: bold;
+}

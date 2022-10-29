@@ -1,8 +1,15 @@
 <!--pages/main-device-detail/index.wxml-->
 <view class="container">
+  <view class="modeSwitch">
+    <button class="inTime" bind:tap="inTime">及时同步</button>
+    <button class="expired" bind:tap="expired">过期数据</button>
+  </view>
   <view class="buttonList">
     <block wx:for="{{list}}" wx:key="index">
-          <button class="infoButton" bind:tap="jump({{index}})">{{item.startTime}}</button>
+          <button class="infoButton" bind:tap="jump" data-target="index">
+            <text class="mark">{{item.mark}}</text>
+            <text style="text-align: right;" class="{{expired? 'hide': 'show'}}">{{item.year}}年{{item.month}}月{{item.day}}日</text>
+          </button>
     </block>
   </view>
   <view class="pageManager">
