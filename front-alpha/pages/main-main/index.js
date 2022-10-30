@@ -16,7 +16,7 @@ Page({
   },
   startCheckIn: function(){
     wx.request({
-      url: 'http://localhost:5174/api/checkIn/saveCheckIn',
+      url: 'https://chenanbella.cn/api/checkIn/saveCheckIn',
       method: 'POST',
       data: {
         token: wx.getStorageSync('token')
@@ -49,7 +49,7 @@ Page({
     console.log('submit')
     console.log(this.data.suggestion)
     wx.request({
-      url: `http://localhost:5174/api/suggestion/suggest`,
+      url: app.globalData.baseURL + `/api/suggestion/suggest`,
       method :'POST',
       data:{
         content:this.data.suggestion,

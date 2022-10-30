@@ -37,6 +37,10 @@ App({
     })
   },
   globalData: {
+    baseURL: 'https://chenanbella.cn',
+    // baseURL: 'http://localhost:5174',
+    detailedGraphX: null,
+    detailedGraphY: null,
     userInfo: null,
     sysinfo: null,
     login: false,

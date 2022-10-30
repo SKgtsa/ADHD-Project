@@ -31,8 +31,9 @@
     "pages/main-checkIn/index",
     "pages/main-device-detail/index",
     "pages/main-ble-control/index",
-    "pages/main-device-detail-info/index"
-    ],
+    "pages/main-device-detail-info/index",
+    "pages/detail-line-graph/index"
+  ],
   "window": {
     "backgroundTextStyle": "light",
     "backgroundColor": "#eee",

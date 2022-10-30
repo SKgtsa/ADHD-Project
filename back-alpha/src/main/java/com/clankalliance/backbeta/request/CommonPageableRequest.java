@@ -1,5 +1,12 @@
 package com.clankalliance.backbeta.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommonPageableRequest {
 
     private String token;
@@ -10,38 +17,6 @@ public class CommonPageableRequest {
     private int pageNum;
 
     private int size;
-
-    public int getPageNum() {
-        return pageNum;
-    }
-
-    public void setPageNum(int pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getIdentity() {
-        return identity;
-    }
-
-    public void setIdentity(String identity) {
-        this.identity = identity;
-    }
 
     @Override
     public String toString() {

@@ -1,0 +1,4 @@
+<!--pages/detail-line-graph/index.wxml-->
+<view class="container">
+  <ec-canvas class="lineChart" id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>
+</view>

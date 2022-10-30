@@ -11,18 +11,10 @@ Page({
   data: {
     expired: false,
     pageSize: 5,
-    pageNumE: 1,
-    pageNumN: 1,
-    maxPageE: 1,
-    maxPageN: 1,
+    pageNum: 1,
+    maxPage: 1,
     showInfo: false,
-    targetTrainingE: {
-      id: '',
-      mark: 0,
-      gold: 0,
-      graph : [10,20]
-    },
-    targetTrainingN: {
+    targetTraining: {
       id: '',
       mark: 0,
       year: 0,
@@ -78,6 +70,14 @@ Page({
       }
     ],
   },
+  inTime(){
+    this.setData({expired: false, pageNum: 1});
+    this.refreshList();
+  },
+  expired(){
+    this.setData({expired: true, pageNum: 1});
+    this.refreshList();
+  },
   nextPage: function(){
     if(this.data.expired){
       if(this.data.pageNumE == this.data.maxPageE){
@@ -102,33 +102,21 @@ Page({
     }
   },
   lastPage: function(){
-    if(this.data.expired){
-      if(this.data.pageNumE == 1){
-        wx.showToast({
-          title: '没有上一页了',
-          icon: 'error'
-        })
-      }else{
-        this.setData({pageNumE: this.data.pageNumE - 1})
-        this.refreshList();
-      }
+    if(this.data.pageNum == 1){
+      wx.showToast({
+        title: '没有上一页了',
+        icon: 'error'
+      })
     }else{
-      if(this.data.pageNumN == 1){
-        wx.showToast({
-          title: '没有上一页了',
-          icon: 'error'
-        })
-      }else{
-        this.setData({pageNumN: this.data.pageNumN - 1})
-        this.refreshList();
-      }
+      this.setData({pageNum: this.data.pageNum - 1})
+      this.refreshList();
     }
   },
 
   refreshList(){
     if(this.data.expired){
       wx.request({
-        url: 'http://localhost:5174/api/training/findExpired',
+        url: app.globalData.baseURL + '/api/training/findExpired',
         method :'POST',
         data: {token: wx.getStorageSync('token'),pageNum: this.data.pageNum - 1, size:this.data.pageSize},
         success: (res) => {
@@ -141,7 +129,7 @@ Page({
       })
     }else{
       wx.request({
-        url: 'http://localhost:5174/api/training/findNormal',
+        url: app.globalData.baseURL + '/api/training/findNormal',
         method :'POST',
         data: {token: wx.getStorageSync('token'),pageNum: this.data.pageNum - 1, size:this.data.pageSize},
         success: (res) => {
@@ -153,10 +141,77 @@ Page({
     }
   },
   jump: function(target){
-    const data = this.data.list[target];
-    this.setData({targetTraining: data})
+    const data = this.data;
+    const index = target.target.dataset.target;
+    this.setData({targetTraining: data.list[index]})
+    console.log(this.data.targetTraining)
     this.setData({showInfo: true})
     console.log('startJump')
+    if(this.data.expired){
+      wx.request({
+        url: app.globalData.baseURL + '/api/training/findExpiredGraph',
+        method :'POST',
+        data: {
+          token: wx.getStorageSync('token'),
+          id: this.data.targetTraining.id
+        },
+        success: (res) => {
+          const data = res.data;
+          this.data.targetTraining.graph = data.content;
+
+          const target = this.data.targetTraining;
+          app.globalData.graph = target.graph;
+          wx.setStorageSync('token', res.data.token)
+          wx.reLaunch({
+            url: '../detail-line-graph/index?expired=' + this.data.expired + '&mark=' + target.mark + '&year=' + target.year + '&month=' + target.month + '&day=' + target.day + '&gold=' + target.gold 
+          })
+        }
+      })
+    }else{
+      console.log(this.data)
+      wx.request({
+        url: app.globalData.baseURL + '/api/training/findNormalGraph',
+        method :'POST',
+        data: {
+          token: wx.getStorageSync('token'),
+          id: this.data.targetTraining.id
+        },
+        success: (res) => {
+          const data = res.data;
+          this.data.targetTraining.graph = data.content;
+          wx.setStorageSync('token', res.data.token)
+
+          const target = this.data.targetTraining;
+          app.globalData.detailedGraphY = target.graph;
+
+          // const graphX = new String[target.graph.length];
+          let graphX = new Array(target.graph.length);
+          let h = 0;
+          let m = 0;
+          let s = 0;
+          for(let i = 0;i < graphX.length;i ++){
+            graphX[i] = h + ':' + m + ':' + s;
+            s ++;
+            if(s == 60){
+              s = 0;
+              m ++;
+            }
+            if(m == 60){
+              m = 0;
+              h ++;
+            }
+          }
+
+          app.globalData.detailedGraphX = graphX;
+          console.log(app.globalData.detailedGraphX);
+          wx.reLaunch({
+            url: '../detail-line-graph/index?expired=' + this.data.expired + '&mark=' + target.mark + '&year=' + target.year + '&month=' + target.month + '&day=' + target.day + '&gold=' + target.gold 
+          })
+        }
+      })
+      
+    }
+    
     // wx.reLaunch({
     //   url: '../main-device-detail-info/index?startTime=' + data.startTime + '&endTime=' + data.endTime + '&concentrationRate' + data.concentrationRate
     // })

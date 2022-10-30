@@ -41,7 +41,7 @@ Page({
             const code = res.code;
 
             wx.request({
-              url: `http://localhost:5174/api/user/login`,
+              url: app.globalData.baseURL +  `/api/user/login`,
               method :'POST',
               data:{
                 code:code,

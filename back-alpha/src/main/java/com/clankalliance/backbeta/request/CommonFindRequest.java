@@ -13,4 +13,11 @@ public class CommonFindRequest {
 
     private String id;
 
+    @Override
+    public String toString() {
+        return "CommonFindRequest{" +
+                "token='" + token + '\'' +
+                ", id='" + id + '\'' +
+                '}';
+    }
 }
