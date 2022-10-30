@@ -10,9 +10,76 @@ ec-canvas {
 .container{
   height: 69vh;
   width: 100vw;
+  position: absolute;
+  top: 3vh;
 }
 .lineChart{
   padding: 0;
   margin: 0;
   height: 40vh;
+}
+.buttomContainer{
+  width: 100%;
+  height: 55vh;
+  background-color: #100964;
+  position: absolute;
+  top: 45vh;
+  color: #100964;
+}
+.backButton{
+  background-color: #100964;
+  color: #FFF;
+  text-align: left;
+  border-radius: 5vw;
+  font-weight: bolder;
+  z-index: 999;
+}
+.goldCardWrapper{
+  text-align: left;
+  padding-left: 1vw;
+  padding-top: 1.5vh;
+}
+.goldCard{
+  width: 90vw;
+  height: 15vh;
+  background-color: #FFF;
+  
+  font-weight: bolder;
+  font-size: 4vh;
+  border-radius: 5vw;
+  padding: 4vw;
+}
+.time{
+  width: 40vw;
+  height: 17vh;
+  background-color: #FFF;
+  border-radius: 5vw;
+  padding-top: 3vh;
+  text-align: left;
+}
+.timeWrapper{
+  padding-left: 2vw;
+  padding-top: 1.5vh;
+  font-weight: bolder;
+}
+.yearCard{
+  font-size: 5vh;
+  padding-left: 2vw;
+}
+.dateCard{
+  font-size: 4.7vh;
+  padding-left: 2vw;
+}
+.markCard{
+  width: 52vw;
+  text-align: left;
+  height: 17vh;
+  padding-top: 3vh;
+  background-color: #FFF;
+  border-radius: 5vw;
+  position: absolute;
+  right: 2vw;
+  top: 23vh;
+  font-size: 5vh;
+  font-weight: bolder;
 }

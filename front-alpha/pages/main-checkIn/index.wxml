@@ -1,21 +1,15 @@
 <!--pages/main-checkIn/index.wxml-->
 <view class="container">
-
-  <!--已签到时展现的内容-->
-  <view class="hadCheckedWindow">
-    <view class="checkInHistory">
-      <text>您本周已签到了{{checkInDays}}天</text>
-    </view>
-    <view class="messageArea">
-      <text class="message">{{message}}</text>
-    </view>
+  <view class="upperLetter">
+    <text>本周签到</text>
   </view>
-  <!--未签到时展现的内容-->
-  <view class="notCheckedWindow">
-    <view class="messageArea">
-      <text>{{notCheckedMessage}}</text>
-    </view>
-    
+  <!--已签到时展现的内容-->
+  <view class="weekCheck">
+    <block wx:for="{{list}}" wx:for-index="index" wx:key="id">
+      <view class="checkInBlock">
+        <text>{{item}}</text>
+      </view>
+    </block>
   </view>
 
   <!-- <button class="checkInButton" bind:tap="tapCheckInButton">{{checkInButton}}</button> -->

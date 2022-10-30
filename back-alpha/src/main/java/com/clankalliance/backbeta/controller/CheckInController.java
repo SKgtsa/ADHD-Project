@@ -18,7 +18,7 @@ public class CheckInController {
     private CheckInService checkInService;
 
     @PostMapping("/saveCheckIn")
-    public CommonResponse saveCheckIn(@RequestBody TokenCheckRequest request){
-        return checkInService.handleSave(request.getToken());
+    public CommonResponse findCheckIn(@RequestBody TokenCheckRequest request){
+        return checkInService.handleFind(request.getToken());
     }
 }

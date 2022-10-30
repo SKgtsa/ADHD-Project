@@ -4,6 +4,6 @@ import com.clankalliance.backbeta.response.CommonResponse;
 
 public interface CheckInService {
 
-    CommonResponse handleSave(String token);
+    CommonResponse handleFind(String token);
 
 }

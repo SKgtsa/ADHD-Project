@@ -28,8 +28,6 @@ public class User {
     @JsonSerialize(using= ToStringSerializer.class)
     private String wxOpenId;
 
-    @OneToMany
-    private Set<CheckInBody> checkInSet;
 
     @OneToMany
     private List<Training> trainingList;

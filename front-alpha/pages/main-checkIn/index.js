@@ -10,7 +10,9 @@ Page({
   data: {
     message:'test',
     checkInButton: '签到成功',
-    checkInDays: '5'
+    checkInDays: '5',
+    list: null,
+    dayOfTheWeek: null,
   },
 
   /**
@@ -36,6 +38,16 @@ Page({
         url: '../main-personal/index',
       })
     }
+    wx.request({
+      url: app.globalData.baseURL +  '/api/checkIn/saveCheckIn',
+      method: 'POST',
+      data: {token: wx.getStorageSync('token')},
+      success: (res) => {
+        const data = res.data;
+        this.setData({list: data.content, dayOfTheWeek: data.message})
+        wx.setStorageSync('token', data.token)
+      }
+    })
   },
 
   /**

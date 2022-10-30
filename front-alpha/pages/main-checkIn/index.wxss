@@ -1,6 +1,7 @@
 /* pages/main-checkIn/index.wxss */
 .container{
   background-color: #100964;
+  padding-top: 7vh;
 }
 .window{
   border-radius: 5vw;
@@ -11,15 +12,31 @@
   top: 10vh;
   text-align: center;
 }
-.checkInButton{
+.upperLetter{
+  font-size: 10vh;
+  font-weight: bolder;
+  text-align: center;
+  background-color: #FFF;
+  border-radius: 5vw;
+  color: #100964;
+  padding: 2vh;
+}
+.weekCheck{
+  display: flex;
+  flex-direction: row;
   position: absolute;
-  top: 75vh;
-  font-weight: bold;
-  width: 60vw;
-  height: 10vh;
-  border-radius: 3vw;
-  font-size: 5vh;
-  line-height: 8vh;
+  top: 35vh;
+}
+.checkInBlock{
+  width: 12vw;
+  height: 12vw;
+  background-color: #FFF;
+  color: #100964;
+  font-weight: bolder;
+  border-style: solid;
+  border-color: #000;
+  
+
 }
 @-webkit-keyframes fadeIn {
   0% {

@@ -1,4 +1,29 @@
 <!--pages/detail-line-graph/index.wxml-->
-<view class="container">
-  <ec-canvas class="lineChart" id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>
+<view class="mainContainer">
+  <button class="backButton" bind:tap="backButton" >←返回上一页面</button>
+  <view class="container">
+    <ec-canvas class="lineChart" id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>
+  </view>
+  <view class="buttomContainer">
+    <view class="goldCardWrapper">
+      <view class="goldCard">
+        <a>本次获得金币数：{{targetTraining.gold}}</a>
+        <!--放置对本次训练的评价或对用户的鼓励-->
+        <a>{{targetTraining.trainingMessage}}</a>
+      </view>
+    </view>
+    <view class="timeWrapper">
+      <view class="time">
+        <view class="yearCard">
+          <a>{{targetTraining.year}}年</a>
+        </view>
+        <view class="dateCard">
+          <a>{{targetTraining.month}}月{{targetTraining.day}}日</a>
+        </view>
+      </view>
+    </view>
+    <view class="markCard">
+      <a>第{{targetTraining.mark}}次训练</a>
+    </view>
+  </view>
 </view>

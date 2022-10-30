@@ -3,6 +3,11 @@ import * as echarts from '../../ec-canvas/echarts';
 const app = getApp();
 
 Page({
+  backButton: function() {
+    wx.navigateTo({
+      url: '../main-device-detail/index',
+    })
+  },
 
   /**
    * 页面的初始数据
