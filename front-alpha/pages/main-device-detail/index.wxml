@@ -19,10 +19,3 @@
     <button class="nextPage" bind:tap="nextPage">下一页</button>
   </view>
 </view>
-<page-container position="top" show="{{showInfo}}" overlay="true">
-  <view class="detailPage">
-    <view class="container">
-        <ec-canvas class="lineChart" id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>
-    </view>
-  </view>
-</page-container>

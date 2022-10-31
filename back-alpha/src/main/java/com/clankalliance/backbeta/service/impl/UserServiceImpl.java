@@ -24,8 +24,6 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserRepository userRepository;
 
-    @Resource
-    private SnowFlake snowFlake;
 
     @Override
     public CommonLoginResponse handleLogin(String code,String signature,String rawData) {

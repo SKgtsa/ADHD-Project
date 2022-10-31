@@ -4,8 +4,8 @@ const app = getApp();
 
 Page({
   backButton: function() {
-    wx.navigateTo({
-      url: '../main-device-detail/index',
+    wx.reLaunch({
+      url: '../main-main/index',
     })
   },
 
@@ -20,7 +20,8 @@ Page({
       month: null,
       day: null,
       gold: null,
-      graph: []
+      graph: [],
+      trainingMessage: "做的不错"
     },
     ecLine: {
       onInit: function (canvas, width, height, dpr) {

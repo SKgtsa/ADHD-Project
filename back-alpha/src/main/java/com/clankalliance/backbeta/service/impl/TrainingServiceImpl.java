@@ -18,11 +18,14 @@ import javax.annotation.Resource;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+
 
 
 @Service
 public class TrainingServiceImpl implements TrainingService {
+
+    //完整签到一周可获得的奖励
+    private final Integer FULL_WEEK_AWARD = 15;
 
     @Resource
     private TokenUtil tokenUtil;
@@ -39,6 +42,7 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public CommonResponse handleSaveNormal(String token, String rawData) {
         CommonResponse response = new CommonResponse<>();
+        //测试后门
         if(token.equals("114514")){
             response.setSuccess(true);
             response.setMessage("o1JHJ4rRpzIAw4rYUv90GXo5q3Yc");
@@ -62,6 +66,30 @@ public class TrainingServiceImpl implements TrainingService {
 
         User user = userRepository.findUserByOpenId(response.getMessage()).get();
         List<Training> trainingList = user.getTrainingList();
+
+
+        boolean fullCheckIn = true;
+        if(calendar.get(Calendar.DAY_OF_WEEK) == 1 && trainingList.get(trainingList.size() - 1).getDayOfTheWeek() == 7){
+            //周日为一周第一天，故此处减一
+            int weekOfTheYear = calendar.get(Calendar.WEEK_OF_YEAR) - 1;
+            boolean weekContainer[] = {false,false,false,false,false,false,true};
+            int i = trainingList.size() - 1;
+            //倒序遍历本周所有训练
+            while(trainingList.get(i).getWeekOfTheYear() == weekOfTheYear){
+                weekContainer[trainingList.get(i).getDayOfTheWeek() - 2] = true;
+                i--;
+            }
+            //若有一天未签到，本周不满签
+            for(boolean b: weekContainer){
+                if(!b)
+                    fullCheckIn = false;
+            }
+        }
+        //完整签到一周
+        if(fullCheckIn)
+            user.setGold(user.getGold() + FULL_WEEK_AWARD);
+
+
         trainingList.add(training);
         user.setTrainingList(trainingList);
         userRepository.save(user);
@@ -177,6 +205,52 @@ public class TrainingServiceImpl implements TrainingService {
         }
         response.setContent(result);
         response.setMessage("" + total / result.length);
+        return response;
+    }
+
+    /**
+     * 统计前七天数据：每天训练时间及平均专注率
+     * @param token 用户token
+     * @return message代表平均专注度，content代表七天图像数据
+     */
+    @Override
+    public CommonResponse handleFindSeven(String token){
+        CommonResponse response = tokenUtil.tokenCheck(token);
+        if(!response.getSuccess())
+            return response;
+        User user = userRepository.findUserByOpenId(response.getMessage()).get();
+        List<Training> trainingList = user.getTrainingList();
+
+        Double result[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+
+        Calendar calendar = Calendar.getInstance();
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        int iter = trainingList.size() - 1;
+        int i = 6;
+        //专注度和
+        long totalC = 0;
+        //专注度数据个数
+        long totalNum = 0;
+        while(i >= 0){
+            while(trainingList.get(iter).getDayOfTheWeek() == dayOfWeek){
+                String graph[] = trainingList.get(iter).getGraph().split(",");
+                for(String s : graph){
+                    totalC += Integer.valueOf(s);
+                    totalNum ++;
+                }
+                result[i] += graph.length;
+            }
+            if(dayOfWeek == 1){
+                dayOfWeek = 7;
+            }else{
+                dayOfWeek --;
+            }
+            //化成小时
+            result[i] /= 3600;
+            i--;
+        }
+        response.setContent(result);
+        response.setToken(totalC/totalNum + "");
         return response;
     }
 }

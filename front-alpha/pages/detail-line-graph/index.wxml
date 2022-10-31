@@ -1,6 +1,6 @@
 <!--pages/detail-line-graph/index.wxml-->
 <view class="mainContainer">
-  <button class="backButton" bind:tap="backButton" >←返回上一页面</button>
+  <button class="backButton" bind:tap="backButton" >返回首页</button>
   <view class="container">
     <ec-canvas class="lineChart" id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>
   </view>

@@ -21,6 +21,8 @@ public class TokenUtil {
             ManipulateUtil.appendStatus(status.getUserId());
             response.setSuccess(true);
             response.setToken(ManipulateUtil.endNode.getToken());
+            //response中message设置为用户id,传回前台前需要处理
+            //因为大部分token查询后需要返回个id使用,所以这样设计
             response.setMessage(ManipulateUtil.endNode.getUserId());
         }else{
             response.setSuccess(false);

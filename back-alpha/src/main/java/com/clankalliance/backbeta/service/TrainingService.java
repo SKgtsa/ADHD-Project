@@ -17,4 +17,6 @@ public interface TrainingService {
 
     CommonResponse handleFindExpiredGraph(String token, String id);
 
+    CommonResponse handleFindSeven(String token);
+
 }

@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -28,6 +27,7 @@ public class User {
     @JsonSerialize(using= ToStringSerializer.class)
     private String wxOpenId;
 
+    private Integer gold;
 
     @OneToMany
     private List<Training> trainingList;

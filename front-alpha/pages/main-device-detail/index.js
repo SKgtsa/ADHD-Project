@@ -13,7 +13,6 @@ Page({
     pageSize: 5,
     pageNum: 1,
     maxPage: 1,
-    showInfo: false,
     targetTraining: {
       id: '',
       mark: 0,
@@ -144,9 +143,6 @@ Page({
     const data = this.data;
     const index = target.target.dataset.target;
     this.setData({targetTraining: data.list[index]})
-    console.log(this.data.targetTraining)
-    this.setData({showInfo: true})
-    console.log('startJump')
     if(this.data.expired){
       wx.request({
         url: app.globalData.baseURL + '/api/training/findExpiredGraph',
@@ -162,7 +158,7 @@ Page({
           const target = this.data.targetTraining;
           app.globalData.graph = target.graph;
           wx.setStorageSync('token', res.data.token)
-          wx.reLaunch({
+          wx.navigateTo({
             url: '../detail-line-graph/index?expired=' + this.data.expired + '&mark=' + target.mark + '&year=' + target.year + '&month=' + target.month + '&day=' + target.day + '&gold=' + target.gold 
           })
         }
@@ -204,7 +200,7 @@ Page({
 
           app.globalData.detailedGraphX = graphX;
           console.log(app.globalData.detailedGraphX);
-          wx.reLaunch({
+          wx.navigateTo({
             url: '../detail-line-graph/index?expired=' + this.data.expired + '&mark=' + target.mark + '&year=' + target.year + '&month=' + target.month + '&day=' + target.day + '&gold=' + target.gold 
           })
         }

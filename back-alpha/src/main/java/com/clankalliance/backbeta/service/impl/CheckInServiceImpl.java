@@ -23,6 +23,14 @@ public class CheckInServiceImpl implements CheckInService {
     @Resource
     private UserRepository userRepository;
 
+
+
+    /**
+     * 根据token获取签到列表
+     * 根据日期判断本周时间范围并检索有效训练，计算签到
+     * @param token
+     * @return
+     */
     @Override
     public CommonResponse handleFind(String token) {
         CommonResponse response = tokenUtil.tokenCheck(token);

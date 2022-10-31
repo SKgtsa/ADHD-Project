@@ -22,6 +22,12 @@ public class SuggestionServiceImpl implements SuggestionService {
     @Resource
     private SuggestionRepository suggestionRepository;
 
+    /**
+     * 接收建议，存入数据库
+     * @param token 用户token,验证状态
+     * @param content 建议内容
+     * @return
+     */
     @Override
     public CommonResponse handleSuggest(String token, String content) {
         CommonResponse response = tokenUtil.tokenCheck(token);

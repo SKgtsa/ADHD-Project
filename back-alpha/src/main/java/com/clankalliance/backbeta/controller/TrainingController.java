@@ -3,6 +3,7 @@ package com.clankalliance.backbeta.controller;
 
 import com.clankalliance.backbeta.request.CommonFindRequest;
 import com.clankalliance.backbeta.request.CommonPageableRequest;
+import com.clankalliance.backbeta.request.TokenCheckRequest;
 import com.clankalliance.backbeta.request.TrainingSyncRequest;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.service.TrainingService;
@@ -48,6 +49,11 @@ public class TrainingController {
     @RequestMapping("/findExpiredGraph")
     public CommonResponse findExpiredGraph(@RequestBody CommonFindRequest request){
         return trainingService.handleFindExpiredGraph(request.getToken(), request.getId());
+    }
+
+    @RequestMapping("/findLastSevenDay")
+    public CommonResponse findLastSevenDay(@RequestBody TokenCheckRequest request){
+        return trainingService.handleFindSeven(request.getToken());
     }
 
 }
