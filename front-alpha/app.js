@@ -44,7 +44,12 @@ App({
     userInfo: null,
     sysinfo: null,
     login: false,
-    userInfo: {avatarUrl: '../../img/default-avatar.png', nickName: '请登录'}
+    userInfo: {avatarUrl: '../../img/default-avatar.png', nickName: '请登录'},
+    //蓝牙部分 全局变量
+    deviceId: '',
+    serviceId: '',
+    syncResult: ''
+
   },
   getLogin: function() {
     return this.globalData.login

@@ -42,7 +42,7 @@ Page({
             // dataView.setUint8(0, 0)
             // let senddata = 'FF';
             // let buffer = this.hexString2ArrayBuffer(senddata);
-            var buffer = this.stringToBytes("getid")
+            var buffer = this.stringToBytes("connected")
             this.setData({
               'deviceId':deviceId,
               'serviceId':serviceId,
@@ -225,7 +225,7 @@ Page({
             // 找到设备开始连接
             this.bleConnection(device.deviceId);
             wx.stopBluetoothDevicesDiscovery()
-            this.setData({deviceFoundStart: false})
+            this.setData({deviceFoundStart: false, deviceId: device.deviceId})
           }else{
             console.log("not UART Service")
           }
@@ -264,12 +264,99 @@ Page({
         }
       })
       var that = this
+      //正在同步正常数据
+      let inProcessN = false;
+      //正在同步过期数据
+      let inProcessE = false;
       wx.onBLECharacteristicValueChange((result) => {
         this.setData({onBLECharaValueChange: true})
         console.log('onBLECharacteristicValueChange',result.value)
         let hex = that.ab2hex(result.value)
-        console.log('hextoString',that.hextoString(hex))
+        const input = that.hextoString(hex);
+        console.log('hextoString',input)
         console.log('hex',hex)
+        if(!inProcess && !inProcess){
+          const temp = input.substring(0,3);
+          if(temp == 'aaa'){
+            this.data.syncResult = input.substring(3);
+            inProcessN = true;
+          }else if(temp == 'bbb'){
+            this.data.syncResult = input.substring(3);
+            inProcessE = true;
+          }
+        }else{
+          if(input == "ccc"){
+            //发送数据
+            if(inProcessN){
+              //正常同步
+              wx.request({
+                url: 'https://chenanbella.cn/api/training/saveNormal',
+                method: 'POST',
+                data: {
+                  token: wx.getStorageSync('token'),
+                  rawData: this.data.syncResult
+                },
+                success(res){
+                  //保存成功,向设备发送数据
+                  var buffer = this.stringToBytes("ok")
+                  
+                  wx.writeBLECharacteristicValue({
+                    deviceId: this.data.deviceId,
+                    serviceId: this.data.serviceId,
+                    characteristicId: this.data.characteristicId,
+                    value: buffer,
+                  })
+                },
+                fail(res){
+                  //保存失败
+                  var buffer = this.stringToBytes("stop")
+                  
+                  wx.writeBLECharacteristicValue({
+                    deviceId: this.data.deviceId,
+                    serviceId: this.data.serviceId,
+                    characteristicId: this.data.characteristicId,
+                    value: buffer,
+                  })
+                }
+              })
+            }else if(inProcessE){
+              //过期同步
+              wx.request({
+                url: 'https://chenanbella.cn/api/training/saveExpired',
+                method: 'POST',
+                data: {
+                  token: wx.getStorageSync('token'),
+                  rawData: this.data.syncResult
+                },
+                success(res){
+                  //保存成功,向设备发送数据
+                  var buffer = this.stringToBytes("ok")
+                  
+                  wx.writeBLECharacteristicValue({
+                    deviceId: this.data.deviceId,
+                    serviceId: this.data.serviceId,
+                    characteristicId: this.data.characteristicId,
+                    value: buffer,
+                  })
+                },
+                fail(res){
+                  //保存失败
+                  var buffer = this.stringToBytes("stop")
+                  
+                  wx.writeBLECharacteristicValue({
+                    deviceId: this.data.deviceId,
+                    serviceId: this.data.serviceId,
+                    characteristicId: this.data.characteristicId,
+                    value: buffer,
+                  })
+                }
+              })
+            }
+          }else{
+            //接收数据
+            app.globalData.syncResult += input;
+          }
+        }
       })
       //初始化结束
     } 
@@ -368,7 +455,9 @@ Page({
     //蓝牙状态参数
     blueToothStatus: '',
     blueToothConnceted: false,
+    //是否显示蓝牙配对页面
     showBlueToothPage: false,
+    //是否开始设备搜索
     deviceFoundStart: false,
     blueToothAdapterStart: false,
     onBlueToothAdapterStateChange: false,
