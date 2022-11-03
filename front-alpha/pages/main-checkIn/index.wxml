@@ -6,8 +6,13 @@
   <!--已签到时展现的内容-->
   <view class="weekCheck">
     <block wx:for="{{list}}" wx:for-index="index" wx:key="id">
-      <view class="checkInBlock">
-        <text>{{item}}</text>
+      <view class = "checkInContainer">
+        <view class="weekDayBlock">
+          <text>星期{{index + 1}}</text>
+        </view>
+        <view class="checkInBlock">
+          <text>{{item}}</text>
+        </view>
       </view>
     </block>
   </view>

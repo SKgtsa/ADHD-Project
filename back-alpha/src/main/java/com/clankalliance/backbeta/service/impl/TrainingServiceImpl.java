@@ -231,14 +231,15 @@ public class TrainingServiceImpl implements TrainingService {
         long totalC = 0;
         //专注度数据个数
         long totalNum = 0;
-        while(i >= 0){
-            while(trainingList.get(iter).getDayOfTheWeek() == dayOfWeek){
+        while( iter >= 0 && i >= 0){
+            while(iter >= 0 && trainingList.get(iter).getDayOfTheWeek() == dayOfWeek){
                 String graph[] = trainingList.get(iter).getGraph().split(",");
                 for(String s : graph){
                     totalC += Integer.valueOf(s);
                     totalNum ++;
                 }
                 result[i] += graph.length;
+                iter --;
             }
             if(dayOfWeek == 1){
                 dayOfWeek = 7;
@@ -250,7 +251,7 @@ public class TrainingServiceImpl implements TrainingService {
             i--;
         }
         response.setContent(result);
-        response.setToken(totalC/totalNum + "");
+        response.setMessage(totalC/totalNum + "");
         return response;
     }
 }

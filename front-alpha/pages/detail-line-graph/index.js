@@ -130,17 +130,20 @@ function getLineOption() {
     yAxis: {
       x: 'center',
       type: 'value',
-      splitLine: {
-        lineStyle: {
-          type: 'dashed'
-        }
-      }
+      // splitLine: {
+      //   lineStyle: {
+      //     type: 'dashed'
+      //   }
+      // }
       // show: false
     },
     series: [{
       type: 'line',
       smooth: true,
-      data: app.globalData.detailedGraphY
+      data: app.globalData.detailedGraphY,
+      color: [
+        '#1885f3'
+      ]
     }]
   };
 }

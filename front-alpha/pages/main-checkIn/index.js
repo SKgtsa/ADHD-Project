@@ -44,6 +44,7 @@ Page({
       data: {token: wx.getStorageSync('token')},
       success: (res) => {
         const data = res.data;
+        console.log(data)
         this.setData({list: data.content, dayOfTheWeek: data.message})
         wx.setStorageSync('token', data.token)
       }

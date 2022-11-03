@@ -27,8 +27,19 @@
   position: absolute;
   top: 35vh;
 }
+.checkInContainer{
+  width: 13vw;
+  display: flex;  
+  flex-direction: column; 
+}
+.weekDayBlock{
+  height: 5vh;
+  width: 100%;
+  background-color: #FFF;
+  font-weight: bold;
+}
 .checkInBlock{
-  width: 12vw;
+
   height: 12vw;
   background-color: #FFF;
   color: #100964;

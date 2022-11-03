@@ -275,18 +275,22 @@ Page({
         const input = that.hextoString(hex);
         console.log('hextoString',input)
         console.log('hex',hex)
+        let error = false;
         if(!inProcess && !inProcess){
           const temp = input.substring(0,3);
+          //头部标记为aaa
           if(temp == 'aaa'){
+            //及时数据
             this.data.syncResult = input.substring(3);
             inProcessN = true;
           }else if(temp == 'bbb'){
+            //过期数据
             this.data.syncResult = input.substring(3);
             inProcessE = true;
           }
         }else{
-          if(input == "ccc"){
-            //发送数据
+          if(input == "ccc" || input == "ddd"){
+            //接收到数据发送终止符 发送数据
             if(inProcessN){
               //正常同步
               wx.request({
@@ -298,8 +302,14 @@ Page({
                 },
                 success(res){
                   //保存成功,向设备发送数据
-                  var buffer = this.stringToBytes("ok")
-                  
+                  if(res.data.success){
+                    //成功发送并保存
+                    var buffer = this.stringToBytes("ok")
+                  }else{
+                    //成功发送但没保存 可能出现登录过期 找不到用户
+                    var buffer = this.stringToBytes("stop")
+                    error = true;
+                  }
                   wx.writeBLECharacteristicValue({
                     deviceId: this.data.deviceId,
                     serviceId: this.data.serviceId,
@@ -308,9 +318,9 @@ Page({
                   })
                 },
                 fail(res){
-                  //保存失败
+                  //发送失败
                   var buffer = this.stringToBytes("stop")
-                  
+                  error = true;
                   wx.writeBLECharacteristicValue({
                     deviceId: this.data.deviceId,
                     serviceId: this.data.serviceId,
@@ -330,7 +340,14 @@ Page({
                 },
                 success(res){
                   //保存成功,向设备发送数据
-                  var buffer = this.stringToBytes("ok")
+                  if(res.data.success){
+                    //成功发送并保存
+                    var buffer = this.stringToBytes("ok")
+                  }else{
+                    //成功发送但没保存 可能出现登录过期 找不到用户
+                    var buffer = this.stringToBytes("stop")
+                    error = true;
+                  }
                   
                   wx.writeBLECharacteristicValue({
                     deviceId: this.data.deviceId,
@@ -342,7 +359,7 @@ Page({
                 fail(res){
                   //保存失败
                   var buffer = this.stringToBytes("stop")
-                  
+                  error = true;
                   wx.writeBLECharacteristicValue({
                     deviceId: this.data.deviceId,
                     serviceId: this.data.serviceId,
@@ -351,6 +368,10 @@ Page({
                   })
                 }
               })
+            }
+            if(input == 'ddd' || error){
+              //发送完毕 卸载蓝牙
+              this.setData({showBlueToothPage: false})
             }
           }else{
             //接收数据
@@ -510,11 +531,27 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onShow() {
-    // if(!app.globalData.login){
-    //   wx.switchTab({
-    //     url: '../main-personal/index',
-    //   })
-    // }
+    if(!app.globalData.login){
+      wx.switchTab({
+        url: '../main-personal/index',
+      })
+    }
+    console.log('intoOnShow()')
+    wx.request({
+      url: app.globalData.baseURL +  '/api/training/findLastSevenDay',
+      method: 'POST',
+      data: {token: wx.getStorageSync('token')},
+      success: (res) => {
+        console.log(res);
+        const data = res.data;
+        app.globalData.gaugeData = data.message;
+        console.log('gaugeData: ' + app.globalData.gaugeData)
+        app.globalData.detailedGraphY = data.content;
+        console.log('detailedGraphY' + app.globalData.detailedGraphY);
+        app.globalData.detailedGraphX = ['1','2','3','4','5','6','7'];
+        wx.setStorageSync('token', data.token)
+      }
+    })
   },
   onLoad(){
     if(this.options){
@@ -547,7 +584,7 @@ function getLineOption() {
     xAxis: {
       type: 'category',
       boundaryGap: true,
-      data: ['x.1', 'x.2', 'x.3', 'x.4', 'x.5', 'x.6', 'x.7','','',''],
+      data: app.globalData.detailedGraphX,
       // show: false
     },
     yAxis: {
@@ -563,7 +600,7 @@ function getLineOption() {
     series: [{
       type: 'line',
       smooth: true,
-      data: [50,60,70,30,20,80,90,60,40,50]
+      data: app.globalData.detailedGraphY
     }]
   };
 }
@@ -610,7 +647,7 @@ function getGaugeOption() {
         }
       },
       data: [{
-        value: 90,
+        value: app.globalData.gaugeData,
         name: '平均专注率',
         textStyle: {
           color: '#FFF'
