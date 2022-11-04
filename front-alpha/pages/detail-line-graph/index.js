@@ -50,7 +50,8 @@ Page({
           year: this.options.year,
           month: this.options.month,
           day: this.options.day,
-          gold: this.options.gold
+          gold: this.options.gold,
+          trainingMessage: ''
         }
       })
       console.log(this.data)

@@ -24,19 +24,27 @@
     "list": [
       {
         "pagePath": "pages/main-main/index",
-        "text": "主页"
+        "text": "主页",
+        "iconPath": "img/icons/main.png",
+        "selectedIconPath": "img/icons/main-a.png"
       },
       {
         "pagePath": "pages/main-device/index",
-        "text": "设备"
+        "text": "设备",
+        "iconPath": "img/icons/device.png",
+        "selectedIconPath": "img/icons/device-a.png"
       },
       {
         "pagePath": "pages/main-checkIn/index",
-        "text": "签到"
+        "text": "签到",
+        "iconPath": "img/icons/checkIn.png",
+        "selectedIconPath": "img/icons/checkIn-a.png"
       },
       {
         "pagePath": "pages/main-personal/index",
-        "text": "个人"
+        "text": "个人",
+        "iconPath": "img/icons/personal.png",
+        "selectedIconPath": "img/icons/personal-a.png"
       }
     ]
   },

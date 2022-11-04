@@ -8,39 +8,48 @@ ec-canvas {
     background-color: #FFF;
 }
 .container{
-    height: 69vh;
-    width: 100vw;
+  height: 69vh;
+  width: 100vw;
+  position: absolute;
+  top: 9vh;
+  border-radius: 5vw;
+  background-color: #fff;
 }
 .lineChart{
-    padding: 0;
-    margin: 0;
-    height: 40vh;
+  padding: 0;
+  margin: 0;
+  height: 34vh;
+  width: 76vw;
+  background-color: #fff;
+  border-radius: 5vw;
+  padding-right: 3vw;
+  padding-left: 3vw;
 }
 .gaugeChart{
     padding: 0;
-    width: 45vw;
-    height: 45vw;
+    width: 42vw;
+    height: 42vw;
     background-color: #100964;
     border-radius: 10vw;
     position: absolute;
-    top: 45vh;
-    left: 3vw;
+    top: 35vh;
+    left: 7vw;
 }
 .detailedButton{
-    width: 45vw;
-    height: 45vw;
+    width: 42vw;
+    height: 42vw;
     background-color: #100964;
     border-radius: 10vw;
     position: absolute;
-    top: 45vh;
-    right: 3vw;
+    top: 35vh;
+    right: 7vw;
     color: #FFF;
     font-size: 13vw;
     padding-top: 3vh;
     font-weight: bolder;
 }
 .title{
-    width: 100%;
+    width: 80vw;
     background-color: #100964;
     height: 5vh;
     font-size: 3.5vh;
@@ -48,16 +57,20 @@ ec-canvas {
     z-index: 1;
     color: #FFF;
     font-weight: bold;
+    border-radius: 4vw;
+    padding: 2vw;
+    position: absolute;
+    left: 8vw;
 }
 
 .trainingButton{
-    width: 94vw;
+    width: 86vw;
     height: 23vh;
     background-color: #100964;
     border-radius: 10vw;
     position: absolute;
-    bottom: 0;
-    right: 3vw;
+    bottom: 3vh;
+    right: 7vw;
     color: #FFF;
     font-size: 13vw;
     padding-top: 1.5vh;

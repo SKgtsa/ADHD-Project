@@ -2,16 +2,7 @@ import * as echarts from '../../ec-canvas/echarts';
 
 const app = getApp();
 Page({
-  bleConnection(deviceId){
-    wx.createBLEConnection({
-      deviceId, // 搜索到设备的 deviceId
-      success: () => {
-        // 连接成功，获取服务
-        console.log('连接成功，获取服务')
-        this.bleGetDeviceServices(deviceId)
-      }
-    })
-  },
+  
   bleGetDeviceServices(deviceId){
     wx.getBLEDeviceServices({
       deviceId, // 搜索到设备的 deviceId
@@ -404,7 +395,6 @@ Page({
             }, 900)
           }
         })
-        
       },
       fail: (res)=>{
         console.log('连接失败')

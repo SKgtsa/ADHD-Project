@@ -37,6 +37,9 @@ public class UserController {
         return tokenUtil.tokenCheck(request.getToken());
     }
 
-
+    @RequestMapping("/findUserInfo")
+    public CommonResponse findLastSevenDay(@RequestBody TokenCheckRequest request){
+        return userService.handleFindUserInfo(request.getToken());
+    }
 
 }

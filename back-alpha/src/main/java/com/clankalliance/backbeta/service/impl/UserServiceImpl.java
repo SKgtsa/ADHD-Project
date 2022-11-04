@@ -1,6 +1,8 @@
 package com.clankalliance.backbeta.service.impl;
 
 import com.clankalliance.backbeta.entity.User;
+import com.clankalliance.backbeta.entity.arrayTraining.Training;
+import com.clankalliance.backbeta.entity.arrayTraining.TrainingExpired;
 import com.clankalliance.backbeta.repository.UserRepository;
 import com.clankalliance.backbeta.response.CommonLoginResponse;
 import com.clankalliance.backbeta.response.CommonResponse;
@@ -14,6 +16,9 @@ import com.clankalliance.backbeta.utils.TokenUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.clankalliance.backbeta.utils.PostRequestUtils.sendPostRequest;
@@ -23,6 +28,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserRepository userRepository;
+
+    @Resource
+    private TokenUtil tokenUtil;
 
 
     @Override
@@ -56,6 +64,35 @@ public class UserServiceImpl implements UserService {
         response.setToken(token);
         response.setSuccess(true);
         System.out.println(response);
+        return response;
+    }
+
+    @Override
+    public CommonResponse handleFindUserInfo(String token){
+        CommonResponse response = tokenUtil.tokenCheck(token);
+        if(!response.getSuccess()){
+            response.setMessage("登陆失效");
+            return response;
+        }
+        User user = userRepository.findUserByOpenId(response.getMessage()).get();
+        List<Training> trainingList =  user.getTrainingList();
+        List<TrainingExpired> expiredList = user.getTrainingExpiredList();
+        Map<String,String> map = new HashMap<>();
+        long hour = 0;
+        long hourExpired = 0;
+        for(Training t : trainingList){
+            hour += t.getGraph().split(",").length;
+        }
+        for(TrainingExpired t : expiredList){
+            hourExpired += t.getGraph().split(",").length;
+        }
+        hour /= 3600;
+        hourExpired /= 3600;
+        map.put("hour","" + hour);
+        map.put("hourExpired","" + hourExpired);
+        map.put("gold","" + user.getGold());
+        response.setContent(map);
+        response.setMessage("查询成功");
         return response;
     }
 

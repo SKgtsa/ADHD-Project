@@ -84,11 +84,10 @@ public class TrainingServiceImpl implements TrainingService {
                 if(!b)
                     fullCheckIn = false;
             }
+            //完整签到一周
+            if(fullCheckIn)
+                user.setGold(user.getGold() + FULL_WEEK_AWARD);
         }
-        //完整签到一周
-        if(fullCheckIn)
-            user.setGold(user.getGold() + FULL_WEEK_AWARD);
-
 
         trainingList.add(training);
         user.setTrainingList(trainingList);
@@ -177,12 +176,36 @@ public class TrainingServiceImpl implements TrainingService {
             return response;
         Training training = trainingRepository.findTrainingById(id).get();
         String halfResult[] = training.getGraph().split(",");
-        int result[] = new int[halfResult.length];
+        int result[];
         int total = 0;
-        for(int i = 0;i < result.length;i ++){
-            result[i] = Integer.valueOf(halfResult[i]);
-            total += result[i];
+        //图像过长，以分段取平均值的方式缩短来保证正常显示
+        if(halfResult.length > 30){
+            result = new int[20];
+            int resultIter = 0;
+            int halfIter = 0;
+            while(resultIter < result.length){
+                int num = 0;
+                int cache = halfIter;
+                //分段求和
+                while(halfIter < halfResult.length && halfIter - cache < halfResult.length/20){
+                    result[resultIter] += Integer.valueOf(halfResult[halfIter]);
+                    halfIter ++;
+                    num ++;
+                }
+                //取平均值
+                if(num != 0)
+                    result[resultIter] /= num;
+                resultIter ++;
+            }
+        }else{
+            result = new int[halfResult.length];
+            for(int i = 0;i < result.length;i ++){
+                result[i] = Integer.valueOf(halfResult[i]);
+                total += result[i];
+            }
         }
+
+
         response.setContent(result);
 
         //返回的是本次训练的平均专注度
@@ -197,11 +220,33 @@ public class TrainingServiceImpl implements TrainingService {
             return response;
         TrainingExpired training = trainingExpiredRepository.findTrainingById(id).get();
         String halfResult[] = training.getGraph().split(",");
-        int result[] = new int[halfResult.length];
+        int result[];
         int total = 0;
-        for(int i = 0;i < result.length;i ++){
-            result[i] = Integer.valueOf(halfResult[i]);
-            total += result[i];
+        //图像过长，以分段取平均值的方式缩短来保证正常显示
+        if(halfResult.length > 30){
+            result = new int[20];
+            int resultIter = 0;
+            int halfIter = 0;
+            while(resultIter < result.length){
+                int num = 0;
+                int cache = halfIter;
+                //分段求和
+                while(halfIter < halfResult.length && halfIter - cache < halfResult.length/20){
+                    result[resultIter] += Integer.valueOf(halfResult[halfIter]);
+                    halfIter ++;
+                    num ++;
+                }
+                //取平均值
+                if(num != 0)
+                    result[resultIter] /= num;
+                resultIter ++;
+            }
+        }else{
+            result = new int[halfResult.length];
+            for(int i = 0;i < result.length;i ++){
+                result[i] = Integer.valueOf(halfResult[i]);
+                total += result[i];
+            }
         }
         response.setContent(result);
         response.setMessage("" + total / result.length);

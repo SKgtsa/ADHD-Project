@@ -11,14 +11,19 @@ ec-canvas {
   height: 100vh;
   width: 100vw;
   position: absolute;
-  top: 3vh;
+  top: 9vh;
   border-radius: 5vw;
   background-color: #eff7ff;
 }
 .lineChart{
   padding: 0;
   margin: 0;
-  height: 40vh;
+  height: 34vh;
+  width: 76vw;
+  background-color: #e2f0fe;
+  border-radius: 5vw;
+  padding-right: 3vw;
+  padding-left: 3vw;
 }
 .buttomContainer{
   width: 100%;
@@ -27,12 +32,15 @@ ec-canvas {
   top: 45vh;
   color: #0273f1;
 }
-.backButton{
-  background-color: #FFF;
-  color: #0273f1;
+.pageName{
+  color: #007af2;
   text-align: left;
+  font-size: 5vh;
+  padding-left: 6vw;
+  padding-top: 1.5vh;
+  padding-bottom: 2vh;
   border-radius: 5vw;
-  font-weight: bolder;
+  font-weight: 500;
   z-index: 999;
 }
 .goldCardWrapper{
