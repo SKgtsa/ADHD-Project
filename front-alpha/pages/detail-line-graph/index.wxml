@@ -9,23 +9,24 @@
   <view class="buttomContainer">
     <view class="goldCardWrapper">
       <view class="goldCard">
-        <a>本次获得金币数：{{targetTraining.gold}}</a>
+        <a>本次获得金币数：<text style="font-weight: 700; color: #0273f1;">{{targetTraining.gold}}</text></a>
         <!--放置对本次训练的评价或对用户的鼓励-->
-        <a>{{targetTraining.trainingMessage}}</a>
+        <text style="font-weight: 500; color: #0273f1;">{{targetTraining.trainingMessage}}</text>
       </view>
     </view>
-    <view class="timeWrapper">
-      <view class="time">
-        <view class="yearCard">
-          <a>{{targetTraining.year}}年</a>
-        </view>
-        <view class="dateCard">
-          <a>{{targetTraining.month}}月{{targetTraining.day}}日</a>
-        </view>
+    <view class="wrapper">
+      <view class="timeCard">
+        <!-- <view class="yearCard"> -->
+          <a><text style="font-weight: 700; color: #0273f1;">{{targetTraining.year}}</text>年</a>
+        <!-- </view> -->
+        <!-- <view class="dateCard"> -->
+          <a><text style="font-weight: 700; color: #0273f1;">{{targetTraining.month}}</text>月<text style="font-weight: 700; color: #0273f1;">{{targetTraining.day}}</text>日</a>
+        <!-- </view> -->
+      </view>
+      <view class="markCard">
+        <a>第<text style="font-weight: 700; color: #0273f1;">{{targetTraining.mark}}</text>次训练</a>
       </view>
     </view>
-    <view class="markCard">
-      <a>第{{targetTraining.mark}}次训练</a>
-    </view>
+    
   </view>
 </view>

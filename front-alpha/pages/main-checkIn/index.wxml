@@ -8,11 +8,12 @@
     <block wx:for="{{list}}" wx:for-index="index" wx:key="id">
       <view class = "checkInContainer">
         <view class="weekDayBlock">
-          <text>星期{{index + 1}}</text>
+          <text>星期{{day[index]}}</text>
         </view>
         <view class="checkInBlock">
           <text>{{item}}</text>
         </view>
+        <text class="today" style="{{index === dayOfWeek ? 'display: inline' : 'display: none'}}">今天</text>
       </view>
     </block>
   </view>

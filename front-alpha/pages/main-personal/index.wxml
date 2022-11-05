@@ -14,6 +14,21 @@
         <!--用户名-->
         <view>
             <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+        </view>
+        <view class="detailedInfo" style="{{login ? '  display: inline;': 'display: none;'}}">
+          <view class="goldBox">
+            <text>总金币数:<text style="color: #007af2;font-weight: bolder">{{gold}}</text></text>
+          </view>
+          <view class="lineBox">
+            <view class="leftBox">
+              <text>您已坚持训练</text>
+              <text><text style="color: #007af2;font-weight: bolder">{{hour + hourExpired}}</text>小时</text>
+            </view>
+            <view class="rightBox">
+              <text>其中有<text style="color: #007af2;font-weight: bolder">{{hourExpired}}</text>小时</text>
+              <text>同步过期了</text>
+            </view>
+          </view>
         </view>  
     </view>
 </view>

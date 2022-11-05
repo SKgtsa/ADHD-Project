@@ -1,56 +1,6 @@
 // pages/main-community/index.js
 
 Page({
-  showDetail :function (index){
-    this.setData({postPresent: post[index], showDetailPage: true})
-  },
-  advice : function (){
-    console.log('intoProcess')
-    this.setData({showAdvicePage: true})
-    console.log(this.data.showAdvicePage)
-  },
-  onChange(e){
-    this.data.suggestion = e.detail.value;
-  },
-
-  adviceSubmit : function (){
-    console.log('submit')
-    console.log(this.data.suggestion)
-    wx.request({
-      url: app.globalData.baseURL + `/api/suggestion/suggest`,
-      method :'POST',
-      data:{
-        content:this.data.suggestion,
-        token: wx.getStorageSync('token')
-      },
-      success:(res)=>{
-        console.log('IntoProcessC')
-        console.log(JSON.stringify(res));
-        const data = JSON.parse(JSON.stringify(res)).data;
-        wx.setStorageSync("token",data.token)
-        console.log(data.token);
-        if(data.success){
-          wx.showToast({
-            title: '发送成功',
-            duration: 2000,
-            icon: 'success',
-            mask: true
-          })
-        }else{
-          wx.showToast({
-            title: '请先登录',
-            duration: 2000,
-            icon: 'error',
-            mask: true
-          })
-          wx.switchTab({
-            url: '../main-personal/index'
-          })
-        }
-
-      }
-    })
-  },
 
   /**
    * 页面的初始数据

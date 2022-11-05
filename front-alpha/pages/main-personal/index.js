@@ -6,7 +6,11 @@ const app = getApp();
 Page({
   data: {
     code: '',
-    userInfo: {avatarUrl: '../../img/default-avatar.png', nickName: '请登录'},
+    userInfo: {avatarUrl: '../../img/default-avatar.jpg', nickName: '请登录'},
+    gold: null,
+    hour: null,
+    hourExpired: null,
+    login: false
   },
   // 事件处理函数
   bindViewTap() {
@@ -88,8 +92,20 @@ Page({
   },
   onShow(){
     const login = app.globalData.login;
+    this.setData({login: login})
     if(login){
       this.setData({userInfo: app.globalData.userInfo})
+      wx.request({
+        url:  app.globalData.baseURL + '/api/user/findUserInfo',
+        method: 'POST',
+        data: {token: wx.getStorageSync('token')},
+        success: (res) => {
+          console.log(res);
+          const data = res.data;
+          this.setData({gold: data.content.gold,hour: data.content.hour,hourExpired: data.content.hourExpired})
+          wx.setStorageSync('token', data.token);
+        }
+      })
     }else{
       wx.showModal({
         title: '请先登录',

@@ -26,6 +26,13 @@
   flex-direction: row;
   position: absolute;
   top: 35vh;
+  height: 30vh;
+  width: 90vw;
+  padding-right: 2vw;
+  padding-left: 2vw;
+  padding-top: 5vh;
+  background-color: #FFF;
+  border-radius: 5vw;
 }
 .checkInContainer{
   width: 13vw;

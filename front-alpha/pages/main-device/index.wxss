@@ -28,7 +28,7 @@ ec-canvas {
 .gaugeChart{
     padding: 0;
     width: 42vw;
-    height: 42vw;
+    height: 29vh;
     background-color: #100964;
     border-radius: 10vw;
     position: absolute;
@@ -37,7 +37,7 @@ ec-canvas {
 }
 .detailedButton{
     width: 42vw;
-    height: 42vw;
+    height: 29vh;
     background-color: #100964;
     border-radius: 10vw;
     position: absolute;

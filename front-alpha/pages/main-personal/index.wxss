@@ -1,7 +1,7 @@
 /* pages/main-personal/index.wxss */
 .container{
     text-align: center;
-    background-color: #100964;
+    background-color: #e2f0fe;
     padding-top: 5vh;
 }
 .userinfo{
@@ -14,12 +14,60 @@
 }
 .userinfo-nickname{
     width: 100%;
+    font-weight: 700;
+    color: #486484;
 }
 .userinfo-avatar{
     width: 30vw;
     height: 30vw;
     border-radius: 15vw;
 }
-.loginButton{
-    width: 80%;
+.detailedInfo{
+  display:flex;
+  flex-direction: column;
+  width: 80vw;
+  height: 40vh;
+  padding: 4vw;
+  text-align: center;
+}
+.goldBox{
+  line-height: 8vh;
+  width: 72vw;
+  height: 10vh;
+  background-color: #eff7ff;
+  border-radius: 5vw;
+  color: #486484;
+  position: absolute;
+  left: 14vw;
+  top: 43vh;
+}
+.lineBox{
+  display: flex;
+  flex-direction: row;
+}
+.leftBox{
+  padding: 2.5vh;
+  display:flex;
+  flex-direction: column;
+  width: 26vw;
+  height: 10vh;
+  border-radius: 5vw;
+  background-color: #eff7ff;
+  color: #486484;
+  position: absolute;
+  left: 14vw;
+  top: 54vh;
+}
+.rightBox{
+  padding: 2.5vh;
+  display:flex;
+  flex-direction: column;
+  width: 26vw;
+  height: 10vh;
+  border-radius: 5vw;
+  background-color: #eff7ff;
+  color: #486484;
+  position: absolute;
+  right: 14vw;
+  top: 54vh;
 }

@@ -13,6 +13,7 @@ Page({
     checkInDays: '5',
     list: null,
     dayOfTheWeek: null,
+    day: ['一','二','三','四','五','六','七']
   },
 
   /**
@@ -45,7 +46,9 @@ Page({
       success: (res) => {
         const data = res.data;
         console.log(data)
-        this.setData({list: data.content, dayOfTheWeek: data.message})
+        const dayOfWeek = data.message == 1? 6: data.message - 2;
+        console.log(dayOfWeek)
+        this.setData({list: data.content, dayOfTheWeek: dayOfWeek})
         wx.setStorageSync('token', data.token)
       }
     })

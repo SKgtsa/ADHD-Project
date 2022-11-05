@@ -35,7 +35,7 @@
     text-align: center;
     background-color: #100964;
     width: 94vw;
-    height: 40vh;
+    height: 20vh;
     padding-top: 10vh;
     border-radius: 8vw;
 }

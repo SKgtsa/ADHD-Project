@@ -8,7 +8,7 @@ ec-canvas {
   background-color: #eff7ff;
 }
 .container{
-  height: 100vh;
+  height: 100%;
   width: 100vw;
   position: absolute;
   top: 9vh;
@@ -30,7 +30,8 @@ ec-canvas {
   height: 55vh;
   position: absolute;
   top: 45vh;
-  color: #0273f1;
+  color: #486484;
+  font-weight: 500;
 }
 .pageName{
   color: #007af2;
@@ -49,46 +50,47 @@ ec-canvas {
   padding-top: 1.5vh;
 }
 .goldCard{
-  width: 90vw;
+  width: 80vw;
   height: 15vh;
   background-color: #FFF;
-  
-  font-weight: bolder;
   font-size: 4vh;
   border-radius: 5vw;
   padding: 4vw;
+  position: absolute;
+  left: 7vw;
 }
-.time{
-  width: 40vw;
+.timeCard{
+  width: 34vw;
   height: 17vh;
   background-color: #FFF;
   border-radius: 5vw;
-  padding-top: 3vh;
+  padding-top: 1vh;
+  padding-left: 3vw;
   text-align: left;
-}
-.timeWrapper{
-  padding-left: 2vw;
-  padding-top: 1.5vh;
-  font-weight: bolder;
-}
-.yearCard{
+  display: flex;
+  flex-direction: column;
   font-size: 5vh;
-  padding-left: 2vw;
+  position: absolute;
+  left: 5.5vw;
+  top: 25vh;
 }
-.dateCard{
-  font-size: 4.7vh;
+.wrapper{
   padding-left: 2vw;
+  padding-top: 2.5vh;
+  display: flex;
+  flex-direction: row;
 }
 .markCard{
-  width: 52vw;
+  width: 46vw;
   text-align: left;
   height: 17vh;
   padding-top: 3vh;
   background-color: #FFF;
   border-radius: 5vw;
-  position: absolute;
-  right: 2vw;
-  top: 23vh;
+  padding-top: 1vh;
+  padding-left: 2vw;
   font-size: 5vh;
-  font-weight: bolder;
+  position: absolute;
+  right: 5.5vw;
+  top: 25vh;
 }

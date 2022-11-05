@@ -17,6 +17,7 @@
 
 }
 .infoButton{
+  background-image: '../../img/icons/';
   width: 85vw;
   height: 12vh;
   margin: 1.4vh;
@@ -50,33 +51,39 @@
 }
 .lastPage{
   width: 25vw;
-  height: 10vh;
+  height: 8vh;
   position: absolute;
   left: 5vw;
   color: #007af2;
   font-weight: 600;
   border-radius: 4vw;
   background-color: #fff;
+  padding-top: 1vh;
+  font-size: 2.5vh;
 }
 .currentPage{
   width: 25vw;
-  height: 10vh;
+  height: 8vh;
   position: absolute;
   left:37.5vw;
   color: #486484;
   font-weight: 520;
   border-radius: 4vw;
   background-color: #fff;
+  padding-top: 1vh;
+  font-size: 2.5vh;
 }
 .nextPage{
   width: 25vw;
-  height: 10vh;
+  height: 8vh;
   position: absolute;
   right: 5vw;
   color: #007af2;
   font-weight: 600;
   border-radius: 4vw;
   background-color: #fff;
+  padding-top: 1vh;
+  font-size: 2.5vh;
 }
 .detailPage{
   width: 100%;
@@ -88,7 +95,7 @@
   height: 20vh;
   width: 93vw;
   text-align: center;
-  padding-top: 2vh;
+  padding-top: 2.05vh;
   font-weight: bolder;
 }
 .expired{
