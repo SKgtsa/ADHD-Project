@@ -2,21 +2,23 @@ package com.clankalliance.backbeta.service;
 
 
 import com.clankalliance.backbeta.response.CommonResponse;
+import com.clankalliance.backbeta.response.FindGraphResponse;
 
 public interface TrainingService {
 
-    CommonResponse handleSaveNormal(String token, String rawData);
+    CommonResponse handleSave(String token, String rawData);
 
-    CommonResponse handleSaveExpired(String token, String rawData);
 
-    CommonResponse handleFindNormal(String token, Integer pageNum, Integer pageSize);
+    CommonResponse handleFind(String token, Integer pageNum, Integer pageSize);
 
-    CommonResponse handleFindExpired(String token, Integer pageNum, Integer pageSize);
 
-    CommonResponse handleFindNormalGraph(String token, String id);
+    FindGraphResponse handleFindGraph(String token, String id);
 
-    CommonResponse handleFindExpiredGraph(String token, String id);
 
     CommonResponse handleFindSeven(String token);
+
+    CommonResponse handleFindDateList(String token,Integer startIndex, Integer length);
+
+    CommonResponse handleFindDateData(String token,Integer startIndex);
 
 }

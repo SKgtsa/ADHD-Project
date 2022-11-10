@@ -39,6 +39,15 @@ Page({
               'serviceId':serviceId,
               'characteristicId':item.uuid
             })
+            app.globalData.deviceId = deviceId;
+            app.globalData.serviceId = serviceId;
+            app.globalData.characteristicId = item.uuid; 
+            console.log('发送数据 connected')
+            console.log('deviceId: ' + deviceId)
+            console.log('serviceId: ' + serviceId)
+            console.log('characteristicId: ' + item.uuid);
+            console.log(buffer)
+            console.log('结束发送')
             wx.writeBLECharacteristicValue({
               deviceId,
               serviceId,
@@ -211,14 +220,16 @@ Page({
         res.devices.forEach((device) => {
           // 这里可以做一些过滤
           console.log('Device Found', device.name)
-          if(device.name == "UART Service"){
-            console.log('found UART Service!!')
+          if(device.name == "Nero_Car_Service"){
+            console.log('found Nero_Car_Service!!')
             // 找到设备开始连接
             this.bleConnection(device.deviceId);
             wx.stopBluetoothDevicesDiscovery()
             this.setData({deviceFoundStart: false, deviceId: device.deviceId})
+            app.globalData.deviceId = device.deviceId;
+            
           }else{
-            console.log("not UART Service")
+            console.log("not Nero_Car_Service")
           }
         })
         // 找到要搜索的设备后，及时停止扫描
@@ -255,10 +266,8 @@ Page({
         }
       })
       var that = this
-      //正在同步正常数据
-      let inProcessN = false;
-      //正在同步过期数据
-      let inProcessE = false;
+      //正在同步数据
+      let inProcess = false;
       wx.onBLECharacteristicValueChange((result) => {
         this.setData({onBLECharaValueChange: true})
         console.log('onBLECharacteristicValueChange',result.value)
@@ -267,106 +276,112 @@ Page({
         console.log('hextoString',input)
         console.log('hex',hex)
         let error = false;
-        if(!inProcess && !inProcess){
-          const temp = input.substring(0,3);
+        if(!inProcess){
+          //没有在发送 此时检测开始信号
+          //截取前三位 作为控制信号
+          const startMark = input.substring(0,3);
+          console.log("StartMark: input.substring(0,3)  " + temp)
           //头部标记为aaa
-          if(temp == 'aaa'){
-            //及时数据
+          if(startMark == 'aaa'){
+            //取控制信号后的整个字符串 拼接进syncResult 进行同步数据的积累
+            //整个数据收取完成后整个发给后端处理
             this.data.syncResult = input.substring(3);
-            inProcessN = true;
-          }else if(temp == 'bbb'){
-            //过期数据
-            this.data.syncResult = input.substring(3);
-            inProcessE = true;
+            //设置布尔值inProcess
+            //代表已进入数据收取过程
+            inProcess = true;
           }
+          console.log(this.data.syncResult)
         }else{
-          if(input == "ccc" || input == "ddd"){
-            //接收到数据发送终止符 发送数据
-            if(inProcessN){
-              //正常同步
-              wx.request({
-                url: 'https://chenanbella.cn/api/training/saveNormal',
-                method: 'POST',
-                data: {
-                  token: wx.getStorageSync('token'),
-                  rawData: this.data.syncResult
-                },
-                success(res){
-                  //保存成功,向设备发送数据
-                  if(res.data.success){
-                    //成功发送并保存
-                    var buffer = this.stringToBytes("ok")
-                  }else{
-                    //成功发送但没保存 可能出现登录过期 找不到用户
-                    var buffer = this.stringToBytes("stop")
-                    error = true;
+          //正在发送
+          //截取末三位 作为控制信号 控制数据收取的停止时机
+          const endMark = input.substring(input.length - 3);
+          console.log('endMark: ' + temp)
+          if(endMark == "ccc" || endMark == "ddd"){
+            //接收到数据发送终止符 发送数据 取字符串开头到倒数第四位为数据
+            //拼接给syncResult 之后发送给后端
+            this.data.syncResult += input.substring(0,input.length - 3)
+            console.log( "同步结果: " + this.data.syncResult)
+            let str = '';
+            console.log('发送数据')
+            console.log( "同步结果: " + this.data.syncResult);
+            //正常同步
+            console.log(this.data.syncResult)
+            wx.request({
+              url: 'https://chenanbella.cn/api/training/save',
+              method: 'POST',
+              data: {
+                token: wx.getStorageSync('token'),
+                rawData: this.data.syncResult
+              },
+              success(res){
+                console.log("发送成功 收到反馈如下")
+                console.log(res)
+                //保存成功,向设备发送数据
+                if(res.data.success){
+                  //成功发送并保存
+                  str = "ok";
+                  var buffer = new Uint8Array(str.length);
+                  for (var i = 0, l = str.length; i < l; i++) {
+                    buffer[i] = str.charCodeAt(i);
                   }
-                  wx.writeBLECharacteristicValue({
-                    deviceId: this.data.deviceId,
-                    serviceId: this.data.serviceId,
-                    characteristicId: this.data.characteristicId,
-                    value: buffer,
-                  })
-                },
-                fail(res){
-                  //发送失败
-                  var buffer = this.stringToBytes("stop")
-                  error = true;
-                  wx.writeBLECharacteristicValue({
-                    deviceId: this.data.deviceId,
-                    serviceId: this.data.serviceId,
-                    characteristicId: this.data.characteristicId,
-                    value: buffer,
-                  })
-                }
-              })
-            }else if(inProcessE){
-              //过期同步
-              wx.request({
-                url: 'https://chenanbella.cn/api/training/saveExpired',
-                method: 'POST',
-                data: {
-                  token: wx.getStorageSync('token'),
-                  rawData: this.data.syncResult
-                },
-                success(res){
-                  //保存成功,向设备发送数据
-                  if(res.data.success){
-                    //成功发送并保存
-                    var buffer = this.stringToBytes("ok")
-                  }else{
-                    //成功发送但没保存 可能出现登录过期 找不到用户
-                    var buffer = this.stringToBytes("stop")
-                    error = true;
+                }else{
+                  //成功发送但没保存 可能出现登录过期 找不到用户
+                  str = "stop";
+                  var buffer = new Uint8Array(str.length);
+                  for (var i = 0, l = str.length; i < l; i++) {
+                    buffer[i] = str.charCodeAt(i);
                   }
-                  
-                  wx.writeBLECharacteristicValue({
-                    deviceId: this.data.deviceId,
-                    serviceId: this.data.serviceId,
-                    characteristicId: this.data.characteristicId,
-                    value: buffer,
-                  })
-                },
-                fail(res){
-                  //保存失败
-                  var buffer = this.stringToBytes("stop")
                   error = true;
-                  wx.writeBLECharacteristicValue({
-                    deviceId: this.data.deviceId,
-                    serviceId: this.data.serviceId,
-                    characteristicId: this.data.characteristicId,
-                    value: buffer,
-                  })
                 }
-              })
-            }
-            if(input == 'ddd' || error){
-              //发送完毕 卸载蓝牙
-              this.setData({showBlueToothPage: false})
+                console.log(buffer)
+                console.log(app.globalData)
+                console.log(buffer.buffer)
+                console.log("开始向设备发送数据 " + str)
+                //如果出现bug 给写特征值的函数加个延时
+                wx.writeBLECharacteristicValue({
+                  deviceId: app.globalData.deviceId,
+                  serviceId: app.globalData.serviceId,
+                  characteristicId: app.globalData.characteristicId,
+                  value: buffer.buffer,
+                })
+                wx.setStorageSync('token', res.data.token)
+              },
+              fail(res){
+                console.log('发送失败')
+                console.log(res)
+                //发送失败
+                const str = "stop";
+                var buffer = new Uint8Array(str.length);
+                for (var i = 0, l = str.length; i < l; i++) {
+                  buffer[i] = str.charCodeAt(i);
+                }
+                error = true;
+                console.log(buffer)
+                console.log(app.globalData)
+                console.log("开始向设备发送数据 " + str)
+                //如果出现bug,给写特征值的函数加上延时
+                wx.writeBLECharacteristicValue({
+                  deviceId: app.globalData.deviceId,
+                  serviceId: app.globalData.serviceId,
+                  characteristicId: app.globalData.characteristicId,
+                  value: buffer.buffer,
+                })
+              }
+            })
+
+            if(input.substring(input.length - 3) == 'ddd' || error){
+              //本次发送的数据包结尾为ddd 代表所有数据已发送完毕
+              //error代表出现了错误
+              //发送完毕 卸载蓝牙 延迟一秒，防止有需要蓝牙的异步函数还没有执行完的情况
+              setTimeout(() => {
+                this.setData({showBlueToothPage: false})
+              } ,1000)
             }
           }else{
-            //接收数据
-            app.globalData.syncResult += input;
+            //接收数据 因为设备连接后会首先发来Nero_Car_Service 所以滤过该信号
+            if(input != 'Nero_Car_Service'){
+              this.data.syncResult += input;
+            }
           }
         }
       })

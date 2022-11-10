@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.Calendar;
 
 
 @Data
@@ -43,4 +42,10 @@ public class Training {
     //图像
     @JsonIgnore
     private String graph;
+
+    //训练数据的平均值
+    private Integer average;
+
+    //训练数据的长度
+    private Integer length;
 }

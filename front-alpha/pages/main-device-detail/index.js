@@ -9,7 +9,6 @@ Page({
    * 页面的初始数据
    */
   data: {
-    expired: false,
     pageSize: 5,
     pageNum: 1,
     maxPage: 1,
@@ -36,68 +35,29 @@ Page({
         return lineChart;
       }
     },
-    list: [{
-        id: null,
-        mark: null,
-        year: 2022,
-        month: 6,
-        day: 10,
-        weekOfTheYear: null,
-        dayOfTheWeek: null,
-        gold: null,
-        message: null
-      },{
-        id: null,
-        mark: null,
-        year: 2022,
-        month: 6,
-        day: 10,
-        weekOfTheYear: null,
-        dayOfTheWeek: null,
-        gold: null,
-        message: null
-      },{
-        id: null,
-        mark: null,
-        year: 2022,
-        month: 6,
-        day: 10,
-        weekOfTheYear: null,
-        dayOfTheWeek: null,
-        gold: null,
-        message: null
-      }
-    ],
-  },
-  inTime(){
-    this.setData({expired: false, pageNum: 1});
-    this.refreshList();
-  },
-  expired(){
-    this.setData({expired: true, pageNum: 1});
-    this.refreshList();
+    list: [],
+    //list中对象
+    // {
+    //   id: null,
+    //   mark: null,
+    //   year: 2022,
+    //   month: 6,
+    //   day: 10,
+    //   weekOfTheYear: null,
+    //   dayOfTheWeek: null,
+    //   gold: null,
+    //   message: null
+    // }
   },
   nextPage: function(){
-    if(this.data.expired){
-      if(this.data.pageNumE == this.data.maxPageE){
-        wx.showToast({
-          title: '没有下一页了',
-          icon: 'error'
-        })
-      }else{
-        this.setData({pageNumE: this.data.pageNumE + 1})
-        this.refreshList();
-      }
+    if(this.data.pageNum == this.data.maxPage){
+    wx.showToast({
+      title: '没有下一页了',
+      icon: 'error'
+    })
     }else{
-      if(this.data.pageNumN == this.data.maxPageN){
-      wx.showToast({
-        title: '没有下一页了',
-        icon: 'error'
-      })
-      }else{
-        this.setData({pageNumN: this.data.pageNumN + 1})
-        this.refreshList();
-      }
+      this.setData({pageNum: this.data.pageNum + 1})
+      this.refreshList();
     }
   },
   lastPage: function(){
@@ -111,107 +71,75 @@ Page({
       this.refreshList();
     }
   },
-
+//刷新列表
   refreshList(){
-    if(this.data.expired){
-      wx.request({
-        url: app.globalData.baseURL + '/api/training/findExpired',
-        method :'POST',
-        data: {token: wx.getStorageSync('token'),pageNum: this.data.pageNum - 1, size:this.data.pageSize},
-        success: (res) => {
-          console.log(res);
-          this.setData({list: res.data.content, maxPage: res.data.message});
-          console.log(this.data.maxPage);
-          console.log(res.message);
-          wx.setStorageSync('token', res.data.token)
-        }
-      })
-    }else{
-      wx.request({
-        url: app.globalData.baseURL + '/api/training/findNormal',
-        method :'POST',
-        data: {token: wx.getStorageSync('token'),pageNum: this.data.pageNum - 1, size:this.data.pageSize},
-        success: (res) => {
-          console.log(res);
-          this.setData({list: res.data.content, maxPage: res.data.message});
-          wx.setStorageSync('token', res.data.token)
-        }
-      })
-    }
+    console.log(this.data.pageSize)
+    wx.request({
+      url: app.globalData.baseURL + '/api/training/find',
+      method :'POST',
+      data: {token: wx.getStorageSync('token'),pageNum: this.data.pageNum, size:this.data.pageSize},
+      success: (res) => {
+        console.log(res);
+        this.setData({list: res.data.content, maxPage: res.data.message});
+        wx.setStorageSync('token', res.data.token)
+      }
+    })
   },
   jump: function(target){
     const data = this.data;
     const index = target.target.dataset.target;
     this.setData({targetTraining: data.list[index]})
-    if(this.data.expired){
-      wx.request({
-        url: app.globalData.baseURL + '/api/training/findExpiredGraph',
-        method :'POST',
-        data: {
-          token: wx.getStorageSync('token'),
-          id: this.data.targetTraining.id
-        },
-        success: (res) => {
-          const data = res.data;
-          this.data.targetTraining.graph = data.content;
-
-          const target = this.data.targetTraining;
-          app.globalData.graph = target.graph;
-          wx.setStorageSync('token', res.data.token)
-          wx.navigateTo({
-            url: '../detail-line-graph/index?expired=' + this.data.expired + '&mark=' + target.mark + '&year=' + target.year + '&month=' + target.month + '&day=' + target.day + '&gold=' + target.gold 
-          })
-        }
-      })
-    }else{
-      console.log(this.data)
-      wx.request({
-        url: app.globalData.baseURL + '/api/training/findNormalGraph',
-        method :'POST',
-        data: {
-          token: wx.getStorageSync('token'),
-          id: this.data.targetTraining.id
-        },
-        success: (res) => {
-          const data = res.data;
-          this.data.targetTraining.graph = data.content;
-          wx.setStorageSync('token', res.data.token)
-
-          const target = this.data.targetTraining;
-          app.globalData.detailedGraphY = target.graph;
-
-          // const graphX = new String[target.graph.length];
-          let graphX = new Array(target.graph.length);
-          let h = 0;
-          let m = 0;
-          let s = 0;
-          for(let i = 0;i < graphX.length;i ++){
-            graphX[i] = h + ':' + m + ':' + s;
-            s ++;
-            if(s == 60){
-              s = 0;
-              m ++;
-            }
-            if(m == 60){
-              m = 0;
-              h ++;
-            }
+    console.log(this.data)
+    wx.request({
+      url: app.globalData.baseURL + '/api/training/findGraph',
+      method :'POST',
+      data: {
+        token: wx.getStorageSync('token'),
+        id: this.data.targetTraining.id
+      },
+      success: (res) => {
+        const data = res.data;
+        //将后端传来的图像数据存入data的targetGraph中
+        //起到将之前获得的简略数据与本次的详细图像数据整合的作用
+        this.data.targetTraining.graph = data.graph;
+        //保存token 保留登陆状态
+        wx.setStorageSync('token', res.data.token)
+        const target = this.data.targetTraining;
+        app.globalData.detailedGraphY = target.graph;
+        //图像的x轴数据
+        let graphX = new Array(target.graph.length);
+        //时 分 秒数据 统计并写入x轴
+        let h = 0;
+        let m = 0;
+        let s = 0;
+        for(let i = 0;i < graphX.length;i ++){
+          graphX[i] = '';
+          if(h != 0)
+            graphX[i] += h + '时';
+          if(m != 0)
+            graphX[i] += m + '分';
+          graphX[i] += s + '秒';
+          s ++;
+          //进位
+          if(s >= 60){
+            m += s / 60;
+            s %= 60;
           }
-
-          app.globalData.detailedGraphX = graphX;
-          console.log(app.globalData.detailedGraphX);
-          wx.navigateTo({
-            url: '../detail-line-graph/index?expired=' + this.data.expired + '&mark=' + target.mark + '&year=' + target.year + '&month=' + target.month + '&day=' + target.day + '&gold=' + target.gold 
-          })
+          if(m >= 60){
+            h += h / 60;
+            m %= 60;
+          }
         }
-      })
-      
-    }
-    
-    // wx.reLaunch({
-    //   url: '../main-device-detail-info/index?startTime=' + data.startTime + '&endTime=' + data.endTime + '&concentrationRate' + data.concentrationRate
-    // })
+        //设置x轴数据
+        app.globalData.detailedGraphX = graphX;
+        console.log(app.globalData.detailedGraphX);
+        wx.navigateTo({
+          url: '../detail-line-graph/index?expired=' + this.data.expired + '&mark=' + target.mark + '&year=' + target.year + '&month=' + target.month + '&day=' + target.day + '&gold=' + target.gold 
+        })
+      }
+    })
   },
+
   /**
    * 生命周期函数--监听页面加载
    */

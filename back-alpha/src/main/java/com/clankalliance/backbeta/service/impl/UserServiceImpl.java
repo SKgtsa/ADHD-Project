@@ -2,7 +2,6 @@ package com.clankalliance.backbeta.service.impl;
 
 import com.clankalliance.backbeta.entity.User;
 import com.clankalliance.backbeta.entity.arrayTraining.Training;
-import com.clankalliance.backbeta.entity.arrayTraining.TrainingExpired;
 import com.clankalliance.backbeta.repository.UserRepository;
 import com.clankalliance.backbeta.response.CommonLoginResponse;
 import com.clankalliance.backbeta.response.CommonResponse;
@@ -10,7 +9,6 @@ import com.clankalliance.backbeta.response.WXLoginResponse;
 import com.clankalliance.backbeta.service.UserService;
 import com.clankalliance.backbeta.utils.PostRequestUtils;
 import com.clankalliance.backbeta.utils.SignatureVerificationUtil;
-import com.clankalliance.backbeta.utils.SnowFlake;
 import com.clankalliance.backbeta.utils.StatusManipulateUtils.ManipulateUtil;
 import com.clankalliance.backbeta.utils.TokenUtil;
 import org.springframework.stereotype.Service;
@@ -76,20 +74,13 @@ public class UserServiceImpl implements UserService {
         }
         User user = userRepository.findUserByOpenId(response.getMessage()).get();
         List<Training> trainingList =  user.getTrainingList();
-        List<TrainingExpired> expiredList = user.getTrainingExpiredList();
         Map<String,String> map = new HashMap<>();
         long hour = 0;
-        long hourExpired = 0;
         for(Training t : trainingList){
             hour += t.getGraph().split(",").length;
         }
-        for(TrainingExpired t : expiredList){
-            hourExpired += t.getGraph().split(",").length;
-        }
         hour /= 3600;
-        hourExpired /= 3600;
         map.put("hour","" + hour);
-        map.put("hourExpired","" + hourExpired);
         map.put("gold","" + user.getGold());
         response.setContent(map);
         response.setMessage("查询成功");

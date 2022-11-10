@@ -43,7 +43,7 @@ public class DotBodyTraining {
     public DotBodyTraining(String id, String rawData){
         int iterA = 0;
         int iterB = rawData.indexOf(',', iterA);
-        this.gold = Integer.valueOf(rawData.substring(iterA,iterB - 1));
+        this.gold = Integer.parseInt(rawData.substring(iterA,iterB - 1));
         this.id = id;
         this.graph = new ArrayList<>(300);
         Date time = new Date();
@@ -66,7 +66,7 @@ public class DotBodyTraining {
             //读取专注率
             iterA = iterB + 1;
             iterB = rawData.indexOf(',' , iterA);
-            Integer concentrationRate = Integer.valueOf(rawData.substring(iterA, iterB - 1));
+            Integer concentrationRate = Integer.parseInt(rawData.substring(iterA, iterB - 1));
             this.graph.add(new Dot(id, concentrationRate, time));
         }
     }

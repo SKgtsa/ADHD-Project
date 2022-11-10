@@ -13,7 +13,8 @@ Page({
     checkInDays: '5',
     list: null,
     dayOfTheWeek: null,
-    day: ['一','二','三','四','五','六','七']
+    day: ['一','二','三','四','五','六','七'],
+    todayList: null,
   },
 
   /**
@@ -48,7 +49,9 @@ Page({
         console.log(data)
         const dayOfWeek = data.message == 1? 6: data.message - 2;
         console.log(dayOfWeek)
-        this.setData({list: data.content, dayOfTheWeek: dayOfWeek})
+        let list = ['','','','','','',''];
+        list[dayOfWeek] = '今天';
+        this.setData({list: data.content, dayOfTheWeek: dayOfWeek,todayList: list})
         wx.setStorageSync('token', data.token)
       }
     })

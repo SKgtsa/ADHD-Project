@@ -9,13 +9,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FindGraphResponse {
 
+    //业务成功与否
     private boolean success;
 
+    //操作详情
+    private String message;
+
+    //平均专注率
     private double concentration;
 
-    private int[] graphY;
+    //Y轴点坐标
+    private int[] graph;
 
-    private String[] graphX;
-
+    //用户令牌
     private String token;
+
+    //训练秒数
+    private int sec;
 }
