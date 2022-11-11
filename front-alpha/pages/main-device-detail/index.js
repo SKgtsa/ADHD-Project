@@ -21,7 +21,8 @@ Page({
       weekOfTheYear: 0,
       dayOfTheWeek: 0,
       gold: 0,
-      graph : [10,20]
+      graph : [10,20],
+      concentration: null
     },
     ecLine: {
       onInit: function (canvas, width, height, dpr) {
@@ -79,9 +80,36 @@ Page({
       method :'POST',
       data: {token: wx.getStorageSync('token'),pageNum: this.data.pageNum, size:this.data.pageSize},
       success: (res) => {
+        const data = res.data;
+        if(data.token == null){
+          app.globalData.login = false;
+          wx.showToast({
+            title: '登录过期',
+            icon: 'error'
+          })
+          setTimeout(() => {
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
+          },500)
+        }
         console.log(res);
         this.setData({list: res.data.content, maxPage: res.data.message});
         wx.setStorageSync('token', res.data.token)
+      },
+      fail: (res) => {
+        if(res.data.token == null){
+          app.globalData.login = false;
+          wx.showToast({
+            title: '登录过期',
+            icon: 'error'
+          })
+          setTimeout(() => {
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
+          },500)
+        }
       }
     })
   },
@@ -99,9 +127,23 @@ Page({
       },
       success: (res) => {
         const data = res.data;
+        if(data.token == null){
+          app.globalData.login = false;
+          wx.showToast({
+            title: '登录过期',
+            icon: 'error'
+          })
+          setTimeout(() => {
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
+          },500)
+        }
+        console.log(res)
         //将后端传来的图像数据存入data的targetGraph中
         //起到将之前获得的简略数据与本次的详细图像数据整合的作用
         this.data.targetTraining.graph = data.graph;
+        this.data.concentration = data.concentration;
         //保存token 保留登陆状态
         wx.setStorageSync('token', res.data.token)
         const target = this.data.targetTraining;
@@ -112,21 +154,25 @@ Page({
         let h = 0;
         let m = 0;
         let s = 0;
+        const passage = data.sec/target.graph.length;
+        console.log("passage: " + passage)
+        console.log("sec: " + target.sec)
+        console.log("length: " + target.graph.length)
         for(let i = 0;i < graphX.length;i ++){
           graphX[i] = '';
           if(h != 0)
-            graphX[i] += h + '时';
+            graphX[i] += h.toFixed(0) + '时';
           if(m != 0)
-            graphX[i] += m + '分';
-          graphX[i] += s + '秒';
-          s ++;
+            graphX[i] += m.toFixed(0) + '分';
+          graphX[i] += s.toFixed(0) + '秒';
+          s += passage;
           //进位
           if(s >= 60){
             m += s / 60;
             s %= 60;
           }
           if(m >= 60){
-            h += h / 60;
+            h += m / 60;
             m %= 60;
           }
         }
@@ -136,6 +182,20 @@ Page({
         wx.navigateTo({
           url: '../detail-line-graph/index?expired=' + this.data.expired + '&mark=' + target.mark + '&year=' + target.year + '&month=' + target.month + '&day=' + target.day + '&gold=' + target.gold 
         })
+      },
+      fail: (res) => {
+        if(res.data.token == null){
+          app.globalData.login = false;
+          wx.showToast({
+            title: '登录过期',
+            icon: 'error'
+          })
+          setTimeout(() => {
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
+          },500)
+        }
       }
     })
   },
@@ -158,7 +218,11 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    if(!app.globalData.login){
+      wx.switchTab({
+        url: '../main-personal/index',
+      })
+    }
   },
 
   /**

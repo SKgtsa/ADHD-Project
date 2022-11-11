@@ -83,6 +83,18 @@ Page({
                     mask: true
                   })
                 }
+              },
+              fail: (res) => {
+                if(res.data.token == null){
+                  app.globalData.login = false;
+                  wx.showToast({
+                    title: '登录过期',
+                    icon: 'error'
+                  })
+                  wx.switchTab({
+                    url: '../main-personal/index',
+                  })
+                }
               }
             })
           }
@@ -104,6 +116,18 @@ Page({
           const data = res.data;
           this.setData({gold: data.content.gold,hour: data.content.hour,hourExpired: data.content.hourExpired})
           wx.setStorageSync('token', data.token);
+        },
+        fail: (res) => {
+          if(res.data.token == null){
+            app.globalData.login = false;
+            wx.showToast({
+              title: '登录过期',
+              icon: 'error'
+            })
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
+          }
         }
       })
     }else{

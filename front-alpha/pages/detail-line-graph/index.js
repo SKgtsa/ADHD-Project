@@ -69,7 +69,18 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+      if(!app.globalData.login){
+        wx.showToast({
+          title: '登录过期',
+          icon: 'error'
+        })
+        setTimeout(() => {
+          wx.switchTab({
+            url: '../main-personal/index',
+          })
+        },500)
+      }
+      
   },
 
   /**

@@ -46,6 +46,11 @@ public class TrainingServiceImpl implements TrainingService {
      */
     @Override
     public CommonResponse handleSave(String token, String rawData) {
+        System.out.println("\n\n\n\n\n\n\n************************");
+        System.out.println("\t\t\t接收到原始数据");
+        System.out.println("\t\t\t" + rawData);
+        System.out.println("\t\t\t应为<训练编号>;<金币数>;点1,点2,...点n,");
+        System.out.println("************************");
         CommonResponse response = new CommonResponse<>();
         //测试后门 上线时会去掉
         if(token.equals("114514")){
@@ -83,6 +88,7 @@ public class TrainingServiceImpl implements TrainingService {
         //此处使用id 查询到用户 因为此处token工具取得的id可信，不进行错误判断
         User user = userRepository.findUserByOpenId(response.getMessage()).get();
         List<Training> trainingList = user.getTrainingList();
+        user.setGold(user.getGold() + Integer.parseInt(data[1]));
         //由该布尔值记录是否本周满签到
         boolean fullCheckIn = true;
         //满签条件：今天是周日 且训练列表里末尾训练时间为周六 则进一步判断
@@ -230,6 +236,8 @@ public class TrainingServiceImpl implements TrainingService {
 
         //返回的是本次训练的平均专注度
         response.setConcentration(training.getAverage());
+        response.setSuccess(true);
+        response.setMessage("查找成功");
         return response;
     }
 

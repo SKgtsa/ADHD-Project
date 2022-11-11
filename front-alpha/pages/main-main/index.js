@@ -21,14 +21,40 @@ Page({
       data: {
         token: wx.getStorageSync('token')
       },
-      success:res =>{
+      success:(res) =>{
         const data = JSON.parse(JSON.stringify(res)).data;
+        if(data.token == null){
+          app.globalData.login = false;
+          wx.showToast({
+            title: '登录过期',
+            icon: 'error'
+          })
+          setTimeout(() => {
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
+          },500)
+        }
         console.log(data);
         this.setData({
           message: data.message ? data.message: null ,
           checkInHistory: data.content ? data.message: null, 
           checkInSuccess: data.success ? true: false
         })
+      },
+      fail: (res) => {
+        if(res.data.token == null){
+          app.globalData.login = false;
+          wx.showToast({
+            title: '登录过期',
+            icon: 'error'
+          })
+          setTimeout(() => {
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
+          },500)
+        }
       }
     })
   },
@@ -59,6 +85,18 @@ Page({
         console.log('IntoProcessC')
         console.log(JSON.stringify(res));
         const data = JSON.parse(JSON.stringify(res)).data;
+        if(data.token == null){
+          app.globalData.login = false;
+          wx.showToast({
+            title: '登录过期',
+            icon: 'error'
+          })
+          setTimeout(() => {
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
+          },500)
+        }
         wx.setStorageSync("token",data.token)
         console.log(data.token);
         if(data.success){
@@ -75,11 +113,27 @@ Page({
             icon: 'error',
             mask: true
           })
-          wx.switchTab({
-            url: '../main-personal/index'
-          })
+          setTimeout(() => {
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
+          },500)
         }
 
+      },
+      fail: (res) => {
+        if(res.data.token == null){
+          app.globalData.login = false;
+          wx.showToast({
+            title: '登录过期',
+            icon: 'error'
+          })
+          setTimeout(() => {
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
+          },500)
+        }
       }
     })
   },

@@ -2,7 +2,6 @@ import * as echarts from '../../ec-canvas/echarts';
 
 const app = getApp();
 Page({
-  
   bleGetDeviceServices(deviceId){
     wx.getBLEDeviceServices({
       deviceId, // 搜索到设备的 deviceId
@@ -279,33 +278,35 @@ Page({
         if(!inProcess){
           //没有在发送 此时检测开始信号
           //截取前三位 作为控制信号
+          
           const startMark = input.substring(0,3);
-          console.log("StartMark: input.substring(0,3)  " + temp)
+          console.log("StartMark: input.substring(0,3)  " + startMark)
           //头部标记为aaa
           if(startMark == 'aaa'){
             //取控制信号后的整个字符串 拼接进syncResult 进行同步数据的积累
             //整个数据收取完成后整个发给后端处理
             this.data.syncResult = input.substring(3);
+            console.log('接收到开始信号 存储开始信号后的数据： ' + this.data.syncResult)
             //设置布尔值inProcess
             //代表已进入数据收取过程
             inProcess = true;
           }
-          console.log(this.data.syncResult)
         }else{
           //正在发送
           //截取末三位 作为控制信号 控制数据收取的停止时机
           const endMark = input.substring(input.length - 3);
-          console.log('endMark: ' + temp)
+          console.log('endMark: ' + endMark)
           if(endMark == "ccc" || endMark == "ddd"){
+            console.log('接收到停止信号: ' + endMark)
             //接收到数据发送终止符 发送数据 取字符串开头到倒数第四位为数据
             //拼接给syncResult 之后发送给后端
             this.data.syncResult += input.substring(0,input.length - 3)
+            if(this.data.syncResult.substring(0,3) == 'aaa'){
+              this.setData({syncResult: this.data.syncResult.substring(3)})
+            }
             console.log( "同步结果: " + this.data.syncResult)
             let str = '';
             console.log('发送数据')
-            console.log( "同步结果: " + this.data.syncResult);
-            //正常同步
-            console.log(this.data.syncResult)
             wx.request({
               url: 'https://chenanbella.cn/api/training/save',
               method: 'POST',
@@ -314,6 +315,19 @@ Page({
                 rawData: this.data.syncResult
               },
               success(res){
+                const data = res.data;
+                if(data.token == null){
+                  app.globalData.login = false;
+                  wx.showToast({
+                    title: '登录过期',
+                    icon: 'error'
+                  })
+                  setTimeout(() => {
+                    wx.switchTab({
+                      url: '../main-personal/index',
+                    })
+                  },500)
+                }
                 console.log("发送成功 收到反馈如下")
                 console.log(res)
                 //保存成功,向设备发送数据
@@ -324,6 +338,7 @@ Page({
                   for (var i = 0, l = str.length; i < l; i++) {
                     buffer[i] = str.charCodeAt(i);
                   }
+                  wx.setStorageSync('token', res.data.token)
                 }else{
                   //成功发送但没保存 可能出现登录过期 找不到用户
                   str = "stop";
@@ -332,22 +347,37 @@ Page({
                     buffer[i] = str.charCodeAt(i);
                   }
                   error = true;
+                  if(res.data.message == "登录过期"){
+                    app.globalData.login = false;
+                  }
                 }
-                console.log(buffer)
-                console.log(app.globalData)
-                console.log(buffer.buffer)
                 console.log("开始向设备发送数据 " + str)
                 //如果出现bug 给写特征值的函数加个延时
-                wx.writeBLECharacteristicValue({
-                  deviceId: app.globalData.deviceId,
-                  serviceId: app.globalData.serviceId,
-                  characteristicId: app.globalData.characteristicId,
-                  value: buffer.buffer,
-                })
+                setTimeout(() => {
+                  wx.writeBLECharacteristicValue({
+                    deviceId: app.globalData.deviceId,
+                    serviceId: app.globalData.serviceId,
+                    characteristicId: app.globalData.characteristicId,
+                    value: buffer.buffer,
+                  })
+                },300)
+                
                 wx.setStorageSync('token', res.data.token)
               },
               fail(res){
-                console.log('发送失败')
+                if(res.data.token == null){
+                  app.globalData.login = false;
+                  wx.showToast({
+                    title: '登录过期',
+                    icon: 'error'
+                  })
+                  setTimeout(() => {
+                    wx.switchTab({
+                      url: '../main-personal/index',
+                    })
+                  },500)
+                }
+                console.log('发送失败 结果如下：')
                 console.log(res)
                 //发送失败
                 const str = "stop";
@@ -356,23 +386,25 @@ Page({
                   buffer[i] = str.charCodeAt(i);
                 }
                 error = true;
-                console.log(buffer)
-                console.log(app.globalData)
                 console.log("开始向设备发送数据 " + str)
                 //如果出现bug,给写特征值的函数加上延时
-                wx.writeBLECharacteristicValue({
-                  deviceId: app.globalData.deviceId,
-                  serviceId: app.globalData.serviceId,
-                  characteristicId: app.globalData.characteristicId,
-                  value: buffer.buffer,
-                })
-              }
+                setTimeout(() => {
+                  wx.writeBLECharacteristicValue({
+                    deviceId: app.globalData.deviceId,
+                    serviceId: app.globalData.serviceId,
+                    characteristicId: app.globalData.characteristicId,
+                    value: buffer.buffer,
+                  })
+                },300)
+              },
             })
-
+            this.data.syncResult = '';
+            console.log('清空syncResult: ' + this.data.syncResult);
             if(input.substring(input.length - 3) == 'ddd' || error){
               //本次发送的数据包结尾为ddd 代表所有数据已发送完毕
               //error代表出现了错误
               //发送完毕 卸载蓝牙 延迟一秒，防止有需要蓝牙的异步函数还没有执行完的情况
+              console.log('接收到数据为ddd 或者发生了错误 进入蓝牙卸载环节')
               setTimeout(() => {
                 this.setData({showBlueToothPage: false})
               } ,1000)
@@ -415,6 +447,9 @@ Page({
         console.log('连接失败')
         console.log(res)
         this.setData({blueToothConnceted: false, blueToothStatus: '连接失败'})
+        setTimeout(() => {
+          this.bleInit();
+        },1000)
       }
     })
   },
@@ -547,14 +582,40 @@ Page({
       method: 'POST',
       data: {token: wx.getStorageSync('token')},
       success: (res) => {
-        console.log(res);
         const data = res.data;
+        if(data.token == null){
+          app.globalData.login = false;
+          wx.showToast({
+            title: '登录过期',
+            icon: 'error'
+          })
+          setTimeout(() => {
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
+          },500)
+        }
+        console.log(res);
         app.globalData.gaugeData = data.message;
         console.log('gaugeData: ' + app.globalData.gaugeData)
         app.globalData.detailedGraphY = data.content;
         console.log('detailedGraphY' + app.globalData.detailedGraphY);
         app.globalData.detailedGraphX = ['1','2','3','4','5','6','7'];
         wx.setStorageSync('token', data.token)
+      },
+      fail: (res) => {
+        if(res.data.token == null){
+          app.globalData.login = false;
+          wx.showToast({
+            title: '登录过期',
+            icon: 'error'
+          })
+          setTimeout(() => {
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
+          },500)
+        }
       }
     })
   },

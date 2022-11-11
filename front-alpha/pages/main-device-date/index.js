@@ -1,27 +1,26 @@
-// pages/main-checkIn/index.js
-
+// pages/main-device-date/index.js
 const app = getApp();
-
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    message:'test',
-    checkInButton: '签到成功',
-    checkInDays: '5',
-    list: null,
-    dayOfTheWeek: null,
-    day: ['一','二','三','四','五','六','七'],
-    todayList: null,
+    //下一页对应数据库表的开始下标
+    startIndex: -1,
+    //更新获取的页长度
+    length: 6,
+    //页面呈现的数据组
+    dateData: [
+
+    ]
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    
+
   },
 
   /**
@@ -39,23 +38,24 @@ Page({
       wx.switchTab({
         url: '../main-personal/index',
       })
+    }else{
+      this.refresh();
     }
+  },
+
+  refresh(){
     wx.request({
-      url: app.globalData.baseURL +  '/api/checkIn/saveCheckIn',
+      url: app.globalData.baseURL + '/api/training/findDateList',
       method: 'POST',
-      data: {token: wx.getStorageSync('token')},
-      success: (res) => {
-        const data = res.data;
-        console.log(data)
-        const dayOfWeek = data.message == 1? 6: data.message - 2;
-        console.log(dayOfWeek)
-        let list = ['','','','','','',''];
-        list[dayOfWeek] = '今天';
-        this.setData({list: data.content, dayOfTheWeek: dayOfWeek,todayList: list})
-        wx.setStorageSync('token', data.token)
+      data: {
+        token: wx.getStorageSync('token'),
+        startIndex: this.data.startIndex,
+        length: this.data.length
       },
-      fail: (res) => {
-        if(res.data.token == null){
+      success: (res) => {
+        console.log(res);
+        const data = res.data;
+        if(data.token == null){
           app.globalData.login = false;
           wx.showToast({
             title: '登录过期',
@@ -67,6 +67,20 @@ Page({
             })
           },500)
         }
+        wx.setStorageSync('token', data.token)
+        this.setData({dataList: data.content})
+      },
+      fail: (res) => {
+        app.globalData.login = false;
+          wx.showToast({
+            title: '登录过期',
+            icon: 'error'
+          })
+          setTimeout(() => {
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
+          },500)
       }
     })
   },

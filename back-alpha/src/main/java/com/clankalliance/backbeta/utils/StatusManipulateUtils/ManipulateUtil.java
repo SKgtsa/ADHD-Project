@@ -19,8 +19,13 @@ import javax.annotation.PostConstruct;
 public class ManipulateUtil {
 
 
-    @Value("${clankToken.statusExpireTime}")
+
     private static int STATUS_EXPIRE_TIME;
+
+    @Value("${clankToken.statusExpireTime}")
+    public void setStatusExpireTime(int time){
+        STATUS_EXPIRE_TIME = time;
+    }
 
     //空节点,有效数据节点从headNode.next开始存储
     public static StatusNode headNode;
