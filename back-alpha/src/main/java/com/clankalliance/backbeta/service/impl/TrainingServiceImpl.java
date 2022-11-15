@@ -154,6 +154,11 @@ public class TrainingServiceImpl implements TrainingService {
         //将子list反向，会变为时间倒序
         Collections.reverse(result);
         response.setMessage("查询成功");
+        for(int i = 0;i < result.size();i ++){
+            Training t = result.get(i);
+            t.setMonth(t.getMonth() + 1);
+            result.set(i,t);
+        }
         response.setContent(result);
         response.setMessage("" + totalPage);
         return response;
@@ -333,12 +338,13 @@ public class TrainingServiceImpl implements TrainingService {
             //加上当天最后一次训练(list中的第一个)
             timeList.add(target.getLength());
             trainingListIndex --;
-
+            if(trainingListIndex <= 0)
+                break;
             for(target = trainingList.get(--trainingListIndex);
-                target.getYear() == halfTrainingData[i].getYear()
-                    && target.getMonth() == halfTrainingData[i].getMonth()
-                    && target.getDay() == halfTrainingData[i].getDay()
-                    && trainingListIndex >= 0;
+                target.getYear().equals(halfTrainingData[i].getYear())
+                        && target.getMonth().equals(halfTrainingData[i].getMonth())
+                        && target.getDay().equals(halfTrainingData[i].getDay())
+                        && trainingListIndex >= 0;
                 target = trainingList.get(--trainingListIndex)
             ){
                 //总时间(秒)
@@ -360,7 +366,7 @@ public class TrainingServiceImpl implements TrainingService {
             halfTrainingData[i].setTimeVariance(variance);
             halfTrainingData[i].setTime(totalTime);
             halfTrainingData[i].setConcentrationE(concentration/timeList.size());
-
+            halfTrainingData[i].setMonth(halfTrainingData[i].getMonth() + 1);
         }
         response.setContent(halfTrainingData);
         response.setMessage("" + trainingListIndex);
@@ -401,6 +407,7 @@ public class TrainingServiceImpl implements TrainingService {
             result.add(target);
         }
         response.setContent(result);
+        response.setMessage("成功");
         return response;
     }
 

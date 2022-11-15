@@ -562,7 +562,7 @@ Page({
   },
   detailedButton: function() {
     wx.navigateTo({
-      url: '../main-device-detail/index',
+      url: '../main-device-date/index',
     })
   },
   onReady() {

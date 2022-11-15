@@ -1,14 +1,11 @@
-<!--显示训练过的日期，点选对应日期可以检索数据-->
 <wxs module="utils" src="../../utils/utils.wxs"></wxs>
 <view class="container">
 <scroll-view class="scroll" scroll-y="true" bindscrolltolower="scrollToLower" bindscrolltoupper="scrollToUpper" lower-threshold="200px">
-  <button class="unit" wx:for="{{dataList}}" wx:for-index="index" wx:key="id" bind:tap="jump" data-target="{{index}}">
-    <text>{{item.year}}年{{item.month}}月{{item.day}}日</text>
+  <text>{{target.year}}年{{target.month}}月{{target.day}}日</text>
+  <button class="unit" wx:for="{{detailedList}}" wx:for-index="index" wx:key="id" bind:tap="jump" data-target="{{index}}">
     <text>第{{item.trainingNum}}次訓練</text>
     <text>平均專注度: {{item.concentrationE}}</text>
     <text>共訓練{{utils.handleTime(item.time)}}</text>
-    <text>金幣數:{{item.gold}}</text>
-    <text>{{item.timeVariance > 1? "訓練不太規範":"訓練很規範"}}</text>
   </button>
   <text class='bottom'>沒有更多了</text>
 </scroll-view>

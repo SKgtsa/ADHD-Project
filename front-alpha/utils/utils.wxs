@@ -1,0 +1,19 @@
+function handleTime(time){
+  var c = (time%60).toFixed(0);
+  time /= 60;
+  var b = (time%60).toFixed(0);
+  time /= 60;
+  var a = (time%60).toFixed(0);
+  var result = '';
+  if(a != 0)
+    result += a + '时'
+  if(b != 0)
+    result += b + '分'
+  if(c != 0)
+    result += c + '秒'
+  return result;
+}
+
+module.exports = {
+  handleTime: handleTime
+}

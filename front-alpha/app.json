@@ -8,7 +8,8 @@
     "pages/main-device-detail/index",
     "pages/main-device-detail-info/index",
     "pages/detail-line-graph/index",
-    "pages/main-device-date/index"
+    "pages/main-device-date/index",
+    "pages/main-device-date-detail/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

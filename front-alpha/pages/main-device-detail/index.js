@@ -22,7 +22,8 @@ Page({
       dayOfTheWeek: 0,
       gold: 0,
       graph : [10,20],
-      concentration: null
+      concentration: null,
+      target: null
     },
     ecLine: {
       onInit: function (canvas, width, height, dpr) {
@@ -203,8 +204,13 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad(options) {
-
+  onLoad(){
+    if(this.options){
+      this.setData({
+        target: this.options.target
+      })
+      console.log(this.data)
+    }
   },
 
   /**

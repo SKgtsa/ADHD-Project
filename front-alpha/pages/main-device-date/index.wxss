@@ -1,1 +1,9 @@
 /* pages/main-device-date/index.wxss */
+.scroll{
+  height: 100vh;
+}
+.unit{
+  height: 20vh;
+  padding: 3vh;
+  text-align: left;
+}
