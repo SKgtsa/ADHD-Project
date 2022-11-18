@@ -44,7 +44,6 @@ Page({
   onLoad(){
     if(this.options){
       this.setData({
-        expired: this.options.expired,
         targetTraining: {
           mark: this.options.mark,
           year: this.options.year,

@@ -5,15 +5,33 @@ ec-canvas {
 }
 .mainContainer{
     text-align: center;
-    background-color: #FFF;
+    background-color: #d0dfee;
+}
+.titleContainer{
+  width: 100vw;
+  color: #FFF;
+  height: 5vh;
+  border-radius: 6vw;
+  padding-top: 1.5vh;
+  padding-bottom: 0.5vh;
+  background-color: #1a274e;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.title{
+  font-size: 3.5vh;
+  text-align: left;
+  z-index: 1;
+  font-weight: bold;
+  width: 100vw;
+
 }
 .container{
   height: 69vh;
   width: 100vw;
-  position: absolute;
-  top: 9vh;
+  margin: auto,0;
+  padding-top: 9vh;
   border-radius: 5vw;
-  background-color: #fff;
 }
 .lineChart{
   padding: 0;
@@ -24,67 +42,76 @@ ec-canvas {
   border-radius: 5vw;
   padding-right: 3vw;
   padding-left: 3vw;
+  box-shadow: 10px 10px 10px 5px rgba(40, 29, 167, 0.4);  
 }
 .gaugeChart{
     padding: 0;
-    width: 42vw;
+    width: 24vh;
     height: 29vh;
-    background-color: #100964;
-    border-radius: 10vw;
-    position: absolute;
-    top: 35vh;
-    left: 7vw;
+}
+.buttonArea{
+  display: flex;
+  flex-direction: row;
+  padding-top: 66vh;
+  padding-bottom: 5vh;
 }
 .detailedButton{
-    width: 42vw;
-    height: 29vh;
-    background-color: #100964;
-    border-radius: 10vw;
-    position: absolute;
-    top: 35vh;
-    right: 7vw;
-    color: #FFF;
-    font-size: 13vw;
-    padding-top: 3vh;
-    font-weight: bolder;
-}
-.title{
-    width: 80vw;
-    background-color: #100964;
-    height: 5vh;
-    font-size: 3.5vh;
-    text-align: left;
-    z-index: 1;
-    color: #FFF;
-    font-weight: bold;
-    border-radius: 4vw;
-    padding: 2vw;
-    position: absolute;
-    left: 8vw;
-}
+  width: 43vw;
+  height: 23vh;
+  border-radius: 5vw;
+  border-width: 2vw;
+  border-style: none;
+  background-color: #FFF;
+  color: #007af2;
+  font-size: 13vw;
+  font-weight: bolder;
+  box-shadow: 10px 10px 10px 5px rgba(40, 29, 167, 0.4);  
 
-.trainingButton{
-    width: 86vw;
-    height: 23vh;
-    background-color: #100964;
-    border-radius: 10vw;
-    position: absolute;
-    bottom: 3vh;
-    right: 7vw;
-    color: #FFF;
-    font-size: 13vw;
-    padding-top: 1.5vh;
-    font-weight: bolder;
+}
+.syncButton{
+  width: 43vw;
+  height: 23vh;
+  border-radius: 5vw;
+  border-width: 2vw;
+  border-style: none;
+  background-color: #FFF;
+  color: #007af2;
+  font-size: 13vw;
+  font-weight: bolder;
+  box-shadow: 10px 10px 10px 5px rgba(40, 29, 167, 0.4);  
+
+}
+.mask{
+  z-index: 1;
+  height: 100vh;
+  background-color: rgba(60, 60, 60, 0.9);
 }
 .popOutWindow{
-    background-color: #100964;
-    height: 60vh;
+  z-index: 2;
+  background-color: #100964;
+  background-size: 40vw;
+  height: 50vh;
+  position: absolute;
+  bottom: 0;
 }
 .BlueToothLetter{
     color: #FFF;
     font-size: 3vh;
+    background-color: rgba(60, 60, 60, 0.8);
+    padding: 15px;
+    border-radius: 3vw;
+    display: flex;
+    flex-direction: column;
+    width: 50vw;
+
 }
-.buttonGroup{
-    padding-left: 10vw;
-    width: 80vw;
+.pattern{
+  background-image:url('https://chenanbella.cn/static/BlueTooth.gif'); 
+  padding-top: 15vh; 
+  width: 100vw;
+  height: 70vh;
+  background-position: center;
+  background-size: 30vw;
+  z-index: 999;
+  padding-left: 21vw;
 }

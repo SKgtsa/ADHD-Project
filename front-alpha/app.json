@@ -4,9 +4,7 @@
     "pages/main-main/index",
     "pages/main-community/index",
     "pages/main-device/index",
-    "pages/main-checkIn/index",
     "pages/main-device-detail/index",
-    "pages/main-device-detail-info/index",
     "pages/detail-line-graph/index",
     "pages/main-device-date/index",
     "pages/main-device-date-detail/index"
@@ -24,22 +22,16 @@
     "borderStyle": "white",
     "list": [
       {
-        "pagePath": "pages/main-main/index",
-        "text": "主页",
-        "iconPath": "img/icons/main.png",
-        "selectedIconPath": "img/icons/main-a.png"
-      },
-      {
         "pagePath": "pages/main-device/index",
         "text": "设备",
         "iconPath": "img/icons/device.png",
         "selectedIconPath": "img/icons/device-a.png"
       },
       {
-        "pagePath": "pages/main-checkIn/index",
-        "text": "签到",
-        "iconPath": "img/icons/checkIn.png",
-        "selectedIconPath": "img/icons/checkIn-a.png"
+        "pagePath": "pages/main-main/index",
+        "text": "主页",
+        "iconPath": "img/icons/main.png",
+        "selectedIconPath": "img/icons/main-a.png"
       },
       {
         "pagePath": "pages/main-personal/index",

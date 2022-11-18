@@ -4,31 +4,37 @@
     <view class="userinfo">
         <!--用户头像-->
         <view>
+          <button bindtap="submitLogin" class="userinfo-avatar">
             <image
                     bindtap="bindViewTap"
-                    class="userinfo-avatar"
+                    class="userinfo-avatar-picture"
                     src="{{userInfo.avatarUrl}}"
                     mode="cover"
             />
+          </button> 
         </view>
         <!--用户名-->
         <view>
             <text class="userinfo-nickname">{{userInfo.nickName}}</text>
         </view>
         <view class="detailedInfo" style="{{login ? '  display: inline;': 'display: none;'}}">
-          <view class="goldBox">
-            <text>总金币数:<text style="color: #007af2;font-weight: bolder">{{gold}}</text></text>
-          </view>
           <view class="lineBox">
-            <view class="leftBox">
-              <text>您已坚持训练</text>
-              <text><text style="color: #007af2;font-weight: bolder">{{hour + hourExpired}}</text>小时</text>
+            <view class="left">
+              <view class="leftBox">
+                <text>您已坚持训练</text>
+                <text><text style="color: #007af2;font-weight: bolder;font-size: 20vw;line-height: 18vw;">{{hour}}</text>小时</text>
+              </view>
             </view>
-            <view class="rightBox">
-              <text>其中有<text style="color: #007af2;font-weight: bolder">{{hourExpired}}</text>小时</text>
-              <text>同步过期了</text>
+            <view class="right">
+              <view class="rightBox">
+                <text class="rightText">总金币数:</text>
+                <view class="goldBox">
+                  <text class="goldNum">{{gold}}</text>
+                </view>
+              </view>
             </view>
           </view>
         </view>  
     </view>
 </view>
+<loading hidden="{{hideLoading}}">请稍候</loading>

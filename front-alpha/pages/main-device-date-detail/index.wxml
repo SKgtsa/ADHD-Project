@@ -1,13 +1,50 @@
 <wxs module="utils" src="../../utils/utils.wxs"></wxs>
-<view class="container">
-<scroll-view class="scroll" scroll-y="true" bindscrolltolower="scrollToLower" bindscrolltoupper="scrollToUpper" lower-threshold="200px">
-  <text>{{target.year}}年{{target.month}}月{{target.day}}日</text>
-  <button class="unit" wx:for="{{detailedList}}" wx:for-index="index" wx:key="id" bind:tap="jump" data-target="{{index}}">
-    <text>第{{item.trainingNum}}次訓練</text>
-    <text>平均專注度: {{item.concentrationE}}</text>
-    <text>共訓練{{utils.handleTime(item.time)}}</text>
-  </button>
-  <text class='bottom'>沒有更多了</text>
+<scroll-view class="scroll" scroll-y="true">
+  <view class="main">
+    <view class="pageName">
+      <text><text style="font-weight: 600;">{{target.year}}</text>年<text style="font-weight: 600;">{{target.month}}</text>月<text style="font-weight: 600;">{{target.day}}</text>日</text>
+    </view>
+    <view class="wrapper">
+      <view class="container">
+        <ec-canvas class="lineChart" id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>
+      </view>
+    </view>
+    <view class="pageContainer">
+        <view class="unit" wx:for="{{trainingList}}" wx:for-index="index" wx:key="id">
+          <button class="button" bind:tap="jump" data-target="{{index}}">
+            <view class="bottomBox">
+              <view class="left">
+                <text style="font-size: 6vw;">第<text style="color: #007af2; font-weight: 800;">{{item.mark}}</text>次训练</text>
+                <text>共训练<text style="color: #007af2; font-weight: 800;">{{utils.handleTime(item.length)}}</text></text>
+              </view>
+              <view class="right">
+                <text>获得<text style="color: #007af2; font-weight: 800;">{{item.gold}}</text>枚金币</text>
+                <text>平均专注度: <text style="color: #007af2; font-weight: 800;">{{item.average}}</text></text>
+              </view>
+            </view>
+          </button>
+        </view>
+        <!--骨架屏-->
+        <view class="unit"  wx:if="{{showMask}}" wx:for="{{tempList}}">
+          <button class="button">
+            <view style="background-color: #486484;width: 50vw;height: 4vh;border-radius: 3vw;"></view>
+            <view class="bottomBox">
+              <view class="left" style="padding-top: 0.8vh;">
+                <view style=" background-color: #486484;width: 35vw;height: 2.5vh;border-radius: 2vw;"></view>
+                <view style="padding-top: 0.8vh;">
+                  <view style=" background-color: #486484;width: 30vw;height: 2.5vh;border-radius: 2vw;"></view>
+                </view>
+              </view>
+              <view class="right" style="padding-top: 0.8vh;">
+            </view>
+            </view>
+          </button>
+        </view>
+        <view style="height: 50vh;width: 10vw;background-color: #FFF;" wx:if="{{trainingList.length < 6}}"></view>
+        <view class='bottom'>
+          <text>沒有更多了</text>
+        </view>
+    </view>
+  </view>
 </scroll-view>
-
-</view>
+<loading hidden="{{hideLoading}}">请稍候</loading>

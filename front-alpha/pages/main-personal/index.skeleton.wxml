@@ -1,0 +1,33 @@
+<!--
+此文件为开发者工具生成，生成时间: 2022/11/18下午9:18:25
+使用方法：
+在 D:\Design\ADHD-Project\front-alpha\pages\main-personal\index.wxml 引入模板
+
+```
+<import src="index.skeleton.wxml"/>
+<template is="skeleton" wx:if="{{loading}}" />
+```
+
+在 D:\Design\ADHD-Project\front-alpha\pages\main-personal\index.wxss 中引入样式
+```
+@import "./index.skeleton.wxss";
+```
+
+更多详细信息可以参考文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/skeleton.html
+-->
+<template name="skeleton">
+  <view class="sk-container">
+    <view class="container">
+      <view class="userinfo">
+        <view>
+          <button class="userinfo-avatar sk-button sk-pseudo sk-pseudo-circle">
+            <image class="userinfo-avatar-picture sk-image" mode="cover"></image>
+          </button>
+        </view>
+        <view>
+          <text class="userinfo-nickname sk-transparent sk-text-14-2857-180 sk-text" style="background-position-x: 50%;">Outruner</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>

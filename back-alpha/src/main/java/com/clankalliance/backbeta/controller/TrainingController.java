@@ -24,8 +24,7 @@ public class TrainingController {
         return trainingService.handleSave(request.getToken(), request.getRawData());
     }
 
-    /**
-     * 直接分页返回训练数据
+    /**     * 直接分页返回训练数据
      * @param request
      * @return
      */

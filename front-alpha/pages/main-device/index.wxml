@@ -6,22 +6,24 @@
     <view class="container">
         <ec-canvas class="lineChart" id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>
         <ec-canvas wx:if="{{!showGauge}}" class="gaugeChart" id="mychart-dom-gauge" canvas-id="mychart-gauge" ec="{{ ecGauge }}"></ec-canvas>
-        <button class="detailedButton" bind:tap="detailedButton">详情</button>
     </view>
     <view class="buttonArea">
-      <button bind:tap="startSync" class="trainingButton">开始同步</button>
+      <button class="detailedButton" bind:tap="detailedButton">详情</button>
+      <button bind:tap="startSync" class="syncButton">同步</button>
     </view>
     <page-container bind:enter="openBLEWindow" bind:leave="closeBLEWindow" show="{{showBlueToothPage}}" position="bottom" overlay="{{true}}">
+      <view class="mask">
         <view class="popOutWindow">
-          <text class="BlueToothLetter">{{blueToothStatus}}</text>
-            <!-- <text class="BlueToothLetter">将会在这个界面进行设备的蓝牙配对。</text>
-            <text class="BlueToothLetter">模块未开发，点击下方按钮继续流程</text>
-            <view class="buttonGroup">
-                <button bind:tap="connectionFailed">配对成功</button>
-                <button bind:tap="connectionSucceeded">配对失败</button>
-            </view> -->
+          <view class="pattern">
+            <view class="BlueToothLetter">
+              <text>{{blueToothStatus}}</text>
+              <text>请不要退出本页面</text>
+            </view>
+          </view>
         </view>
+      </view>
     </page-container>
     
 </view>
+<loading hidden="{{hideLoading}}">请稍候</loading>
 

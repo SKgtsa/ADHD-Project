@@ -1,9 +1,85 @@
 /* pages/main-device-date/index.wxss */
+.main{
+  display: flex;
+  flex-direction: column;
+  background-color: #007af2;
+  color: #FFF;
+  font-size: 5vh;
+  font-weight: 500;
+  padding-top: 3vh;
+}
+.pageName{
+  height: 10vh;
+  width: 100vw;
+  text-align: center;
+}
+.pageContainer{
+  padding-top: 4vh;
+  background-color: #fff;
+  border-style: solid;
+  border-radius: 8vw;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-width: 0;
+}
+.button{
+  border-style: none;
+  width: 100%;
+  padding: 1.2vh;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  font-size: 2vh;
+  line-height: 3vh;
+  border-width: 0;
+  border-radius: 5vw;
+  background-color: rgba(150, 187, 255, 0.233);
+  box-shadow: 10px 10px 10px 5px rgba(40, 29, 167, 0.4);
+  padding-left: 4vw;
+  padding-right: 4vw;
+  color: #486484;
+  
+}
 .scroll{
   height: 100vh;
 }
 .unit{
-  height: 20vh;
-  padding: 3vh;
-  text-align: left;
+  height: 17vh;
+  width: 90vw;
+  padding-left: 5vw;
+}
+.left{
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+.right{
+  display: flex;
+  flex-direction: column-reverse;
+  width: 50%;
+  text-align: right;
+}
+.time{
+  font-size: 4vh;
+  font-weight: bolder;
+  line-height: 4vh;
+}
+.bottomBox{
+  display: flex;
+  flex-direction: row;
+}
+.bottom{
+  width: 100vw;
+  height: 10vh;
+  text-align: center;
+  padding-top: 3vh;
+  font-size: 9vw;
+  background-color: #007af2;
+  color: #FFF;
+  font-weight: 550;
+  border-style: solid;
+  border-radius: 8vw;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-width: 0;
 }

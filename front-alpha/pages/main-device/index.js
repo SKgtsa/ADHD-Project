@@ -208,14 +208,38 @@ Page({
       });
     }
   },
+  //计时器 会调用自己 起到刷新时间的作用
+  timing(){
+    console.log('timing')
+    console.log(this.data.deviceFoundStart)
+    if(this.data.deviceFoundStart){
+      let timeNow = new Date().getTime();
+      if(timeNow - this.data.startFindTime > 30*1000){
+        //超过一分钟仍未连接 说明连接出错
+        this.setData({showBlueToothPage: false,deviceFoundStart: false})
+        wx.showToast({
+          title: '连接设备出错',
+          icon: 'error',
+          duration: 1000,
+        })
+      }else{
+        //继续计时
+        setTimeout(() => {
+          this.timing();
+        },10000);
+      }
+    }
+  },
   //蓝牙初始化，开始搜索设备
   bleInit() {
     if(this.checkBLESupport()){
       //初始化开始
+      this.setData({startFindTime: new Date().getTime()})
       console.log('searchBle')
+      this.setData({deviceFoundStart: true})
+      this.timing()
       // 监听扫描到新设备事件
       wx.onBluetoothDeviceFound((res) => {
-        this.setData({deviceFoundStart: true})
         res.devices.forEach((device) => {
           // 这里可以做一些过滤
           console.log('Device Found', device.name)
@@ -365,18 +389,16 @@ Page({
                 wx.setStorageSync('token', res.data.token)
               },
               fail(res){
-                if(res.data.token == null){
-                  app.globalData.login = false;
-                  wx.showToast({
-                    title: '登录过期',
-                    icon: 'error'
+                app.globalData.login = false;
+                wx.showToast({
+                  title: '登录过期',
+                  icon: 'error'
+                })
+                setTimeout(() => {
+                  wx.switchTab({
+                    url: '../main-personal/index',
                   })
-                  setTimeout(() => {
-                    wx.switchTab({
-                      url: '../main-personal/index',
-                    })
-                  },500)
-                }
+                },500)
                 console.log('发送失败 结果如下：')
                 console.log(res)
                 //发送失败
@@ -420,6 +442,7 @@ Page({
       //初始化结束
     } 
   },
+  //根据设备id连接设备
   bleConnection(deviceId){
     wx.createBLEConnection({
       deviceId, // 搜索到设备的 deviceId
@@ -446,10 +469,10 @@ Page({
       fail: (res)=>{
         console.log('连接失败')
         console.log(res)
-        this.setData({blueToothConnceted: false, blueToothStatus: '连接失败'})
+        this.setData({blueToothConnceted: false})
         setTimeout(() => {
-          this.bleInit();
-        },1000)
+          this.bleConnection(deviceId);
+        },500)
       }
     })
   },
@@ -489,10 +512,11 @@ Page({
       this.setData({onBLECharaValueChange: false})
     }
   },
-  //点击开始训练
+  //点击开始同步
   startSync: function (){
     this.setData({showBlueToothPage: true})
     console.log('startSync')
+    
   },
   openBLEWindow: function(){
 
@@ -529,10 +553,12 @@ Page({
       ]
     },
     showGauge: false,
-    'deviceId':'',
-    'serviceId':'',
-    'characteristicId':'',
-   
+    deviceId:'',
+    serviceId:'',
+    characteristicId:'',
+    startFindTime: null,
+    connectTime: 0,
+    hideLoading: true,
     ecLine: {
       onInit: function (canvas, width, height, dpr) {
         const lineChart = echarts.init(canvas, null, {
@@ -577,6 +603,8 @@ Page({
       })
     }
     console.log('intoOnShow()')
+    console.log(wx.getStorageSync('token'))
+    this.setData({hideLoading: false})
     wx.request({
       url: app.globalData.baseURL +  '/api/training/findLastSevenDay',
       method: 'POST',
@@ -602,20 +630,19 @@ Page({
         console.log('detailedGraphY' + app.globalData.detailedGraphY);
         app.globalData.detailedGraphX = ['1','2','3','4','5','6','7'];
         wx.setStorageSync('token', data.token)
+        this.setData({hideLoading: true})
       },
       fail: (res) => {
-        if(res.data.token == null){
-          app.globalData.login = false;
-          wx.showToast({
-            title: '登录过期',
-            icon: 'error'
+        app.globalData.login = false;
+        wx.showToast({
+          title: '登录过期',
+          icon: 'error'
+        })
+        setTimeout(() => {
+          wx.switchTab({
+            url: '../main-personal/index',
           })
-          setTimeout(() => {
-            wx.switchTab({
-              url: '../main-personal/index',
-            })
-          },500)
-        }
+        },500)
       }
     })
   },
@@ -676,7 +703,7 @@ function getGaugeOption() {
       title: {
         offsetCenter: [0,'70%'],
         show: true,
-        color: '#FFF',
+        color: '#486484',
         fontWeight: 'bold',
         fontSize: 20
       },
@@ -687,13 +714,13 @@ function getGaugeOption() {
         formatter: '{value}%',
         textStyle: {
           fontWeight: 'normal',
-          color: '#FFF'
+          color: '#007af2'
         },
       },
       axisLine: {
         show: true,
         lineStyle: {
-          color: [[1,'#FFF']],
+          color: [[1,'#fff']],
           width:7
         }
       },
@@ -709,7 +736,7 @@ function getGaugeOption() {
       pointer: {
         width: 15,
         itemStyle: {
-          color: '#FFF'
+          color: '#486484'
         }
       },
       data: [{

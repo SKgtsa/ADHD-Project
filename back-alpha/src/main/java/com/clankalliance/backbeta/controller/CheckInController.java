@@ -1,10 +1,6 @@
 package com.clankalliance.backbeta.controller;
 
-import com.clankalliance.backbeta.request.TokenCheckRequest;
-import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.service.CheckInService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,8 +13,10 @@ public class CheckInController {
     @Resource
     private CheckInService checkInService;
 
-    @PostMapping("/saveCheckIn")
-    public CommonResponse findCheckIn(@RequestBody TokenCheckRequest request){
-        return checkInService.handleFind(request.getToken());
-    }
+    //废除 不再作为单独接口使用
+
+//    @PostMapping("/saveCheckIn")
+//    public CommonResponse findCheckIn(@RequestBody TokenCheckRequest request){
+//        return checkInService.handleFind(request.getToken());
+//    }
 }

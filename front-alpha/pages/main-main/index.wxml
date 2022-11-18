@@ -1,5 +1,5 @@
 <!--pages/main-main/index.wxml-->
-<view class="container">
+<!-- <view class="container">
   <view class="upperButtonGroup">
     <button class="quickGuide" bind:tap="quickGuide">指南社区</button>
     <button class="dataSync" bind:tap="toDataSync">同步数据</button>
@@ -7,7 +7,7 @@
     <button class="issue" bind:tap="advice">问题反馈</button>
   </view>
   <button class="checkIn" bind:tap="toCheckInPage">每日签到</button>
-</view>
+</view> -->
 <!-- <page-container bind:enter="startCheckIn" bind:leave="finishCheckIn" show="{{showCheckInPage}}" overlay="{{true}}" position="top">
   <view class="popUpWindow">
     <text>您已连续签到</text>
@@ -16,13 +16,80 @@
     <text>{{message}}</text>
   </view>
 </page-container> -->
+<wxs module="utils" src="../../utils/utils.wxs"></wxs>
+<scroll-view>
+  <view class="page">
+    <view class="welcome">
+      <text class="welcomeNote">欢迎回来</text>
+      <text class="userName">{{userInfo.nickName}}</text>
+    </view>
+    <view class="lastTrainingArea">
+      <view class="lastTrainingCard">
+        <text class="lastTraining">{{lastTrainingTime}}</text>
+        <text class="trainingTime" wx:if="{{lastTrainingTime != '您还未训练过'}}">{{utils.handleTime(lastDateTraining.time)}}</text>
+        <text class="trainingLetter">{{trainingLetter}}</text>
+      </view>
+    </view>
+    <view class="trainingButtonGroup">
+      <button class="checkTraining" bind:tap="toDeviceDetail">查看训练</button>
+      <button class="syncData" bind:tap="toDataSync">同步数据</button>
+    </view>
+    <view class="complexData">
+      <view class="checkIn">
+      <!--宽横行展示本周签到-->
+          <view class="weekCheck">
+          <block wx:for="{{checkInArray}}" wx:for-index="index" wx:key="id">
+            <view class = "checkInContainer">
+              <view class="weekDayBlock">
+                <text style="{{utils.handleDayOfWeekColor(index,dayOfWeek)}}">星期{{utils.handleWeek(index)}}</text>
+              </view>
+              <view 
+              class="checkInBlock" 
+              style="{{utils.handleCheckInBackground(item)}}">
+                <image 
+                class="checkInImage" 
+                src="{{item? 'https://chenanbella.cn/static/checkInSuccess.png': 'https://chenanbella.cn/static/checkInFail.png'}}"
+                wx:if="{{index < dayOfWeek - 1}}"/>
+              </view>
+              <text class="today">{{todayList[index]}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+      <view class="complexBottom">
+        <view class="fullCheck">
+          <text>{{checkInLetter}}</text>
+        </view>
+        <view class="gaugeArea">
+          <view class="container">
+          <ec-canvas wx:if="{{!showGauge}}" class="gaugeChart" id="mychart-dom-gauge" canvas-id="mychart-gauge" ec="{{ ecGauge }}"></ec-canvas>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="helpCard">
+      <text class="helpLetter">遇到问题？</text>
+      <view class="helpButtonGroup">
+        <button bind:tap="advice" class="adviceButton">
+          <text>反馈</text>
+          <text>&</text>
+          <text>建议</text>
+        </button>
+        <button bind:tap="quickGuide" class="communityButton">指南社区</button>
+      </view>
+    </view>
+    <view style="height: 15vh;"></view>
+  </view>
+</scroll-view>
+
+
 <page-container show="{{showAdvicePage}}" overlay="{{true}}"  position="top" custom-style="">
         <view class="popOutWindow">
             <view>
                 <text class="textTop">您可以在这里反馈问题，或是提出建议</text>
             </view>
             <view>
-                <text class="textDown">这对我们来说非常重要</text>
+                <text class="textDown">这能帮助我们更好地改进软件</text>
             </view>
             <view class="inputArea">
                 <textarea bind:input="onChange" value="{{suggestion}}" class="input" auto-focus="true" />
@@ -32,3 +99,4 @@
             </view>
         </view>
     </page-container>
+    <loading hidden="{{hideLoading}}">请稍候</loading>

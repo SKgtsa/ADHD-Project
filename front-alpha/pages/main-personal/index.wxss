@@ -11,6 +11,7 @@
     background-color: #FFF;
     text-align: center;
     border-radius: 10vw;
+    box-shadow: 10px 10px 10px 5px rgba(40, 29, 167, 0.4);  
 }
 .userinfo-nickname{
     width: 100%;
@@ -18,9 +19,16 @@
     color: #486484;
 }
 .userinfo-avatar{
-    width: 30vw;
-    height: 30vw;
-    border-radius: 15vw;
+  width: 30vw;
+  height: 30vw;
+  border-radius: 15vw;
+}
+.userinfo-avatar-picture{
+  width: 30vw;
+  height: 30vw;
+  border-radius: 15vw;
+  position: absolute;
+  left: 0;
 }
 .detailedInfo{
   display:flex;
@@ -30,44 +38,62 @@
   padding: 4vw;
   text-align: center;
 }
-.goldBox{
-  line-height: 8vh;
-  width: 72vw;
-  height: 10vh;
-  background-color: #eff7ff;
-  border-radius: 5vw;
-  color: #486484;
-  position: absolute;
-  left: 14vw;
-  top: 43vh;
-}
+
 .lineBox{
   display: flex;
   flex-direction: row;
+  width: 80vw;
+  padding-left: 2vw;
+  padding-top: 5vh;
+  font-size: 4vw;
+}
+.left{
+  width: 50%;
+  text-align: left;
+}
+.right{
+  width: 50%;
+  text-align: right;
 }
 .leftBox{
-  padding: 2.5vh;
-  display:flex;
+  padding-top: 3vh;
+  display: flex;
   flex-direction: column;
-  width: 26vw;
-  height: 10vh;
+  text-align: center;
+  width: 35vw;
+  height: 15vh;
+  background-color: rgba(150, 187, 255, 0.233);
+  box-shadow: 5px 10px 15px 4px rgba(40, 29, 167, 0.4);  
   border-radius: 5vw;
-  background-color: #eff7ff;
   color: #486484;
-  position: absolute;
-  left: 14vw;
-  top: 54vh;
 }
 .rightBox{
-  padding: 2.5vh;
-  display:flex;
+  padding-top: 3vh;
+  display: flex;
   flex-direction: column;
-  width: 26vw;
-  height: 10vh;
+  text-align: left;
+  width: 35vw;
+  height: 15vh;
+  background-color: rgba(150, 187, 255, 0.233);
+  box-shadow: 5px 10px 15px 4px rgba(40, 29, 167, 0.4);  
   border-radius: 5vw;
-  background-color: #eff7ff;
   color: #486484;
-  position: absolute;
-  right: 14vw;
-  top: 54vh;
+}
+.rightText{
+  z-index: 2;
+  color: rgba(9, 49, 122, 0.699);
+  font-weight: 600;
+  font-size: 5vw;
+  line-height: 5vw;
+}
+.goldNum{
+  color: #007af2;
+  font-weight: bolder;
+  z-index: 1;
+  font-size: 24vw;
+  line-height: 19vw;
+}
+.goldBox{
+  width: 100%;
+  text-align: right;
 }

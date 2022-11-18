@@ -99,18 +99,16 @@ Page({
         wx.setStorageSync('token', res.data.token)
       },
       fail: (res) => {
-        if(res.data.token == null){
-          app.globalData.login = false;
-          wx.showToast({
-            title: '登录过期',
-            icon: 'error'
+        app.globalData.login = false;
+        wx.showToast({
+          title: '登录过期',
+          icon: 'error'
+        })
+        setTimeout(() => {
+          wx.switchTab({
+            url: '../main-personal/index',
           })
-          setTimeout(() => {
-            wx.switchTab({
-              url: '../main-personal/index',
-            })
-          },500)
-        }
+        },500)
       }
     })
   },
@@ -185,18 +183,16 @@ Page({
         })
       },
       fail: (res) => {
-        if(res.data.token == null){
-          app.globalData.login = false;
-          wx.showToast({
-            title: '登录过期',
-            icon: 'error'
+        app.globalData.login = false;
+        wx.showToast({
+          title: '登录过期',
+          icon: 'error'
+        })
+        setTimeout(() => {
+          wx.switchTab({
+            url: '../main-personal/index',
           })
-          setTimeout(() => {
-            wx.switchTab({
-              url: '../main-personal/index',
-            })
-          },500)
-        }
+        },500)
       }
     })
   },

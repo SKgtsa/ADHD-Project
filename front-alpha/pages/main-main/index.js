@@ -1,3 +1,4 @@
+import * as echarts from '../../ec-canvas/echarts';
 
 const app = getApp();
 
@@ -14,53 +15,7 @@ Page({
   openCheckInPage: function(){
     this.setData({showCheckInPage: true})
   },
-  startCheckIn: function(){
-    wx.request({
-      url: 'https://chenanbella.cn/api/checkIn/saveCheckIn',
-      method: 'POST',
-      data: {
-        token: wx.getStorageSync('token')
-      },
-      success:(res) =>{
-        const data = JSON.parse(JSON.stringify(res)).data;
-        if(data.token == null){
-          app.globalData.login = false;
-          wx.showToast({
-            title: '登录过期',
-            icon: 'error'
-          })
-          setTimeout(() => {
-            wx.switchTab({
-              url: '../main-personal/index',
-            })
-          },500)
-        }
-        console.log(data);
-        this.setData({
-          message: data.message ? data.message: null ,
-          checkInHistory: data.content ? data.message: null, 
-          checkInSuccess: data.success ? true: false
-        })
-      },
-      fail: (res) => {
-        if(res.data.token == null){
-          app.globalData.login = false;
-          wx.showToast({
-            title: '登录过期',
-            icon: 'error'
-          })
-          setTimeout(() => {
-            wx.switchTab({
-              url: '../main-personal/index',
-            })
-          },500)
-        }
-      }
-    })
-  },
-  finishCheckIn: function(){
 
-  },
 
   advice : function (){
     console.log('intoProcess')
@@ -74,6 +29,7 @@ Page({
   adviceSubmit : function (){
     console.log('submit')
     console.log(this.data.suggestion)
+    this.setData({hideLoading: true})
     wx.request({
       url: app.globalData.baseURL + `/api/suggestion/suggest`,
       method :'POST',
@@ -85,6 +41,7 @@ Page({
         console.log('IntoProcessC')
         console.log(JSON.stringify(res));
         const data = JSON.parse(JSON.stringify(res)).data;
+        this.setData({hideLoading: true})
         if(data.token == null){
           app.globalData.login = false;
           wx.showToast({
@@ -98,6 +55,7 @@ Page({
           },500)
         }
         wx.setStorageSync("token",data.token)
+        console.log('本地存储token变更为' + data.token)
         console.log(data.token);
         if(data.success){
           wx.showToast({
@@ -122,18 +80,16 @@ Page({
 
       },
       fail: (res) => {
-        if(res.data.token == null){
-          app.globalData.login = false;
-          wx.showToast({
-            title: '登录过期',
-            icon: 'error'
+        app.globalData.login = false;
+        wx.showToast({
+          title: '登录过期',
+          icon: 'error'
+        })
+        setTimeout(() => {
+          wx.switchTab({
+            url: '../main-personal/index',
           })
-          setTimeout(() => {
-            wx.switchTab({
-              url: '../main-personal/index',
-            })
-          },500)
-        }
+        },500)
       }
     })
   },
@@ -169,7 +125,21 @@ Page({
     checkInHistory: "0",
     showCheckInPage: false,
     showAdvicePage: false,
-    suggestion: ''
+    suggestion: '',
+    hideLoading: true,
+    ecGauge: {
+      onInit: function (canvas, width, height, dpr) {
+        const gaugeChart = echarts.init(canvas, null, {
+          width: width,
+          height: height,
+          devicePixelRatio: dpr // new
+        });
+        canvas.setChart(gaugeChart);
+        gaugeChart.setOption(getGaugeOption());
+
+        return gaugeChart;
+      }
+    }
   },
   /**
    * 生命周期函数--监听页面加载
@@ -179,8 +149,96 @@ Page({
       wx.switchTab({
         url: '../main-personal/index',
       })
+    }else{
+      this.setData({ hideLoading: false,})
+      wx.request({
+        url: app.globalData.baseURL + '/api/user/findMainInfo',
+        method: 'POST',
+        data: {
+          token: wx.getStorageSync('token')
+        },
+        success: (res) => {
+          console.log('执行请求并成功')
+          console.log(res)
+          this.setData(res.data)
+          if(this.data.lastTrainingTime == '今天'){
+            this.setData({trainingLetter: '做得不错！'})
+          }else{
+            this.setData({trainingLetter: '快开始今天的训练吧'})
+          }
+          this.setData({hideLoading: true})
+          if(this.data.lastDateTraining == null){
+            app.globalData.gaugeData = 0;
+          }else{
+            app.globalData.gaugeData = this.data.lastDateTraining.concentrationE;
+          }
+          wx.setStorageSync('token', res.data.token)
+          console.log('本地存储token变更为' + res.data.token)
+        },
+        fail: (res) => {
+          console.log('执行请求并失败')
+          console.log(res)
+          app.globalData.login = false;
+          wx.switchTab({
+            url: '../main-personal/index',
+          })
+        }
+      })
     }
+    this.setData({userInfo: app.globalData.userInfo})
   },
   onReady() {
   }
 });
+function getGaugeOption() {
+  return{
+    series: [{
+      title: {
+        offsetCenter: [0,'70%'],
+        show: true,
+        color: '#486484',
+        fontWeight: 'bold',
+        fontSize: 20
+      },
+      type: 'gauge',
+      radius: '100%',
+      center: ['50%','50%'],
+      detail: {
+        formatter: '{value}%',
+        textStyle: {
+          fontWeight: 'normal',
+          color: '#007af2'
+        },
+      },
+      axisLine: {
+        show: true,
+        lineStyle: {
+          color: [[1,'#486484']],
+          width:7
+        }
+      },
+      axisTick: {
+        show: false
+      },
+      axisLabel: {
+        show: false
+      },
+      splitLine: {
+        show: false
+      },
+      pointer: {
+        width: 15,
+        itemStyle: {
+          color: '#486484'
+        }
+      },
+      data: [{
+        value: app.globalData.gaugeData,
+        name: '平均专注率',
+        textStyle: {
+          color: '#FFF'
+        }
+      }]
+
+    }]};
+}

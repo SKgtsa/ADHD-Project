@@ -8,7 +8,7 @@ App({
     const logs = wx.getStorageSync('logs') || [];
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs)
-    wx.setStorageSync('login',false)
+    wx.setStorageSync('login',false) 
     // 登录
     wx.login({
       success: res => {

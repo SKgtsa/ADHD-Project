@@ -10,11 +10,16 @@ Page({
     startIndex: -1,
     //更新获取的页长度
     length: 6,
+    hideLoading: true,
     //页面呈现的数据组
     dataList: [
 
     ],
     requesting: false,
+    colorSet: ['#7ecbff','#ffa447','#ffa6c4','#1eccc3','#ffa4a3'],
+    //骨架屏用的两个参数
+    showMask: true,
+    tempList: [1,1,1,1,1,1,1,1,1,1],
   },
   refresh(){
     if(this.data.startIndex == -2){
@@ -22,6 +27,7 @@ Page({
     }else{
       this.setData({requesting: true})
       console.log("startIndex: " + this.data.startIndex)
+      this.setData({showMask: true,hideLoading: false})
       wx.request({
         url: app.globalData.baseURL + '/api/training/findDateList',
         method: 'POST',
@@ -49,7 +55,7 @@ Page({
             },500)
           }
           wx.setStorageSync('token', data.token)
-          if(data.message == 0){
+          if(data.message <= this.data.length){
             let temp = this.data.dataList;
             for(let i = 0;i < data.content.length && data.content[i] != null;i ++){
               temp.push(data.content[i])
@@ -58,8 +64,10 @@ Page({
           }else{
             this.setData({dataList: this.data.dataList.concat(data.content)})
           }
+          this.setData({showMask: false})
           this.setData({startIndex: data.message == 0? -2:data.message,requesting: false})
           console.log(this.data.dataList);
+          this.setData({hideLoading: true})
         },
         fail: (res) => {
           app.globalData.login = false;

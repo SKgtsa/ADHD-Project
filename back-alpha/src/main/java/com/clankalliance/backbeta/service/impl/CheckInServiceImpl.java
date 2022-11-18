@@ -26,40 +26,31 @@ public class CheckInServiceImpl implements CheckInService {
 
 
     /**
-     * 根据token获取签到列表
+     * 传入训练列表
      * 根据日期判断本周时间范围并检索有效训练，计算签到
-     * @param token
+     * @param trainingList 对应用户的训练列表
      * @return
      */
     @Override
-    public CommonResponse handleFind(String token) {
-        CommonResponse response = tokenUtil.tokenCheck(token);
-        System.out.println(response);
-        String userId = response.getMessage();
-        if(response.getSuccess()){
-            User user = userRepository.findUserByOpenId(userId).get();
-            List<Training> trainingList = user.getTrainingList();
-            Calendar calendar = Calendar.getInstance();
-            int weekOfTheYear = calendar.get(Calendar.WEEK_OF_YEAR);
-            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-            String checkInWeek[] = {"未签到","未签到","未签到","未签到","未签到","未签到","未签到"};
-            if(dayOfWeek == 1){
-                if(trainingList.get(trainingList.size() - 1).getWeekOfTheYear() == weekOfTheYear){
-                    checkInWeek[6] = "已签到";
-                }
-                weekOfTheYear --;
+    public boolean[] handleFind(List<Training> trainingList) {
+        boolean checkInWeek[] = {false,false,false,false,false,false,false};
+        Calendar calendar = Calendar.getInstance();
+        int weekOfTheYear = calendar.get(Calendar.WEEK_OF_YEAR);
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        if(dayOfWeek == 1){
+            if(trainingList.get(trainingList.size() - 1).getWeekOfTheYear() == weekOfTheYear){
+                checkInWeek[6] = true;
             }
-            int temp;
-            for(int i = trainingList.size() - 1;i > 0 && trainingList.get(i).getWeekOfTheYear() == weekOfTheYear; i --){
-                temp = trainingList.get(i).getDayOfTheWeek() - 2;
-                if(temp >= 0){
-                    checkInWeek[temp] ="已签到";
-                }
-            }
-            response.setContent(checkInWeek);
-            response.setMessage("" + dayOfWeek);
+            weekOfTheYear --;
         }
-        return response;
+        int temp;
+        for(int i = trainingList.size() - 1;i > 0 && trainingList.get(i).getWeekOfTheYear() == weekOfTheYear; i --){
+            temp = trainingList.get(i).getDayOfTheWeek() - 2;
+            if(temp >= 0){
+                checkInWeek[temp] =true;
+            }
+        }
+        return checkInWeek;
     }
 
 }

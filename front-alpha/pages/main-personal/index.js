@@ -10,7 +10,8 @@ Page({
     gold: null,
     hour: null,
     hourExpired: null,
-    login: false
+    login: false,
+    hideLoading: true,
   },
   // 事件处理函数
   bindViewTap() {
@@ -33,7 +34,8 @@ Page({
         console.log(res)
         app.globalData.userInfo = res.userInfo
         this.setData({
-          userInfo: res.userInfo
+          userInfo: res.userInfo,
+          hideLoading: false
         })
         const signature = res.signature;
         const rawData = res.rawData;
@@ -43,7 +45,6 @@ Page({
               code : res.code
             })
             const code = res.code;
-
             wx.request({
               url: app.globalData.baseURL +  `/api/user/login`,
               method :'POST',
@@ -60,6 +61,8 @@ Page({
                 console.log(data.token);
                 if(data.success){
                   wx.setStorageSync("token",data.token)
+                  console.log('本地存储token变更为' + data.token)
+                  this.setData({hideLoading: true})
                   app.globalData.login = true;
                   // app.setLogin(true)
                   wx.showToast({
@@ -76,6 +79,7 @@ Page({
                     }
                   })
                 }else{
+                  this.setData({hideLoading: true})
                   wx.showToast({
                     title: '登录失败',
                     duration: 2000,
@@ -85,16 +89,17 @@ Page({
                 }
               },
               fail: (res) => {
-                if(res.data.token == null){
-                  app.globalData.login = false;
-                  wx.showToast({
-                    title: '登录过期',
-                    icon: 'error'
-                  })
+                console.log(res)
+                app.globalData.login = false;
+                wx.showToast({
+                  title: '登录过期',
+                  icon: 'error'
+                })
+                setTimeout(() => {
                   wx.switchTab({
                     url: '../main-personal/index',
                   })
-                }
+                },500)
               }
             })
           }
@@ -116,18 +121,19 @@ Page({
           const data = res.data;
           this.setData({gold: data.content.gold,hour: data.content.hour,hourExpired: data.content.hourExpired})
           wx.setStorageSync('token', data.token);
+          console.log('本地存储token变更为' + data.token)
         },
         fail: (res) => {
-          if(res.data.token == null){
-            app.globalData.login = false;
-            wx.showToast({
-              title: '登录过期',
-              icon: 'error'
-            })
+          app.globalData.login = false;
+          wx.showToast({
+            title: '登录过期',
+            icon: 'error'
+          })
+          setTimeout(() => {
             wx.switchTab({
               url: '../main-personal/index',
             })
-          }
+          },500)
         }
       })
     }else{

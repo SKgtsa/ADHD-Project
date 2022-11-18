@@ -5,6 +5,7 @@ import com.clankalliance.backbeta.request.UserLoginRequest;
 import com.clankalliance.backbeta.request.UserSaveRequest;
 import com.clankalliance.backbeta.response.CommonLoginResponse;
 import com.clankalliance.backbeta.response.CommonResponse;
+import com.clankalliance.backbeta.response.MainInfoResponse;
 import com.clankalliance.backbeta.service.UserService;
 import com.clankalliance.backbeta.utils.TokenUtil;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +41,11 @@ public class UserController {
     @RequestMapping("/findUserInfo")
     public CommonResponse findLastSevenDay(@RequestBody TokenCheckRequest request){
         return userService.handleFindUserInfo(request.getToken());
+    }
+
+    @RequestMapping("findMainInfo")
+    public MainInfoResponse findMainInfo(@RequestBody TokenCheckRequest request){
+        return userService.handleMainInfo(request.getToken());
     }
 
 }

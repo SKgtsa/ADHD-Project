@@ -24,6 +24,7 @@ ec-canvas {
   border-radius: 5vw;
   padding-right: 3vw;
   padding-left: 3vw;
+  box-shadow: 10px 10px 10px 5px rgba(40, 29, 167, 0.4);
 }
 .buttomContainer{
   width: 100%;
@@ -40,7 +41,6 @@ ec-canvas {
   padding-left: 6vw;
   padding-top: 1.5vh;
   padding-bottom: 2vh;
-  border-radius: 5vw;
   font-weight: 500;
   z-index: 999;
 }
@@ -58,6 +58,7 @@ ec-canvas {
   padding: 4vw;
   position: absolute;
   left: 7vw;
+  box-shadow: 10px 10px 10px 5px rgba(40, 29, 167, 0.4);
 }
 .timeCard{
   width: 34vw;
@@ -73,6 +74,7 @@ ec-canvas {
   position: absolute;
   left: 5.5vw;
   top: 25vh;
+  box-shadow: 10px 10px 10px 5px rgba(40, 29, 167, 0.4);
 }
 .wrapper{
   padding-left: 2vw;
@@ -93,4 +95,5 @@ ec-canvas {
   position: absolute;
   right: 5.5vw;
   top: 25vh;
+  box-shadow: 10px 10px 10px 5px rgba(40, 29, 167, 0.4);
 }

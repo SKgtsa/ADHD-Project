@@ -49,13 +49,16 @@ public class ManipulateUtil {
      * @param nodeBefore 被删除节点之前的节点
      */
     public static void deleteNextStatus(StatusNode nodeBefore){
-        System.out.println(headNode);
-        System.out.println(endNode);
-        System.out.println(nodeBefore);
+        System.out.println("开始删除该节点的下一个节点 : " + nodeBefore);
+        System.out.println("当前头节点 : " + headNode);
+        System.out.println("当前末尾节点 : " + endNode);
         if(nodeBefore.getNext().getToken().equals(endNode.getToken())){
             endNode = nodeBefore;
         }
         nodeBefore.setNext(nodeBefore.getNext().getNext());
+        System.out.println("删除后的头节点：" + headNode);
+        System.out.println("*******************");
+
 
     }
 
@@ -116,9 +119,12 @@ public class ManipulateUtil {
      * @param userId 用户id
      */
     public static void appendStatus(String userId){
-
-            endNode.setNext(new StatusNode(userId));
-            endNode = endNode.getNext();
+        System.out.println("根据用户id新增节点 id: " + userId);
+        endNode.setNext(new StatusNode(userId));
+        endNode = endNode.getNext();
+        System.out.println("新增节点：" + endNode);
+        System.out.println("当前头节点" + headNode);
+        System.out.println("*******************");
 
     }
 
@@ -129,8 +135,10 @@ public class ManipulateUtil {
      * @return
      */
     public static StatusNode findStatusByToken(String token){
+        System.out.println("验证token : " + token);
         if(deleteExpiredStatus(token, false)){
             //token已过期并删除
+            System.out.println("token已过期并删除");
             return new StatusNode();
         }else{
             //进一步判定
@@ -147,6 +155,9 @@ public class ManipulateUtil {
                 lastNode = node;
                 node = node.getNext();
             }
+            System.out.println("节点搜索结果: " + result);
+            System.out.println("*******************");
+
             return result;
         }
     }

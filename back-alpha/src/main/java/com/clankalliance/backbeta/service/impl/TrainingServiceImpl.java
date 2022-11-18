@@ -12,6 +12,7 @@ import com.clankalliance.backbeta.service.TrainingService;
 import com.clankalliance.backbeta.utils.HalfTrainingData;
 import com.clankalliance.backbeta.utils.TokenUtil;
 import com.clankalliance.backbeta.utils.TrainingIdGenerator;
+import lombok.Data;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -37,6 +38,11 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Resource
     private TrainingRepository trainingRepository;
+
+    @Override
+    public Integer getFULL_WEEK_AWARD() {
+        return FULL_WEEK_AWARD;
+    }
 
     /**
      * 接收token与原始数据，按照同步的日期来设定时间 按照同步的编号来制定顺序
@@ -405,11 +411,61 @@ public class TrainingServiceImpl implements TrainingService {
                 && target.getDay() == d;
             target = trainingList.get(--iter)){
             result.add(target);
+            if(iter == 0){
+                break;
+            }
         }
         response.setContent(result);
         response.setMessage("成功");
         return response;
     }
 
+    /**
+     * 找到上一个有训练的日子里的训练信息，以便复用方法
+     * @param trainingList 训练数据
+     * @return
+     */
+    @Override
+    public HalfTrainingData handleFindLastDate(List<Training> trainingList){
+        int index = trainingList.size() - 1;
+        Training target;
+        if(index >=0){
+            target = trainingList.get(index--);
+            HalfTrainingData result = new HalfTrainingData(target.getYear(), target.getMonth(), target.getDay(), target.getGold(), 0, 0, index, 1, 0.0);
+            //总时间存储计算 用于求平均值
+            long totalTime = target.getLength();
+            Integer concentration = target.getAverage();
+            //存储所有时间数据的list 用于求方差
+            List<Integer> timeList = new ArrayList<>(20);
+            while(target.getYear().equals(result.getYear())
+                    && target.getMonth().equals(result.getMonth())
+                    && target.getDay().equals(result.getDay())
+                    && index >= 0){
+                target = trainingList.get(index--);
+                //总时间(秒)
+                totalTime += target.getLength();
+                //当天训练次数统计
+                result.setTrainingNum(result.getTrainingNum() + 1);
+                //存储本次训练时间，用于求方差
+                timeList.add(target.getLength());
+                //求总专注度和
+                concentration += target.getAverage();
+                result.setTime(totalTime);
+                Double variance = 0.0;
+                long averageTime = totalTime / timeList.size();
+                //求方差
+                for(Integer t : timeList)
+                    variance += (t - averageTime)*(t - averageTime);
+                variance /= timeList.size();
+                result.setTimeVariance(variance);
+                result.setTime(totalTime);
+                result.setConcentrationE(concentration/timeList.size());
+                result.setMonth(result.getMonth() + 1);
+            }
+            return result;
+        }else{
+            return null;
+        }
+    }
 
 }
