@@ -4,22 +4,21 @@
     "pages/main-main/index",
     "pages/main-community/index",
     "pages/main-device/index",
-    "pages/main-device-detail/index",
     "pages/detail-line-graph/index",
     "pages/main-device-date/index",
     "pages/main-device-date-detail/index"
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "backgroundColor": "#eee",
-    "navigationBarBackgroundColor": "#eee",
-    "navigationBarTitleText": "早期测试",
+    "backgroundColor": "#FFF",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "童智训练同步",
     "navigationBarTextStyle": "black"
   },
   "tabBar": {
     "selectedColor": "#100964",
     "color": "black",
-    "borderStyle": "white",
+    "borderStyle": "black",
     "list": [
       {
         "pagePath": "pages/main-device/index",

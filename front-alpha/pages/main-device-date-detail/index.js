@@ -23,6 +23,7 @@ Page({
     tempList: [1,1,1,1,1,1,1,1,1,1],
     trainingList: [],
     ecLine: null,
+    chartReady: false,
     ecLine: {
       onInit: function (canvas, width, height, dpr) {
         const lineChart = echarts.init(canvas, null, {
@@ -179,9 +180,9 @@ Page({
         }
         app.globalData.detailedGraphX = graphX;
         app.globalData.detailedGraphY = graphY;
-        this.setData({hideLoading: true})
         console.log(app.globalData.detailedGraphY);
         wx.setStorageSync('token', data.token)
+        this.setData({hideLoading: true,chartReady: true})
       },
       fail: (res) => {
         console.log(res)

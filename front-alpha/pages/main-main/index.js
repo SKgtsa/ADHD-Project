@@ -107,8 +107,8 @@ Page({
   toDeviceDetail: function() {
     //实现按按钮跳转到设备页并再次跳转前往详情页
     //(跳转同时调用设备页的函数，涉及一个跨页面的函数调用)
-    wx.reLaunch({
-      url: '../main-device/index?showDetail=' + true,
+    wx.navigateTo({
+      url: '../main-device-date/index',
     })
   },
 
@@ -127,6 +127,7 @@ Page({
     showAdvicePage: false,
     suggestion: '',
     hideLoading: true,
+    chartReady: false,
     ecGauge: {
       onInit: function (canvas, width, height, dpr) {
         const gaugeChart = echarts.init(canvas, null, {
@@ -158,27 +159,41 @@ Page({
           token: wx.getStorageSync('token')
         },
         success: (res) => {
-          console.log('执行请求并成功')
-          console.log(res)
-          this.setData(res.data)
-          if(this.data.lastTrainingTime == '今天'){
-            this.setData({trainingLetter: '做得不错！'})
+          if(res.data.success){
+            console.log('执行请求并成功')
+            console.log(res)
+            this.setData(res.data)
+            if(this.data.dayOfWeek == 0)
+              this.setData({dayOfWeek: 7})
+            if(this.data.lastTrainingTime == '今天训练了'){
+              this.setData({trainingLetter: '做得不错！'})
+            }else{
+              this.setData({trainingLetter: '快开始今天的训练吧'})
+            }
+            if(this.data.lastDateTraining == null){
+              app.globalData.gaugeData = 0;
+            }else{
+              app.globalData.gaugeData = this.data.lastDateTraining.concentrationE;
+            }
+            wx.setStorageSync('token', res.data.token)
+            console.log('本地存储token变更为' + res.data.token)
+            this.setData({hideLoading: true,chartReady: true})
           }else{
-            this.setData({trainingLetter: '快开始今天的训练吧'})
+            console.log('执行请求并失败')
+            console.log(res)
+            app.globalData.login = false;
+            this.setData({hideLoading: true})
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
           }
-          this.setData({hideLoading: true})
-          if(this.data.lastDateTraining == null){
-            app.globalData.gaugeData = 0;
-          }else{
-            app.globalData.gaugeData = this.data.lastDateTraining.concentrationE;
-          }
-          wx.setStorageSync('token', res.data.token)
-          console.log('本地存储token变更为' + res.data.token)
+          
         },
         fail: (res) => {
           console.log('执行请求并失败')
           console.log(res)
           app.globalData.login = false;
+          this.setData({hideLoading: true})
           wx.switchTab({
             url: '../main-personal/index',
           })

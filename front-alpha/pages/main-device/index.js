@@ -559,6 +559,7 @@ Page({
     startFindTime: null,
     connectTime: 0,
     hideLoading: true,
+    chartReady: false,
     ecLine: {
       onInit: function (canvas, width, height, dpr) {
         const lineChart = echarts.init(canvas, null, {
@@ -628,9 +629,50 @@ Page({
         console.log('gaugeData: ' + app.globalData.gaugeData)
         app.globalData.detailedGraphY = data.content;
         console.log('detailedGraphY' + app.globalData.detailedGraphY);
-        app.globalData.detailedGraphX = ['1','2','3','4','5','6','7'];
+
+        
+
+        const date = new Date();
+        let y = date.getFullYear();
+
+        let days = [31,28,31,30,31,30,31,31,30,31,30,31] 
+        if ( (y % 4 ===0) && (y % 100 !==0 || y % 400 ===0) ) {
+              days[1] = 29
+        }
+
+        let m = date.getMonth() + 1;
+        let d = date.getDate();
+        console.log('y: ' + y + ' m : ' + m + ' d : ' + d)
+        let graphX = ['1','2','3','4','5','6','7'];
+        if(m == 1 && d < 7){
+          for(let i = 6;i >= 0;i --){
+            graphX[i] = y + '年' + m + '月' + d + '日';
+            d--;
+            if(d == 0){
+              m --;
+              if(m == 0){
+                y --;
+                m = 12;
+                d = 31;
+              }else{
+                d = days[m - 1]
+              }
+            }
+          }
+        }else{
+          for(let i = 6;i >= 0;i --){
+            graphX[i] = m + '月' + d + '日';
+            d--;
+            if(d == 0){
+              m --;
+              d = days[m - 1]
+            }
+          }
+        }
+        app.globalData.detailedGraphX = graphX;
+        console.log(graphX)
         wx.setStorageSync('token', data.token)
-        this.setData({hideLoading: true})
+        this.setData({hideLoading: true,chartReady: true})
       },
       fail: (res) => {
         app.globalData.login = false;

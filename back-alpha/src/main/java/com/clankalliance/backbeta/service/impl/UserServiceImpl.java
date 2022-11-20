@@ -148,8 +148,8 @@ public class UserServiceImpl implements UserService {
         boolean[] checkInList = checkInService.handleFind(trainingList);
         int missNum = 0;
         int needNum = 0;
-        int dayOfWeek = dateNow.get(Calendar.DAY_OF_WEEK);
-        dayOfWeek = dayOfWeek == 0? 7: dayOfWeek;
+        int dayOfWeek = dateNow.get(Calendar.DAY_OF_WEEK) - 1;
+        dayOfWeek = dayOfWeek == 1? 7: dayOfWeek;
         for(int i = 0;i < 7;i ++){
             if(!checkInList[i]){
                 if(i > dayOfWeek + 1){
@@ -174,6 +174,7 @@ public class UserServiceImpl implements UserService {
         response.setCheckInArray(checkInList);
         response.setDayOfWeek(dayOfWeek);
         response.setLastDateTraining(halfTrainingData);
+        response.setSuccess(true);
         return response;
     }
 

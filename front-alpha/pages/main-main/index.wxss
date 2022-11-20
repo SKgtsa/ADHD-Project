@@ -141,12 +141,25 @@ ec-canvas {
 }
 .checkIn{
   width: 90vw;
-  height: 15vh;
+  height: 20vh;
   background-color: #FFF;
   border-radius: 5vw;
   border-bottom-left-radius: 0;
   box-shadow: 5px 10px 15px 4px rgba(40, 29, 167, 0.4);  
 
+}
+.checkInCardName{
+  padding-left: 2vw;
+  padding-top: 1vh;
+}
+.checkInImage{
+  width: 3vw;
+  height: 3vw;
+}
+.checkInName{
+  font-size: 7vw;
+  color: #007af2;
+  line-height: 1vh;
 }
 .weekCheck{
 

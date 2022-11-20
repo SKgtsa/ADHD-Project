@@ -36,8 +36,12 @@
     </view>
     <view class="complexData">
       <view class="checkIn">
+        <view class="checkInCardName">
+          <image class="checkInImage" src="https://chenanbella.cn/static/checkIn.png"/>
+          <text class="checkInName">本周签到</text>
+        </view>
       <!--宽横行展示本周签到-->
-          <view class="weekCheck">
+        <view class="weekCheck">
           <block wx:for="{{checkInArray}}" wx:for-index="index" wx:key="id">
             <view class = "checkInContainer">
               <view class="weekDayBlock">
@@ -49,7 +53,7 @@
                 <image 
                 class="checkInImage" 
                 src="{{item? 'https://chenanbella.cn/static/checkInSuccess.png': 'https://chenanbella.cn/static/checkInFail.png'}}"
-                wx:if="{{index < dayOfWeek - 1}}"/>
+                wx:if="{{!((!item && index >= dayOfWeek - 1) || (item && index > dayOfWeek - 1))}}"/>
               </view>
               <text class="today">{{todayList[index]}}</text>
             </view>
@@ -61,7 +65,7 @@
           <text>{{checkInLetter}}</text>
         </view>
         <view class="gaugeArea">
-          <view class="container">
+          <view class="container" wx:if="{{chartReady}}">
           <ec-canvas wx:if="{{!showGauge}}" class="gaugeChart" id="mychart-dom-gauge" canvas-id="mychart-gauge" ec="{{ ecGauge }}"></ec-canvas>
           </view>
         </view>

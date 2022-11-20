@@ -42,9 +42,9 @@ function handleWeek(num) {
 
 function handleCheckInBackground(item) {
   if(item){
-    return 'background-color: #FFF'
+    return 'background-color: #e2f0fe'
   }else{
-    return 'background-color: #989898'
+    return 'background-color: #C0C0C0'
   }
 }
 
@@ -56,9 +56,10 @@ function handleDayOfWeekColor(index,dayOfWeek) {
   }
 }
 
+
 module.exports = {
   handleTime: handleTime,
   handleWeek: handleWeek,
   handleCheckInBackground: handleCheckInBackground,
-  handleDayOfWeekColor: handleDayOfWeekColor
+  handleDayOfWeekColor: handleDayOfWeekColor,
 }

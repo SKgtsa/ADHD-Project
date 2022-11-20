@@ -5,7 +5,7 @@
       <text><text style="font-weight: 600;">{{target.year}}</text>年<text style="font-weight: 600;">{{target.month}}</text>月<text style="font-weight: 600;">{{target.day}}</text>日</text>
     </view>
     <view class="wrapper">
-      <view class="container">
+      <view class="container" wx:if="{{chartReady}}">
         <ec-canvas class="lineChart" id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>
       </view>
     </view>

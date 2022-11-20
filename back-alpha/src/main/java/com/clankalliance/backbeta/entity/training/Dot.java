@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import java.util.Date;
 
 //每次训练的一个点数据
-@Entity
 @Data
 @NoArgsConstructor
 public class Dot {

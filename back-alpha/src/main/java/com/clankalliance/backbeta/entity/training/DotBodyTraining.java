@@ -14,7 +14,6 @@ import java.util.List;
 
 
 //每次训练的数据实体
-@Entity
 @Data
 @NoArgsConstructor
 public class DotBodyTraining {

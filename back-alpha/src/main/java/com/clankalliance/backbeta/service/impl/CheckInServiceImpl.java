@@ -38,13 +38,13 @@ public class CheckInServiceImpl implements CheckInService {
         int weekOfTheYear = calendar.get(Calendar.WEEK_OF_YEAR);
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         if(dayOfWeek == 1){
-            if(trainingList.get(trainingList.size() - 1).getWeekOfTheYear() == weekOfTheYear){
+            if(trainingList.size() > 0 && trainingList.get(trainingList.size() - 1).getWeekOfTheYear() == weekOfTheYear){
                 checkInWeek[6] = true;
             }
             weekOfTheYear --;
         }
         int temp;
-        for(int i = trainingList.size() - 1;i > 0 && trainingList.get(i).getWeekOfTheYear() == weekOfTheYear; i --){
+        for(int i = trainingList.size() - 1;i >= 0 && trainingList.get(i).getWeekOfTheYear() == weekOfTheYear; i --){
             temp = trainingList.get(i).getDayOfTheWeek() - 2;
             if(temp >= 0){
                 checkInWeek[temp] =true;

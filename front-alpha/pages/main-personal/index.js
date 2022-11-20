@@ -9,7 +9,6 @@ Page({
     userInfo: {avatarUrl: '../../img/default-avatar.jpg', nickName: '请登录'},
     gold: null,
     hour: null,
-    hourExpired: null,
     login: false,
     hideLoading: true,
   },
@@ -111,7 +110,7 @@ Page({
     const login = app.globalData.login;
     this.setData({login: login})
     if(login){
-      this.setData({userInfo: app.globalData.userInfo})
+      this.setData({userInfo: app.globalData.userInfo,hideLoading: false})
       wx.request({
         url:  app.globalData.baseURL + '/api/user/findUserInfo',
         method: 'POST',
@@ -119,8 +118,8 @@ Page({
         success: (res) => {
           console.log(res);
           const data = res.data;
-          this.setData({gold: data.content.gold,hour: data.content.hour,hourExpired: data.content.hourExpired})
           wx.setStorageSync('token', data.token);
+          this.setData({gold: data.content.gold,hour: data.content.hour,hideLoading: true})
           console.log('本地存储token变更为' + data.token)
         },
         fail: (res) => {
@@ -129,11 +128,7 @@ Page({
             title: '登录过期',
             icon: 'error'
           })
-          setTimeout(() => {
-            wx.switchTab({
-              url: '../main-personal/index',
-            })
-          },500)
+          this.setData({hideLoading: true})
         }
       })
     }else{

@@ -13,7 +13,6 @@ Page({
    * 页面的初始数据
    */
   data: {
-    expired: null,
     targetTraining: {
       mark: null,
       year: null,

@@ -82,7 +82,8 @@ public class TrainingServiceImpl implements TrainingService {
         Integer average = Integer.parseInt("" + total/ graph.length);
         //**********************************************************
         //为训练数据制定的更短的id生成规则
-        Training training = new Training(TrainingIdGenerator.nextId(response.getMessage()),Integer.parseInt(data[0]), calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DATE), calendar.get(Calendar.WEEK_OF_YEAR), calendar.get(Calendar.DAY_OF_WEEK),Integer.parseInt(data[1]), data[2],average, graph.length );
+        System.out.println(calendar.get(Calendar.MONTH) + "月");
+        Training training = new Training(TrainingIdGenerator.nextId(response.getMessage()),Integer.parseInt(data[0]), calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH) + 1,calendar.get(Calendar.DATE),  calendar.get(Calendar.WEEK_OF_YEAR), calendar.get(Calendar.DAY_OF_WEEK),Integer.parseInt(data[1]), data[2],average, graph.length );
         try{
             trainingRepository.save(training);
         }catch (Exception e){
@@ -99,7 +100,7 @@ public class TrainingServiceImpl implements TrainingService {
         boolean fullCheckIn = true;
         //满签条件：今天是周日 且训练列表里末尾训练时间为周六 则进一步判断
         //此处训练列表以时间顺序同步，拥有顺序，也能保证查询时最省时
-        if(calendar.get(Calendar.DAY_OF_WEEK) == 1 && trainingList.get(trainingList.size() - 1).getDayOfTheWeek() == 7){
+        if(calendar.get(Calendar.DAY_OF_WEEK) == 1 && trainingList.size() > 0 && trainingList.get(trainingList.size() - 1).getDayOfTheWeek() == 7){
             //周日为一周的第一天，故此处减一
             int weekOfTheYear = calendar.get(Calendar.WEEK_OF_YEAR) - 1;
             //当前签到日为周日，不需判断
@@ -330,12 +331,10 @@ public class TrainingServiceImpl implements TrainingService {
             startIndex = trainingList.size() - 1;
         }
         trainingListIndex = startIndex;
-        for(int i = 0;i < length;i ++){
-            if(trainingListIndex < 0){
-                break;
-            }
+        for(int i = 0;i < length && trainingListIndex >= 0;i ++){
             target = trainingList.get(trainingListIndex);
-            halfTrainingData[i] = new HalfTrainingData(target.getYear(),target.getMonth(),target.getDay(),target.getGold(),0,0,trainingListIndex++,1,0.0);
+            halfTrainingData[i] = new HalfTrainingData(target.getYear(),target.getMonth(),target.getDay(),target.getGold(),0,0,trainingListIndex,1,0.0);
+            trainingListIndex --;
             //总时间存储计算 用于求平均值
             long totalTime = target.getLength();
             Integer concentration = target.getAverage();
@@ -343,16 +342,13 @@ public class TrainingServiceImpl implements TrainingService {
             List<Integer> timeList = new ArrayList<>(20);
             //加上当天最后一次训练(list中的第一个)
             timeList.add(target.getLength());
-            trainingListIndex --;
-            if(trainingListIndex <= 0)
-                break;
-            for(target = trainingList.get(--trainingListIndex);
-                target.getYear().equals(halfTrainingData[i].getYear())
-                        && target.getMonth().equals(halfTrainingData[i].getMonth())
-                        && target.getDay().equals(halfTrainingData[i].getDay())
-                        && trainingListIndex >= 0;
-                target = trainingList.get(--trainingListIndex)
+            while(
+                    trainingListIndex >= 0
+                    && target.getYear().equals(halfTrainingData[i].getYear())
+                    && target.getMonth().equals(halfTrainingData[i].getMonth())
+                    && target.getDay().equals(halfTrainingData[i].getDay())
             ){
+                target = trainingList.get(trainingListIndex);
                 //总时间(秒)
                 totalTime += target.getLength();
                 //当天训练次数统计
@@ -361,6 +357,7 @@ public class TrainingServiceImpl implements TrainingService {
                 timeList.add(target.getLength());
                 //求总专注度和
                 concentration += target.getAverage();
+                trainingListIndex --;
             }
             halfTrainingData[i].setTime(totalTime);
             Double variance = 0.0;
@@ -373,6 +370,7 @@ public class TrainingServiceImpl implements TrainingService {
             halfTrainingData[i].setTime(totalTime);
             halfTrainingData[i].setConcentrationE(concentration/timeList.size());
             halfTrainingData[i].setMonth(halfTrainingData[i].getMonth() + 1);
+
         }
         response.setContent(halfTrainingData);
         response.setMessage("" + trainingListIndex);
@@ -399,6 +397,7 @@ public class TrainingServiceImpl implements TrainingService {
         User user = userRepository.findUserByOpenId(response.getMessage()).get();
         List<Training> trainingList = user.getTrainingList();
         int iter = startIndex;
+
         Training startTraining = trainingList.get(startIndex);
         List<Training> result = new ArrayList<>();
         int y = startTraining.getYear();
@@ -437,10 +436,13 @@ public class TrainingServiceImpl implements TrainingService {
             Integer concentration = target.getAverage();
             //存储所有时间数据的list 用于求方差
             List<Integer> timeList = new ArrayList<>(20);
-            while(target.getYear().equals(result.getYear())
+            timeList.add(target.getLength());
+            while(
+                    index >= 0
+                    && target.getYear().equals(result.getYear())
                     && target.getMonth().equals(result.getMonth())
                     && target.getDay().equals(result.getDay())
-                    && index >= 0){
+                    ){
                 target = trainingList.get(index--);
                 //总时间(秒)
                 totalTime += target.getLength();
@@ -450,18 +452,18 @@ public class TrainingServiceImpl implements TrainingService {
                 timeList.add(target.getLength());
                 //求总专注度和
                 concentration += target.getAverage();
-                result.setTime(totalTime);
-                Double variance = 0.0;
-                long averageTime = totalTime / timeList.size();
-                //求方差
-                for(Integer t : timeList)
-                    variance += (t - averageTime)*(t - averageTime);
-                variance /= timeList.size();
-                result.setTimeVariance(variance);
-                result.setTime(totalTime);
-                result.setConcentrationE(concentration/timeList.size());
-                result.setMonth(result.getMonth() + 1);
             }
+            result.setTime(totalTime);
+            Double variance = 0.0;
+            long averageTime = totalTime / timeList.size();
+            //求方差
+            for(Integer t : timeList)
+                variance += (t - averageTime)*(t - averageTime);
+            variance /= timeList.size();
+            result.setTimeVariance(variance);
+            result.setTime(totalTime);
+            result.setConcentrationE(concentration/timeList.size());
+            result.setMonth(result.getMonth());
             return result;
         }else{
             return null;
