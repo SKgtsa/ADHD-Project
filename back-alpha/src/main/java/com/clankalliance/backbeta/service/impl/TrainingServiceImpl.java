@@ -107,7 +107,7 @@ public class TrainingServiceImpl implements TrainingService {
             boolean weekContainer[] = {false,false,false,false,false,false,true};
             int i = trainingList.size() - 1;
             //倒序遍历本周所有训练
-            while(trainingList.get(i).getWeekOfTheYear() == weekOfTheYear){
+            while(i >= 0 && trainingList.get(i).getWeekOfTheYear() == weekOfTheYear){
                 weekContainer[trainingList.get(i).getDayOfTheWeek() - 2] = true;
                 i--;
             }
@@ -344,9 +344,9 @@ public class TrainingServiceImpl implements TrainingService {
             timeList.add(target.getLength());
             while(
                     trainingListIndex >= 0
-                    && target.getYear().equals(halfTrainingData[i].getYear())
-                    && target.getMonth().equals(halfTrainingData[i].getMonth())
-                    && target.getDay().equals(halfTrainingData[i].getDay())
+                    && trainingList.get(trainingListIndex).getYear().equals(halfTrainingData[i].getYear())
+                    && trainingList.get(trainingListIndex).getMonth().equals(halfTrainingData[i].getMonth())
+                    && trainingList.get(trainingListIndex).getDay().equals(halfTrainingData[i].getDay())
             ){
                 target = trainingList.get(trainingListIndex);
                 //总时间(秒)
@@ -369,7 +369,7 @@ public class TrainingServiceImpl implements TrainingService {
             halfTrainingData[i].setTimeVariance(variance);
             halfTrainingData[i].setTime(totalTime);
             halfTrainingData[i].setConcentrationE(concentration/timeList.size());
-            halfTrainingData[i].setMonth(halfTrainingData[i].getMonth() + 1);
+            halfTrainingData[i].setMonth(halfTrainingData[i].getMonth());
 
         }
         response.setContent(halfTrainingData);

@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService {
         int missNum = 0;
         int needNum = 0;
         int dayOfWeek = dateNow.get(Calendar.DAY_OF_WEEK) - 1;
-        dayOfWeek = dayOfWeek == 1? 7: dayOfWeek;
+        dayOfWeek = dayOfWeek == 0? 7: dayOfWeek;
         for(int i = 0;i < 7;i ++){
             if(!checkInList[i]){
                 if(i > dayOfWeek + 1){

@@ -37,15 +37,19 @@ public class CheckInServiceImpl implements CheckInService {
         Calendar calendar = Calendar.getInstance();
         int weekOfTheYear = calendar.get(Calendar.WEEK_OF_YEAR);
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        int index = trainingList.size() - 1;
         if(dayOfWeek == 1){
-            if(trainingList.size() > 0 && trainingList.get(trainingList.size() - 1).getWeekOfTheYear() == weekOfTheYear){
+            if(trainingList.size() > 0 && trainingList.get(index).getWeekOfTheYear() == weekOfTheYear){
                 checkInWeek[6] = true;
+                while(trainingList.get(index).getWeekOfTheYear() == weekOfTheYear){
+                    index --;
+                }
             }
             weekOfTheYear --;
         }
         int temp;
-        for(int i = trainingList.size() - 1;i >= 0 && trainingList.get(i).getWeekOfTheYear() == weekOfTheYear; i --){
-            temp = trainingList.get(i).getDayOfTheWeek() - 2;
+        for(;index >= 0 && trainingList.get(index).getWeekOfTheYear() == weekOfTheYear; index --){
+            temp = trainingList.get(index).getDayOfTheWeek() - 2;
             if(temp >= 0){
                 checkInWeek[temp] =true;
             }
