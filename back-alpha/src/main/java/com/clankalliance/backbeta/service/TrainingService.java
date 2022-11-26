@@ -1,12 +1,10 @@
 package com.clankalliance.backbeta.service;
 
 
-import com.clankalliance.backbeta.entity.arrayTraining.Training;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.response.FindGraphResponse;
-import com.clankalliance.backbeta.utils.HalfTrainingData;
+import com.clankalliance.backbeta.response.LastSevenResponse;
 
-import java.util.List;
 
 public interface TrainingService {
 
@@ -15,18 +13,22 @@ public interface TrainingService {
     CommonResponse handleSave(String token, String rawData);
 
 
-    CommonResponse handleFind(String token, Integer pageNum, Integer pageSize);
+//    CommonResponse handleFind(String token, Integer pageNum, Integer pageSize);
 
 
     FindGraphResponse handleFindGraph(String token, String id);
 
 
-    CommonResponse handleFindSeven(String token);
+    LastSevenResponse handleFindSeven(String token);
 
     CommonResponse handleFindDateList(String token,Integer startIndex, Integer length);
 
-    CommonResponse handleFindDateData(String token,Integer startIndex);
+    CommonResponse handleFindDateData(String token,String id);
 
-    HalfTrainingData handleFindLastDate(List<Training> trainingList);
+    Boolean needImage(String wxOpenId);
+
+    void updateImage(String filePath,String wxOpenId);
+
+//    HalfTrainingData handleFindLastDate(List<Training> trainingList);
 
 }

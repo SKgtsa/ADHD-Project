@@ -4,6 +4,7 @@ package com.clankalliance.backbeta.controller;
 import com.clankalliance.backbeta.request.*;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.response.FindGraphResponse;
+import com.clankalliance.backbeta.response.LastSevenResponse;
 import com.clankalliance.backbeta.service.TrainingService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,14 +25,14 @@ public class TrainingController {
         return trainingService.handleSave(request.getToken(), request.getRawData());
     }
 
-    /**     * 直接分页返回训练数据
-     * @param request
-     * @return
-     */
-    @RequestMapping("/find")
-    public CommonResponse findDirectList(@RequestBody CommonPageableRequest request){
-        return trainingService.handleFind(request.getToken(), request.getPageNum(), request.getSize());
-    }
+//    /**     * 直接分页返回训练数据
+//     * @param request
+//     * @return
+//     */
+//    @RequestMapping("/find")
+//    public CommonResponse findDirectList(@RequestBody CommonPageableRequest request){
+//        return trainingService.handleFind(request.getToken(), request.getPageNum(), request.getSize());
+//    }
 
 
     @RequestMapping("/findGraph")
@@ -41,7 +42,7 @@ public class TrainingController {
 
 
     @RequestMapping("/findLastSevenDay")
-    public CommonResponse findLastSevenDay(@RequestBody TokenCheckRequest request){
+    public LastSevenResponse findLastSevenDay(@RequestBody TokenCheckRequest request){
         return trainingService.handleFindSeven(request.getToken());
     }
 
@@ -61,8 +62,8 @@ public class TrainingController {
      * @return
      */
     @RequestMapping("/findDateTraining")
-    public CommonResponse findDateData(@RequestBody CommonPullDownRequest request){
-        return trainingService.handleFindDateData(request.getToken(), request.getStartIndex());
+    public CommonResponse findDateData(@RequestBody CommonFindRequest request){
+        return trainingService.handleFindDateData(request.getToken(), request.getId());
     }
 
 

@@ -17,7 +17,7 @@
           <view class="pattern">
             <view class="BlueToothLetter">
               <text>{{blueToothStatus}}</text>
-              <text>请不要退出本页面</text>
+              <text>请保持蓝牙开启，不要退出本页面</text>
             </view>
           </view>
         </view>

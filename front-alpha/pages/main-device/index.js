@@ -1,4 +1,5 @@
 import * as echarts from '../../ec-canvas/echarts';
+//设备页
 
 const app = getApp();
 Page({
@@ -430,6 +431,11 @@ Page({
               setTimeout(() => {
                 this.setData({showBlueToothPage: false})
               } ,1000)
+              wx.showToast({
+                title: '数据全部发送成功',
+                icon: 'success',
+                duration: 1000
+              })
             }
           }else{
             //接收数据 因为设备连接后会首先发来Nero_Car_Service 所以滤过该信号
@@ -450,7 +456,7 @@ Page({
         // 连接成功，获取服务
         
         console.log('连接成功，获取服务')
-        this.setData({blueToothConnceted: true, blueToothStatus: '设备已连接', deviceId: deviceId})
+        this.setData({blueToothConnceted: true, blueToothStatus: '设备已连接，正在传输数据', deviceId: deviceId})
         this.bleGetDeviceServices(deviceId)
         wx.showToast({
           title: '连接成功',
@@ -605,6 +611,18 @@ Page({
     }
     console.log('intoOnShow()')
     console.log(wx.getStorageSync('token'))
+   
+  },
+  onLoad(){
+    if(this.options){
+      console.log(this.options.showBlueToothPage)
+      this.setData({
+        showBlueToothPage: this.options.showBlueToothPage,
+      })
+      if(this.options.showDetail){
+        this.detailedButton();
+      }
+    }
     this.setData({hideLoading: false})
     wx.request({
       url: app.globalData.baseURL +  '/api/training/findLastSevenDay',
@@ -612,6 +630,7 @@ Page({
       data: {token: wx.getStorageSync('token')},
       success: (res) => {
         const data = res.data;
+        console.log(data)
         if(data.token == null){
           app.globalData.login = false;
           wx.showToast({
@@ -625,12 +644,8 @@ Page({
           },500)
         }
         console.log(res);
-        app.globalData.gaugeData = data.message;
-        console.log('gaugeData: ' + app.globalData.gaugeData)
+        app.globalData.gaugeData = data.average;
         app.globalData.detailedGraphY = data.content;
-        console.log('detailedGraphY' + app.globalData.detailedGraphY);
-
-        
 
         const date = new Date();
         let y = date.getFullYear();
@@ -672,7 +687,68 @@ Page({
         app.globalData.detailedGraphX = graphX;
         console.log(graphX)
         wx.setStorageSync('token', data.token)
-        this.setData({hideLoading: true,chartReady: true})
+        if(data.needImage){
+          wx.showModal({
+            title: '请上传训练图片',
+            content: '请上传训练图片，完成签到',
+            showCancel: false,
+            success :(res) => {
+              if(res.confirm){
+                wx.chooseImage({
+                  count: 1,
+                  sizeType: ["compressed"],
+                  sourceType: ['album','camera'],
+                  success(res){
+                    console.log(res)
+                    console.log("上传至" + app.globalData.baseURL + '/api/upload/photoUpload')
+                    wx.uploadFile({
+                      filePath: res.tempFilePaths[0],
+                      name: 'file',
+                      url: app.globalData.baseURL + '/api/upload/photoUpload',
+                      formData: {
+                        'token': wx.getStorageSync('token'),
+                        'nickName': app.globalData.userInfo.nickName
+                      },
+                      success(res){
+                        if(!res.data.success){
+                          app.globalData.login = false;
+                          wx.showToast({
+                            title: '登录过期',
+                            icon: 'error'
+                          })
+                          setTimeout(() => {
+                            wx.switchTab({
+                              url: '../main-personal/index',
+                            })
+                          },500)
+                        }
+                        wx.setStorageSync('token', res.data.token)
+                        wx.showToast({
+                          title: '图片上传成功',
+                          icon: 'success',
+                          duration: 1000
+                        })
+                      }
+                    })
+                  }
+                })
+              }
+            },
+            fail: (res) => {
+              app.globalData.login = false;
+              wx.showToast({
+                title: '登录过期',
+                icon: 'error'
+              })
+              setTimeout(() => {
+                wx.switchTab({
+                  url: '../main-personal/index',
+                })
+              },500)
+            }
+          })  
+        }
+        this.setData({hideLoading: true,chartReady: true,needImage: data.needImage})
       },
       fail: (res) => {
         app.globalData.login = false;
@@ -687,17 +763,6 @@ Page({
         },500)
       }
     })
-  },
-  onLoad(){
-    if(this.options){
-      console.log(this.options.showBlueToothPage)
-      this.setData({
-        showBlueToothPage: this.options.showBlueToothPage,
-      })
-      if(this.options.showDetail){
-        this.detailedButton();
-      }
-    }
   }
 });
 
@@ -736,7 +801,8 @@ function getLineOption() {
       type: 'line',
       smooth: true,
       data: app.globalData.detailedGraphY
-    }]
+    }],
+    needImage: false,
   };
 }
 function getGaugeOption() {

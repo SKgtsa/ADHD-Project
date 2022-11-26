@@ -1,4 +1,5 @@
 // pages/main-device-date-detail/index.js
+//训练日详情页
 import * as echarts from '../../ec-canvas/echarts';
 const app = getApp();
 Page({
@@ -73,8 +74,16 @@ Page({
         this.data.concentration = data.concentration;
         //保存token 保留登陆状态
         wx.setStorageSync('token', res.data.token)
+        this.data.average = 0;
         const target = this.data.targetTraining;
+
+        for(let i = 0;i < target.graph.length;i ++){
+          this.data.average += target.graph[i];
+        }
+        this.data.average = (this.data.average/ target.graph.length).toFixed(0);
         app.globalData.detailedGraphY = target.graph;
+        app.globalData.gaugeData = this.data.average;
+        console.log("app.globalData.gaugeData: " + app.globalData.gaugeData);
         //图像的x轴数据
         let graphX = new Array(target.graph.length);
         //时 分 秒数据 统计并写入x轴
@@ -107,7 +116,7 @@ Page({
         app.globalData.detailedGraphX = graphX;
         console.log(app.globalData.detailedGraphX);
         wx.navigateTo({
-          url: '../detail-line-graph/index?mark=' + target.mark + '&year=' + target.year + '&month=' + target.month + '&day=' + target.day + '&gold=' + target.gold 
+          url: '../detail-line-graph/index?mark=' + target.mark + '&year=' + target.year + '&month=' + target.month + '&day=' + target.day + '&gold=' + target.gold + '&average=' + target.average
         })
       },
       fail: (res) => {
@@ -141,7 +150,11 @@ Page({
           time: this.options.time,
           startIndex: this.options.startIndex,
           trainingNum: this.options.trainingNum,
-          timeVariance: this.options.timeVariance
+          timeVariance: this.options.timeVariance,
+          id: this.options.id,
+          dayOfTheWeek: this.options.dayOfTheWeek,
+          weekOfTheYear: this.options.weekOfTheYear,
+          imageName: this.options.imageName,
         }
       })
       console.log(this.data)
@@ -165,7 +178,7 @@ Page({
       method: 'POST',
       data: {
         token: wx.getStorageSync('token'),
-        startIndex: this.data.target.startIndex
+        id: this.data.target.id
       },
       success: (res) => {
         console.log("data:")

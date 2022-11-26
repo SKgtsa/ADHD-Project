@@ -29,6 +29,6 @@ public class User {
     private Integer gold;
 
     @OneToMany
-    private List<Training> trainingList;
+    private List<DateData> dateDataList;
 
 }

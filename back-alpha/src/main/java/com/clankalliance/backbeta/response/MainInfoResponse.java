@@ -1,5 +1,6 @@
 package com.clankalliance.backbeta.response;
 
+import com.clankalliance.backbeta.entity.DateData;
 import com.clankalliance.backbeta.utils.HalfTrainingData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,7 +32,7 @@ public class MainInfoResponse {
     private Integer concentrationE;
 
     //最近的一天训练数据
-    private HalfTrainingData lastDateTraining;
+    private DateData lastDateTraining;
 
 
 }

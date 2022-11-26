@@ -1,5 +1,6 @@
 package com.clankalliance.backbeta.service.impl;
 
+import com.clankalliance.backbeta.entity.DateData;
 import com.clankalliance.backbeta.entity.User;
 import com.clankalliance.backbeta.entity.arrayTraining.Training;
 import com.clankalliance.backbeta.repository.UserRepository;
@@ -88,11 +89,11 @@ public class UserServiceImpl implements UserService {
             return response;
         }
         User user = userRepository.findUserByOpenId(response.getMessage()).get();
-        List<Training> trainingList =  user.getTrainingList();
+        List<DateData> dateDataList =  user.getDateDataList();
         Map<String,String> map = new HashMap<>();
         long hour = 0;
-        for(Training t : trainingList){
-            hour += t.getGraph().split(",").length;
+        for(DateData d : dateDataList){
+            hour += d.getTime()/3600;
         }
         hour /= 3600;
         map.put("hour","" + hour);
@@ -112,17 +113,18 @@ public class UserServiceImpl implements UserService {
         }
         response.setToken(responseT.getToken());
         User user = userRepository.findUserByOpenId(responseT.getMessage()).get();
-        List<Training> trainingList = user.getTrainingList();
+        List<DateData> dateDataList =  user.getDateDataList();
 
-        HalfTrainingData halfTrainingData = trainingService.handleFindLastDate(trainingList);
+        DateData lastDateData = null;
 
         Calendar dateNow = Calendar.getInstance();
         Calendar dateLastTraining = Calendar.getInstance();
         Integer days;
-        if(halfTrainingData == null){
+        if(dateDataList.isEmpty()){
             days = -1;
         }else{
-            dateLastTraining.set(halfTrainingData.getYear(),halfTrainingData.getMonth() - 1,halfTrainingData.getDay());
+            lastDateData = dateDataList.get(dateDataList.size() - 1);
+            dateLastTraining.set(lastDateData.getYear(),lastDateData.getMonth(),lastDateData.getDay());
             Date timeNow = new Date();
             Date timeLastTraining = dateLastTraining.getTime();
             days = Integer.parseInt( "" + (timeNow.getTime() - timeLastTraining.getTime())/(1000*60*60*24));
@@ -145,17 +147,17 @@ public class UserServiceImpl implements UserService {
                 break;
         }
 
-        boolean[] checkInList = checkInService.handleFind(trainingList);
+        boolean[] checkInList = checkInService.handleFind(dateDataList);
         int missNum = 0;
         int needNum = 0;
         int dayOfWeek = dateNow.get(Calendar.DAY_OF_WEEK) - 1;
         dayOfWeek = dayOfWeek == 0? 7: dayOfWeek;
         for(int i = 0;i < 7;i ++){
             if(!checkInList[i]){
-                if(i > dayOfWeek + 1){
+                if(i + 1 >= dayOfWeek){
                     //今天及以后的 为未签到
                     needNum ++;
-                }else if(i < dayOfWeek + 1){
+                }else{
                     //今天以前的为漏签
                     missNum ++;
                 }
@@ -173,7 +175,7 @@ public class UserServiceImpl implements UserService {
 
         response.setCheckInArray(checkInList);
         response.setDayOfWeek(dayOfWeek);
-        response.setLastDateTraining(halfTrainingData);
+        response.setLastDateTraining(lastDateData);
         response.setSuccess(true);
         return response;
     }

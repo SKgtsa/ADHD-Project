@@ -35,6 +35,19 @@ Page({
         return lineChart;
       }
     },
+    ecGauge: {
+      onInit: function (canvas, width, height, dpr) {
+        const gaugeChart = echarts.init(canvas, null, {
+          width: width,
+          height: height,
+          devicePixelRatio: dpr // new
+        });
+        canvas.setChart(gaugeChart);
+        gaugeChart.setOption(getGaugeOption());
+
+        return gaugeChart;
+      }
+    }
   },
 
   /**
@@ -49,7 +62,9 @@ Page({
           month: this.options.month,
           day: this.options.day,
           gold: this.options.gold,
-          trainingMessage: ''
+          average: this.options.average,
+          trainingMessage: "做的不错"
+
         }
       })
       console.log(this.data)
@@ -156,4 +171,56 @@ function getLineOption() {
       ]
     }]
   };
+}
+function getGaugeOption() {
+  return{
+    series: [{
+      title: {
+        offsetCenter: [0,'70%'],
+        show: true,
+        color: '#486484',
+        fontWeight: 'bold',
+        fontSize: 20
+      },
+      type: 'gauge',
+      radius: '90%',
+      center: ['50%','55%'],
+      detail: {
+        formatter: '{value}%',
+        textStyle: {
+          fontWeight: 'normal',
+          color: '#007af2'
+        },
+      },
+      axisLine: {
+        show: true,
+        lineStyle: {
+          color: [[1,'#486484']],
+          width:7
+        }
+      },
+      axisTick: {
+        show: false
+      },
+      axisLabel: {
+        show: false
+      },
+      splitLine: {
+        show: false
+      },
+      pointer: {
+        width: 15,
+        itemStyle: {
+          color: '#486484'
+        }
+      },
+      data: [{
+        value: app.globalData.gaugeData,
+        name: '平均专注率',
+        textStyle: {
+          color: '#FFF'
+        }
+      }]
+
+    }]};
 }

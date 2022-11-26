@@ -90,7 +90,7 @@
   color: #007af2;
   font-weight: bolder;
   z-index: 1;
-  font-size: 24vw;
+  font-size: 19vw;
   line-height: 19vw;
 }
 .goldBox{

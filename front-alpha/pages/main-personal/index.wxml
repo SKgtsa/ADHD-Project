@@ -22,7 +22,7 @@
             <view class="left">
               <view class="leftBox">
                 <text>您已坚持训练</text>
-                <text><text style="color: #007af2;font-weight: bolder;font-size: 20vw;line-height: 18vw;">{{hour}}</text>小时</text>
+                <text style="line-height: 18vw;"><text style="color: #007af2;font-weight: bolder;font-size: 20vw;">{{hour}}</text>小时</text>
               </view>
             </view>
             <view class="right">

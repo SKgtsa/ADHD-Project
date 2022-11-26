@@ -1,5 +1,6 @@
 package com.clankalliance.backbeta.service.impl;
 
+import com.clankalliance.backbeta.entity.DateData;
 import com.clankalliance.backbeta.entity.User;
 import com.clankalliance.backbeta.entity.arrayTraining.Training;
 import com.clankalliance.backbeta.repository.UserRepository;
@@ -28,28 +29,26 @@ public class CheckInServiceImpl implements CheckInService {
     /**
      * 传入训练列表
      * 根据日期判断本周时间范围并检索有效训练，计算签到
-     * @param trainingList 对应用户的训练列表
+     * @param dateDataList 对应用户的训练日数据列表
      * @return
      */
     @Override
-    public boolean[] handleFind(List<Training> trainingList) {
+    public boolean[] handleFind(List<DateData> dateDataList) {
         boolean checkInWeek[] = {false,false,false,false,false,false,false};
         Calendar calendar = Calendar.getInstance();
         int weekOfTheYear = calendar.get(Calendar.WEEK_OF_YEAR);
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        int index = trainingList.size() - 1;
+        int index = dateDataList.size() - 1;
         if(dayOfWeek == 1){
-            if(trainingList.size() > 0 && trainingList.get(index).getWeekOfTheYear() == weekOfTheYear){
+            if(dateDataList.size() > 0 && dateDataList.get(index).getWeekOfTheYear() == weekOfTheYear){
                 checkInWeek[6] = true;
-                while(trainingList.get(index).getWeekOfTheYear() == weekOfTheYear){
-                    index --;
-                }
+                index --;
             }
             weekOfTheYear --;
         }
         int temp;
-        for(;index >= 0 && trainingList.get(index).getWeekOfTheYear() == weekOfTheYear; index --){
-            temp = trainingList.get(index).getDayOfTheWeek() - 2;
+        for(;index >= 0 && dateDataList.get(index).getWeekOfTheYear() == weekOfTheYear; index --){
+            temp = dateDataList.get(index).getDayOfTheWeek() - 2;
             if(temp >= 0){
                 checkInWeek[temp] =true;
             }

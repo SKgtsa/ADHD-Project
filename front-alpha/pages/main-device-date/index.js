@@ -1,4 +1,5 @@
 // pages/main-device-date/index.js
+//训练详情页 列出训练日列表
 const app = getApp();
 Page({
 
@@ -28,6 +29,10 @@ Page({
       this.setData({requesting: true})
       console.log("startIndex: " + this.data.startIndex)
       this.setData({showMask: true,hideLoading: false})
+      console.log("获取日列表：发送请求至findDateList")
+      console.log("startIndex: " + this.data.startIndex)
+      console.log("length" + this.data.length)
+      console.log("*******************")
       wx.request({
         url: app.globalData.baseURL + '/api/training/findDateList',
         method: 'POST',
@@ -153,7 +158,7 @@ Page({
     const data = this.data;
     const index = target.target.dataset.target;
     wx.navigateTo({
-      url: '../main-device-date-detail/index?year=' + data.dataList[index].year + '&month=' + data.dataList[index].month + '&day=' + data.dataList[index].day + '&gold=' + data.dataList[index].gold + '&concentrationE=' + data.dataList[index].concentrationE + '&time=' + data.dataList[index].time + '&startIndex=' + data.dataList[index].startIndex + '&trainingNum=' + data.dataList[index].trainingNum + '&timeVariance' + data.dataList[index].timeVariance
+      url: '../main-device-date-detail/index?year=' + data.dataList[index].year + '&month=' + data.dataList[index].month + '&day=' + data.dataList[index].day + '&gold=' + data.dataList[index].gold + '&concentrationE=' + data.dataList[index].concentrationE + '&time=' + data.dataList[index].time + '&startIndex=' + data.dataList[index].startIndex + '&trainingNum=' + data.dataList[index].trainingNum + '&timeVariance' + data.dataList[index].timeVariance + '&id=' + data.dataList[index].id + '&dayOfTheWeek=' + data.dataList[index].dayOfTheWeek + '&weekOfTheYear=' + data.dataList[index].weekOfTheYear + '&imageName=' + data.dataList[index].imageName
     })
   },
 

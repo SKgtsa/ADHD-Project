@@ -16,15 +16,14 @@
     </view>
     <view class="wrapper">
       <view class="timeCard">
-        <!-- <view class="yearCard"> -->
-          <a><text style="font-weight: 700; color: #0273f1;">{{targetTraining.year}}</text>年</a>
-        <!-- </view> -->
-        <!-- <view class="dateCard"> -->
-          <a><text style="font-weight: 700; color: #0273f1;">{{targetTraining.month}}</text>月<text style="font-weight: 700; color: #0273f1;">{{targetTraining.day}}</text>日</a>
-        <!-- </view> -->
+        <ec-canvas wx:if="{{!showGauge}}" class="gaugeChart" id="mychart-dom-gauge" canvas-id="mychart-gauge" ec="{{ ecGauge }}"></ec-canvas>
       </view>
       <view class="markCard">
-        <a>第<text style="font-weight: 700; color: #0273f1;">{{targetTraining.mark}}</text>次训练</a>
+        <a>训练编号：</a>
+        <view style="display: flex;flex-direction: row-reverse;">
+          <text style="font-weight: 700; color: #0273f1;font-size: 8vh;padding-right: 4vw;">{{targetTraining.mark}}</text>
+        </view>
+
       </view>
     </view>
     

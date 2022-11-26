@@ -102,27 +102,30 @@ ec-canvas {
   height: 10vh;
   display: flex;
   flex-direction: row;
-  margin: auto;
+  margin: 0 auto;
   
 }
 .checkTraining{
-  width: 44vw;
+  width: 45vw;
   border-bottom-right-radius: 5vw;
   border-bottom-left-radius: 5vw;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   background-color: #FFF;
   color: #486484;
   font-size: 3.5vh;
   border-color: #007af2;
   border-style: solid;
   border-top-style: none;
-  border-top-style: none;
   border-width: 5px;
-  box-shadow: 5px 10px 15px 4px rgba(40, 29, 167, 0.4);  
+  box-shadow: 5px 5px 10px 2px rgba(40, 29, 167, 0.4);  
 }
 .syncData{
-  width: 44vw;
+  width: 45vw;
   border-bottom-right-radius: 5vw;
   border-bottom-left-radius: 5vw;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   background-color: #FFF;
   color: #486484;
   font-size: 3.5vh;
@@ -130,7 +133,7 @@ ec-canvas {
   border-style: solid;
   border-top-style: none;
   border-width: 5px;
-  box-shadow: 5px 10px 15px 4px rgba(40, 29, 167, 0.4);  
+  box-shadow: 5px 5px 10px 2px rgba(40, 29, 167, 0.4);  
 
 }
 .complexData{

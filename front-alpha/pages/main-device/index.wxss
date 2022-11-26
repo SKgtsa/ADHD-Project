@@ -5,16 +5,16 @@ ec-canvas {
 }
 .mainContainer{
     text-align: center;
-    background-color: #d0dfee;
+    background-color: rgba(150, 187, 255, 0.233);
 }
 .titleContainer{
   width: 100vw;
-  color: #FFF;
+  color: #007af2;
   height: 5vh;
   border-radius: 6vw;
   padding-top: 1.5vh;
   padding-bottom: 0.5vh;
-  background-color: #1a274e;
+  background-color: #fff;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
@@ -22,7 +22,7 @@ ec-canvas {
   font-size: 3.5vh;
   text-align: left;
   z-index: 1;
-  font-weight: bold;
+  font-weight: 500;
   width: 100vw;
 
 }
@@ -84,7 +84,7 @@ ec-canvas {
 .mask{
   z-index: 1;
   height: 100vh;
-  background-color: rgba(60, 60, 60, 0.9);
+  background-color: rgba(60, 60, 60, 0.7);
 }
 .popOutWindow{
   z-index: 2;

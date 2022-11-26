@@ -1,14 +1,18 @@
 package com.clankalliance.backbeta.service.impl;
 
 
+import com.clankalliance.backbeta.entity.DateData;
 import com.clankalliance.backbeta.entity.User;
 import com.clankalliance.backbeta.entity.arrayTraining.Training;
+import com.clankalliance.backbeta.repository.DateDataRepository;
 import com.clankalliance.backbeta.repository.TrainingRepository;
 import com.clankalliance.backbeta.repository.UserRepository;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.response.FindGraphResponse;
+import com.clankalliance.backbeta.response.LastSevenResponse;
 import com.clankalliance.backbeta.service.TrainingService;
 
+import com.clankalliance.backbeta.utils.DateDataIdGenerator;
 import com.clankalliance.backbeta.utils.HalfTrainingData;
 import com.clankalliance.backbeta.utils.TokenUtil;
 import com.clankalliance.backbeta.utils.TrainingIdGenerator;
@@ -38,6 +42,9 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Resource
     private TrainingRepository trainingRepository;
+
+    @Resource
+    private DateDataRepository dateDataRepository;
 
     @Override
     public Integer getFULL_WEEK_AWARD() {
@@ -83,7 +90,7 @@ public class TrainingServiceImpl implements TrainingService {
         //**********************************************************
         //为训练数据制定的更短的id生成规则
         System.out.println(calendar.get(Calendar.MONTH) + "月");
-        Training training = new Training(TrainingIdGenerator.nextId(response.getMessage()),Integer.parseInt(data[0]), calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH) + 1,calendar.get(Calendar.DATE),  calendar.get(Calendar.WEEK_OF_YEAR), calendar.get(Calendar.DAY_OF_WEEK),Integer.parseInt(data[1]), data[2],average, graph.length );
+        Training training = new Training(TrainingIdGenerator.nextId(response.getMessage()),Integer.parseInt(data[0]),Integer.parseInt(data[1]), data[2],average, graph.length );
         try{
             trainingRepository.save(training);
         }catch (Exception e){
@@ -91,24 +98,40 @@ public class TrainingServiceImpl implements TrainingService {
             response.setMessage("保存失败");
             return response;
         }
+        boolean hasImage = false;
+        User user = userRepository.findUserByOpenId(response.getMessage()).get();
+        List<DateData> dateDataList = user.getDateDataList();
+        user.setGold(user.getGold() + Integer.parseInt(data[1]));
+
+        String dateDataId = DateDataIdGenerator.next(response.getMessage());
+        Optional<DateData> dop = dateDataRepository.findDateDataById(dateDataId);
+        DateData dateData;
+        if(dop.isPresent()){
+            dateData = dop.get();
+            if(dateData.getImageName() != null){
+                hasImage = true;
+            }
+        }else{
+            dateData = new DateData(response.getMessage());
+            dateDataList.add(dateData);
+        }
+
         //由token工具检查token有效后，会一并返回动态存储的用户的id
         //此处使用id 查询到用户 因为此处token工具取得的id可信，不进行错误判断
-        User user = userRepository.findUserByOpenId(response.getMessage()).get();
-        List<Training> trainingList = user.getTrainingList();
-        user.setGold(user.getGold() + Integer.parseInt(data[1]));
+
         //由该布尔值记录是否本周满签到
         boolean fullCheckIn = true;
         //满签条件：今天是周日 且训练列表里末尾训练时间为周六 则进一步判断
         //此处训练列表以时间顺序同步，拥有顺序，也能保证查询时最省时
-        if(calendar.get(Calendar.DAY_OF_WEEK) == 1 && trainingList.size() > 0 && trainingList.get(trainingList.size() - 1).getDayOfTheWeek() == 7){
+        if(calendar.get(Calendar.DAY_OF_WEEK) == 1 && dateDataList.size() > 0 && dateDataList.get(dateDataList.size() - 1).getDayOfTheWeek() == 7){
             //周日为一周的第一天，故此处减一
             int weekOfTheYear = calendar.get(Calendar.WEEK_OF_YEAR) - 1;
             //当前签到日为周日，不需判断
             boolean weekContainer[] = {false,false,false,false,false,false,true};
-            int i = trainingList.size() - 1;
+            int i = dateDataList.size() - 1;
             //倒序遍历本周所有训练
-            while(i >= 0 && trainingList.get(i).getWeekOfTheYear() == weekOfTheYear){
-                weekContainer[trainingList.get(i).getDayOfTheWeek() - 2] = true;
+            while(i >= 0 && dateDataList.get(i).getWeekOfTheYear() == weekOfTheYear){
+                weekContainer[dateDataList.get(i).getDayOfTheWeek() - 2] = true;
                 i--;
             }
             //若有一天未签到，本周不满签
@@ -120,56 +143,61 @@ public class TrainingServiceImpl implements TrainingService {
             if(fullCheckIn)
                 user.setGold(user.getGold() + FULL_WEEK_AWARD);
         }
-        trainingList.add(training);
-        user.setTrainingList(trainingList);
+
+        dateData.addTraining(training);
+
+        dateDataList.set(dateDataList.size() - 1, dateData);
+        user.setDateDataList(dateDataList);
+        dateDataRepository.save(dateData);
         userRepository.save(user);
+        response.setContent(hasImage);
         response.setMessage("保存成功");
         return response;
     }
 
-    /**
-     * 分页获取该用户的所有训练
-     * @param token 用户令牌
-     * @param pageNum 页码 从1开始
-     * @param pageSize 每一页的容量
-     * @return
-     */
-    @Override
-    public CommonResponse handleFind(String token, Integer pageNum, Integer pageSize) {
-        CommonResponse response = new CommonResponse<>();
-        if(token.equals("114514")){
-            response.setSuccess(true);
-            response.setMessage("o1JHJ4rRpzIAw4rYUv90GXo5q3Yc");
-        }else{
-            response = tokenUtil.tokenCheck(token);
-        }
-        if(!response.getSuccess())
-            return response;
-        //由token工具验证token后会以message的方式传出用户id
-        //根据id获得用户个体
-        User user = userRepository.findUserByOpenId(response.getMessage()).get();
-        List<Training> trainingList = user.getTrainingList();
-        //该用户的总训练次数
-        int totalNum = trainingList.toArray().length;
-        //由总训练次数得出的总页数
-        int totalPage = totalNum%pageSize == 0?  totalNum / pageSize: totalNum/pageSize + 1;
-        //从该位置开始截取子list
-        int fromIndex = totalNum - pageNum * pageSize;
-        //子list截取到此位置
-        int endIndex = fromIndex + pageSize;
-        List<Training> result = trainingList.subList( fromIndex >= 0? fromIndex: 0 ,  endIndex);
-        //将子list反向，会变为时间倒序
-        Collections.reverse(result);
-        response.setMessage("查询成功");
-        for(int i = 0;i < result.size();i ++){
-            Training t = result.get(i);
-            t.setMonth(t.getMonth() + 1);
-            result.set(i,t);
-        }
-        response.setContent(result);
-        response.setMessage("" + totalPage);
-        return response;
-    }
+//    /**
+//     * 分页获取该用户的所有训练
+//     * @param token 用户令牌
+//     * @param pageNum 页码 从1开始
+//     * @param pageSize 每一页的容量
+//     * @return
+//     */
+//    @Override
+//    public CommonResponse handleFind(String token, Integer pageNum, Integer pageSize) {
+//        CommonResponse response = new CommonResponse<>();
+//        if(token.equals("114514")){
+//            response.setSuccess(true);
+//            response.setMessage("o1JHJ4rRpzIAw4rYUv90GXo5q3Yc");
+//        }else{
+//            response = tokenUtil.tokenCheck(token);
+//        }
+//        if(!response.getSuccess())
+//            return response;
+//        //由token工具验证token后会以message的方式传出用户id
+//        //根据id获得用户个体
+//        User user = userRepository.findUserByOpenId(response.getMessage()).get();
+//        List<Training> trainingList = user.getTrainingList();
+//        //该用户的总训练次数
+//        int totalNum = trainingList.toArray().length;
+//        //由总训练次数得出的总页数
+//        int totalPage = totalNum%pageSize == 0?  totalNum / pageSize: totalNum/pageSize + 1;
+//        //从该位置开始截取子list
+//        int fromIndex = totalNum - pageNum * pageSize;
+//        //子list截取到此位置
+//        int endIndex = fromIndex + pageSize;
+//        List<Training> result = trainingList.subList( fromIndex >= 0? fromIndex: 0 ,  endIndex);
+//        //将子list反向，会变为时间倒序
+//        Collections.reverse(result);
+//        response.setMessage("查询成功");
+//        for(int i = 0;i < result.size();i ++){
+//            Training t = result.get(i);
+//            t.setMonth(t.getMonth() + 1);
+//            result.set(i,t);
+//        }
+//        response.setContent(result);
+//        response.setMessage("" + totalPage);
+//        return response;
+//    }
 
     /**
      * 查询训练对应的图
@@ -260,32 +288,43 @@ public class TrainingServiceImpl implements TrainingService {
      * @return message代表平均专注度，content代表七天图像数据
      */
     @Override
-    public CommonResponse handleFindSeven(String token){
-        CommonResponse response = tokenUtil.tokenCheck(token);
-        if(!response.getSuccess())
+    public LastSevenResponse handleFindSeven(String token){
+        CommonResponse responseT = tokenUtil.tokenCheck(token);
+        LastSevenResponse response = new LastSevenResponse();
+        if(!responseT.getSuccess()){
+            response.setSuccess(false);
             return response;
-        User user = userRepository.findUserByOpenId(response.getMessage()).get();
-        List<Training> trainingList = user.getTrainingList();
+        }else{
+            response.setNeedImage(needImage(responseT.getMessage()));
+            response.setSuccess(true);
+            response.setToken(responseT.getToken());
+        }
+        User user = userRepository.findUserByOpenId(responseT.getMessage()).get();
+        List<DateData> dateDataList = user.getDateDataList();
 
         Double result[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        int iter = trainingList.size() - 1;
-        int i = 6;
+        int dateDataListLength = dateDataList.size() - 1;
+        int dateIter = 0;
+        int trainingIter;
         //专注度和
         long totalC = 0;
         //专注度数据个数
         long totalNum = 0;
-        while( iter >= 0 && i >= 0){
-            while(iter >= 0 && trainingList.get(iter).getDayOfTheWeek() == dayOfWeek){
-                String graph[] = trainingList.get(iter).getGraph().split(",");
+        while(dateIter <= dateDataListLength && dateDataList.get(dateDataListLength - dateIter).getDayOfTheWeek() == dayOfWeek){
+            DateData date = dateDataList.get(dateDataListLength - dateIter);
+            List<Training> trainingList = date.getTrainingList();
+            trainingIter = trainingList.size() - 1;
+            while(trainingIter >= 0){
+                String graph[] = trainingList.get(trainingIter).getGraph().split(",");
                 for(String s : graph){
                     totalC += Integer.parseInt(s);
                     totalNum ++;
                 }
-                result[i] += graph.length;
-                iter --;
+                result[6 - dateIter] += graph.length;
+                trainingIter --;
             }
             if(dayOfWeek == 1){
                 dayOfWeek = 7;
@@ -293,18 +332,18 @@ public class TrainingServiceImpl implements TrainingService {
                 dayOfWeek --;
             }
             //化成小时
-            result[i] /= 3600;
-            i--;
+            result[6 - dateIter] /= 3600;
+            dateIter++;
         }
         response.setContent(result);
-        response.setMessage((totalC > 0? totalC/totalNum : 0) + "");
+        response.setAverage(Integer.valueOf("" + (totalC > 0? totalC/totalNum : 0)));
         return response;
     }
 
     /**
      * 验证token 根据startIndex 和页长度length
      * 来返回从startIndex开始 有数据的length天的平均数据
-     * 相当于返回了个字典，相当于进行了一个预查找
+     * 相当于返回了个字典，进行了一个预查找
      * @param token 用户令牌
      * @param startIndex 开始位置 对应用户trainingList下标
      * @param length 页长度
@@ -322,69 +361,76 @@ public class TrainingServiceImpl implements TrainingService {
         if(!response.getSuccess())
             return response;
         User user = userRepository.findUserByOpenId(response.getMessage()).get();
-        List<Training> trainingList = user.getTrainingList();
-        HalfTrainingData[] halfTrainingData = new HalfTrainingData[length];
-        int trainingListIndex;
-        Training target;
+        List<DateData> dateDataList = user.getDateDataList();
+
+        int dateDataListIndex;
         if(startIndex == -1){
             //初次请求，第一次加载页面时的请求
-            startIndex = trainingList.size() - 1;
+            startIndex = dateDataList.size() - 1 >= 0? dateDataList.size() - 1: 0;
         }
-        trainingListIndex = startIndex;
-        for(int i = 0;i < length && trainingListIndex >= 0;i ++){
-            target = trainingList.get(trainingListIndex);
-            halfTrainingData[i] = new HalfTrainingData(target.getYear(),target.getMonth(),target.getDay(),target.getGold(),0,0,trainingListIndex,1,0.0);
-            trainingListIndex --;
-            //总时间存储计算 用于求平均值
-            long totalTime = target.getLength();
-            Integer concentration = target.getAverage();
-            //存储所有时间数据的list 用于求方差
-            List<Integer> timeList = new ArrayList<>(20);
-            //加上当天最后一次训练(list中的第一个)
-            timeList.add(target.getLength());
-            while(
-                    trainingListIndex >= 0
-                    && trainingList.get(trainingListIndex).getYear().equals(halfTrainingData[i].getYear())
-                    && trainingList.get(trainingListIndex).getMonth().equals(halfTrainingData[i].getMonth())
-                    && trainingList.get(trainingListIndex).getDay().equals(halfTrainingData[i].getDay())
-            ){
-                target = trainingList.get(trainingListIndex);
-                //总时间(秒)
-                totalTime += target.getLength();
-                //当天训练次数统计
-                halfTrainingData[i].setTrainingNum(halfTrainingData[i].getTrainingNum() + 1);
-                //存储本次训练时间，用于求方差
-                timeList.add(target.getLength());
-                //求总专注度和
-                concentration += target.getAverage();
-                trainingListIndex --;
-            }
-            halfTrainingData[i].setTime(totalTime);
-            Double variance = 0.0;
-            long averageTime = totalTime / timeList.size();
-            //求方差
-            for(Integer t : timeList)
-                variance += (t - averageTime)*(t - averageTime);
-            variance /= timeList.size();
-            halfTrainingData[i].setTimeVariance(variance);
-            halfTrainingData[i].setTime(totalTime);
-            halfTrainingData[i].setConcentrationE(concentration/timeList.size());
-            halfTrainingData[i].setMonth(halfTrainingData[i].getMonth());
+        dateDataListIndex = startIndex;
+        int endIndex = dateDataListIndex - length <= 0? 0: dateDataListIndex - length;
+        response.setContent(dateDataList.subList(endIndex ,dateDataList.size() > 0? dateDataListIndex + 1: 0));
 
-        }
-        response.setContent(halfTrainingData);
-        response.setMessage("" + trainingListIndex);
+
+//        HalfTrainingData[] halfTrainingData = new HalfTrainingData[length];
+//        Training target;
+//
+//        for(int i = 0;i < length && trainingListIndex >= 0;i ++){
+//            target = trainingList.get(trainingListIndex);
+//            halfTrainingData[i] = new HalfTrainingData(target.getYear(),target.getMonth(),target.getDay(),target.getGold(),0,0,trainingListIndex,1,0.0);
+//            trainingListIndex --;
+//            //总时间存储计算 用于求平均值
+//            long totalTime = target.getLength();
+//            Integer concentration = target.getAverage();
+//            //存储所有时间数据的list 用于求方差
+//            List<Integer> timeList = new ArrayList<>(20);
+//            //加上当天最后一次训练(list中的第一个)
+//            timeList.add(target.getLength());
+//            while(
+//                    trainingListIndex >= 0
+//                    && trainingList.get(trainingListIndex).getYear().equals(halfTrainingData[i].getYear())
+//                    && trainingList.get(trainingListIndex).getMonth().equals(halfTrainingData[i].getMonth())
+//                    && trainingList.get(trainingListIndex).getDay().equals(halfTrainingData[i].getDay())
+//            ){
+//                target = trainingList.get(trainingListIndex);
+//                //总时间(秒)
+//                totalTime += target.getLength();
+//                //当天训练次数统计
+//                halfTrainingData[i].setTrainingNum(halfTrainingData[i].getTrainingNum() + 1);
+//                //存储本次训练时间，用于求方差
+//                timeList.add(target.getLength());
+//                //求总专注度和
+//                concentration += target.getAverage();
+//                trainingListIndex --;
+//            }
+//            halfTrainingData[i].setTime(totalTime);
+//            Double variance = 0.0;
+//            long averageTime = totalTime / timeList.size();
+//            //求方差
+//            for(Integer t : timeList)
+//                variance += (t - averageTime)*(t - averageTime);
+//            variance /= timeList.size();
+//            halfTrainingData[i].setTimeVariance(variance);
+//            halfTrainingData[i].setTime(totalTime);
+//            halfTrainingData[i].setConcentrationE(concentration/timeList.size());
+//            halfTrainingData[i].setMonth(halfTrainingData[i].getMonth());
+//
+//        }
+//        response.setContent(halfTrainingData);
+//        response.setMessage("" + trainingListIndex);
+        response.setMessage("" + (endIndex == 0? -2: endIndex));
         return response;
     }
 
     /**
      * 验证token,根据startIndex来返回这一天的所有训练
      * @param token 用户令牌
-     * @param startIndex 开始位置 对应用户trainingList下标
+     * @param id 日数据id
      * @return
      */
     @Override
-    public CommonResponse handleFindDateData(String token,Integer startIndex){
+    public CommonResponse handleFindDateData(String token,String id){
         CommonResponse response = new CommonResponse<>();
         if(token.equals("114514")){
             response.setSuccess(true);
@@ -394,80 +440,103 @@ public class TrainingServiceImpl implements TrainingService {
         }
         if(!response.getSuccess())
             return response;
-        User user = userRepository.findUserByOpenId(response.getMessage()).get();
-        List<Training> trainingList = user.getTrainingList();
-        int iter = startIndex;
-
-        Training startTraining = trainingList.get(startIndex);
-        List<Training> result = new ArrayList<>();
-        int y = startTraining.getYear();
-        int m = startTraining.getMonth();
-        int d = startTraining.getDay();
-        Training target;
-        for(target = trainingList.get(iter);iter >= 0
-                && target.getYear() == y
-                && target.getMonth() == m
-                && target.getDay() == d;
-            target = trainingList.get(--iter)){
-            result.add(target);
-            if(iter == 0){
-                break;
-            }
-        }
-        response.setContent(result);
+        DateData dateData = dateDataRepository.findDateDataById(id).get();
+        response.setContent(dateData.getTrainingList());
         response.setMessage("成功");
         return response;
     }
 
-    /**
-     * 找到上一个有训练的日子里的训练信息，以便复用方法
-     * @param trainingList 训练数据
-     * @return
-     */
     @Override
-    public HalfTrainingData handleFindLastDate(List<Training> trainingList){
-        int index = trainingList.size() - 1;
-        Training target;
-        if(index >=0){
-            target = trainingList.get(index--);
-            HalfTrainingData result = new HalfTrainingData(target.getYear(), target.getMonth(), target.getDay(), target.getGold(), 0, 0, index, 1, 0.0);
-            //总时间存储计算 用于求平均值
-            long totalTime = target.getLength();
-            Integer concentration = target.getAverage();
-            //存储所有时间数据的list 用于求方差
-            List<Integer> timeList = new ArrayList<>(20);
-            timeList.add(target.getLength());
-            while(
-                    index >= 0
-                    && target.getYear().equals(result.getYear())
-                    && target.getMonth().equals(result.getMonth())
-                    && target.getDay().equals(result.getDay())
-                    ){
-                target = trainingList.get(index--);
-                //总时间(秒)
-                totalTime += target.getLength();
-                //当天训练次数统计
-                result.setTrainingNum(result.getTrainingNum() + 1);
-                //存储本次训练时间，用于求方差
-                timeList.add(target.getLength());
-                //求总专注度和
-                concentration += target.getAverage();
+    public Boolean needImage(String wxOpenId){
+        User user = userRepository.findUserByOpenId(wxOpenId).get();
+        List<DateData> dateDataList = user.getDateDataList();
+        boolean result = false;
+        if(dateDataList.size() > 0){
+            DateData dateData = dateDataList.get(dateDataList.size() - 1);
+            Calendar calendar = Calendar.getInstance();
+            if(
+               dateData.getYear().equals(calendar.get(Calendar.YEAR))
+               && dateData.getMonth().equals(calendar.get(Calendar.MONTH))
+               && dateData.getDay().equals(calendar.get(Calendar.DAY_OF_MONTH))
+               && dateData.getImageName() == null
+            ){
+                result = true;
             }
-            result.setTime(totalTime);
-            Double variance = 0.0;
-            long averageTime = totalTime / timeList.size();
-            //求方差
-            for(Integer t : timeList)
-                variance += (t - averageTime)*(t - averageTime);
-            variance /= timeList.size();
-            result.setTimeVariance(variance);
-            result.setTime(totalTime);
-            result.setConcentrationE(concentration/timeList.size());
-            result.setMonth(result.getMonth());
-            return result;
-        }else{
-            return null;
         }
+        return result;
     }
+
+    @Override
+    public void updateImage(String filePath,String wxOpenId){
+        User user = userRepository.findUserByOpenId(wxOpenId).get();
+        List<DateData> dateDataList = user.getDateDataList();
+        if(dateDataList.size() > 0){
+            DateData dateData = dateDataList.get(dateDataList.size() - 1);
+            Calendar calendar = Calendar.getInstance();
+            if(
+                    dateData.getYear().equals(calendar.get(Calendar.YEAR))
+                            && dateData.getMonth().equals(calendar.get(Calendar.MONTH))
+                            && dateData.getDay().equals(calendar.get(Calendar.DAY_OF_MONTH))
+            ){
+                dateData.setImageName(filePath);
+                dateDataRepository.save(dateData);
+                dateDataList.set(dateDataList.size() - 1,dateData);
+            }
+        }
+        user.setDateDataList(dateDataList);
+        userRepository.save(user);
+    }
+
+
+//    /**
+//     * 找到上一个有训练的日子里的训练信息，以便复用方法
+//     * @param trainingList 训练数据
+//     * @return
+//     */
+//    @Override
+//    public HalfTrainingData handleFindLastDate(List<Training> trainingList){
+//        int index = trainingList.size() - 1;
+//        Training target;
+//        if(index >=0){
+//            target = trainingList.get(index--);
+//            HalfTrainingData result = new HalfTrainingData(target.getYear(), target.getMonth(), target.getDay(), target.getGold(), 0, 0, index, 1, 0.0);
+//            //总时间存储计算 用于求平均值
+//            long totalTime = target.getLength();
+//            Integer concentration = target.getAverage();
+//            //存储所有时间数据的list 用于求方差
+//            List<Integer> timeList = new ArrayList<>(20);
+//            timeList.add(target.getLength());
+//            while(
+//                    index >= 0
+//                    && target.getYear().equals(result.getYear())
+//                    && target.getMonth().equals(result.getMonth())
+//                    && target.getDay().equals(result.getDay())
+//                    ){
+//                target = trainingList.get(index--);
+//                //总时间(秒)
+//                totalTime += target.getLength();
+//                //当天训练次数统计
+//                result.setTrainingNum(result.getTrainingNum() + 1);
+//                //存储本次训练时间，用于求方差
+//                timeList.add(target.getLength());
+//                //求总专注度和
+//                concentration += target.getAverage();
+//            }
+//            result.setTime(totalTime);
+//            Double variance = 0.0;
+//            long averageTime = totalTime / timeList.size();
+//            //求方差
+//            for(Integer t : timeList)
+//                variance += (t - averageTime)*(t - averageTime);
+//            variance /= timeList.size();
+//            result.setTimeVariance(variance);
+//            result.setTime(totalTime);
+//            result.setConcentrationE(concentration/timeList.size());
+//            result.setMonth(result.getMonth());
+//            return result;
+//        }else{
+//            return null;
+//        }
+//    }
 
 }
