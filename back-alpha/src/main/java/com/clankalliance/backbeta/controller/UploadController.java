@@ -24,4 +24,11 @@ public class UploadController {
         return generalUploadService.handleSave(file,token,nickName);
     }
 
+    @PostMapping("/avatarUpload")
+    public CommonResponse handleAvatarUpload(HttpSession session,
+                                       // 路径变量 解决前后端不一致
+                                       @RequestParam("file") MultipartFile file, @RequestParam("token") String token) throws IOException{
+        return generalUploadService.handleAvatarSave(file,token);
+    }
+
 }

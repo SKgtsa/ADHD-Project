@@ -1,0 +1,8 @@
+<!--pages/register-name/index.wxml-->
+<view class="containerX">
+  <text class="upperText">请在此处输入您的昵称</text>
+  <input bindblur="onInputChange" value="{{nickName}}" bind:input="onInputChange" type="nickname" class="weui-input" placeholder="请输入昵称"/>
+  <text class="lowerText">昵称仅作为身份的辨识</text>
+  <button class="submitButton" bindtap="submit">开始训练吧</button>
+</view>
+

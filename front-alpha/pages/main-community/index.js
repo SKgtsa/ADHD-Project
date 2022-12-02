@@ -1,5 +1,5 @@
 // pages/main-community/index.js
-
+const app = getApp()
 Page({
 
   /**
@@ -10,20 +10,20 @@ Page({
     suggestion: '',
     post: [
       {
-        title: 'A',
-        content: 'This is the content of A'
+        title: '示例文章A',
+        content: '正文A\n\t正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A\n\t正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A正文A'
       },{
-        title: 'B',
-        content: 'This is the content of B'
+        title: '示例文章B',
+        content: '正文B'
       },{
-        title: 'C',
-        content: 'This is the content of C'
+        title: '示例文章C',
+        content: '正文C'
       },{
-        title: 'D',
-        content: 'This is the content of D'
+        title: '示例文章D',
+        content: '正文D\n\t正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D\n\t正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D正文D'
       },{
-        title: 'E',
-        content: 'This is the content of E'
+        title: '示例文章E',
+        content: '正文E'
       }
     ],
     postPresent: {

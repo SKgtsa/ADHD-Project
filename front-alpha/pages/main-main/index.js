@@ -82,7 +82,8 @@ Page({
       fail: (res) => {
         app.globalData.login = false;
         wx.showToast({
-          title: '登录过期',
+          title: '发生错误',
+          content: '请联系技术人员',
           icon: 'error'
         })
         setTimeout(() => {
@@ -190,13 +191,21 @@ Page({
           
         },
         fail: (res) => {
+          wx.showToast({
+            title: '发生错误',
+            content: '请联系技术人员',
+            icon: 'error',
+            duration: 900
+          })
           console.log('执行请求并失败')
           console.log(res)
           app.globalData.login = false;
           this.setData({hideLoading: true})
-          wx.switchTab({
-            url: '../main-personal/index',
-          })
+          setTimeout(() => {
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
+          },500)
         }
       })
     }

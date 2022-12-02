@@ -4,17 +4,17 @@
     <view class="userinfo">
         <!--用户头像-->
         <view>
-          <button bindtap="submitLogin" class="userinfo-avatar">
+          <button bindtap="clickAvatar" class="userinfo-avatar">
             <image
                     bindtap="bindViewTap"
                     class="userinfo-avatar-picture"
-                    src="{{userInfo.avatarUrl}}"
+                    src="{{userInfo.imageURL}}"
                     mode="cover"
             />
           </button> 
         </view>
         <!--用户名-->
-        <view>
+        <view bindtap="changeNickName" style="padding: 4vw">
             <text class="userinfo-nickname">{{userInfo.nickName}}</text>
         </view>
         <view class="detailedInfo" style="{{login ? '  display: inline;': 'display: none;'}}">
@@ -29,7 +29,7 @@
               <view class="rightBox">
                 <text class="rightText">总金币数:</text>
                 <view class="goldBox">
-                  <text class="goldNum">{{gold}}</text>
+                  <text class="goldNum">{{userInfo.gold}}</text>
                 </view>
               </view>
             </view>
@@ -37,4 +37,17 @@
         </view>  
     </view>
 </view>
+<page-container show="{{showChangeNickName}}" overlay="{{true}}"  position="top" custom-style="">
+<view class="popOutWindow">
+  <text class="popOutText">请在此处输入您的昵称</text>
+  <view class="inputArea">
+    <view class="inputLine">
+      <input value="{{userInfo.nickName}}" bind:input="onInputChange" class="input" auto-focus="true" />
+    </view>
+  </view>
+  <view>
+      <button class="submitButton" bind:tap="nickNameSubmit">提交</button>
+  </view>
+</view>
+</page-container>
 <loading hidden="{{hideLoading}}">请稍候</loading>

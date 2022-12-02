@@ -332,6 +332,8 @@ Page({
             console.log( "同步结果: " + this.data.syncResult)
             let str = '';
             console.log('发送数据')
+            console.log("token: " + wx.getStorageSync('token'))
+            console.log("rawData: " + this.data.syncResult)
             wx.request({
               url: 'https://chenanbella.cn/api/training/save',
               method: 'POST',
@@ -342,16 +344,16 @@ Page({
               success(res){
                 const data = res.data;
                 if(data.token == null){
-                  app.globalData.login = false;
-                  wx.showToast({
-                    title: '登录过期',
-                    icon: 'error'
-                  })
-                  setTimeout(() => {
-                    wx.switchTab({
-                      url: '../main-personal/index',
-                    })
-                  },500)
+                  // app.globalData.login = false;
+                  // wx.showToast({
+                  //   title: '登录过期',
+                  //   icon: 'error'
+                  // })
+                  // setTimeout(() => {
+                  //   wx.switchTab({
+                  //     url: '../main-personal/index',
+                  //   })
+                  // },500)
                 }
                 console.log("发送成功 收到反馈如下")
                 console.log(res)
@@ -372,9 +374,9 @@ Page({
                     buffer[i] = str.charCodeAt(i);
                   }
                   error = true;
-                  if(res.data.message == "登录过期"){
-                    app.globalData.login = false;
-                  }
+                  // if(res.data.message == "登录过期"){
+                  //   app.globalData.login = false;
+                  // }
                 }
                 console.log("开始向设备发送数据 " + str)
                 //如果出现bug 给写特征值的函数加个延时
@@ -392,7 +394,8 @@ Page({
               fail(res){
                 app.globalData.login = false;
                 wx.showToast({
-                  title: '登录过期',
+                  title: '发生错误',
+                  content: '请联系技术人员',
                   icon: 'error'
                 })
                 setTimeout(() => {
@@ -430,7 +433,12 @@ Page({
               console.log('接收到数据为ddd 或者发生了错误 进入蓝牙卸载环节')
               setTimeout(() => {
                 this.setData({showBlueToothPage: false})
-              } ,1000)
+                setTimeout(() => {
+                  wx.reLaunch({
+                    url: 'index',
+                  }) 
+                },500)
+              } ,500)
               wx.showToast({
                 title: '数据全部发送成功',
                 icon: 'success',
@@ -632,16 +640,16 @@ Page({
         const data = res.data;
         console.log(data)
         if(data.token == null){
-          app.globalData.login = false;
-          wx.showToast({
-            title: '登录过期',
-            icon: 'error'
-          })
-          setTimeout(() => {
-            wx.switchTab({
-              url: '../main-personal/index',
-            })
-          },500)
+          // app.globalData.login = false;
+          // wx.showToast({
+          //   title: '登录过期',
+          //   icon: 'error'
+          // })
+          // setTimeout(() => {
+          //   wx.switchTab({
+          //     url: '../main-personal/index',
+          //   })
+          // },500)
         }
         console.log(res);
         app.globalData.gaugeData = data.average;
@@ -710,24 +718,31 @@ Page({
                         'nickName': app.globalData.userInfo.nickName
                       },
                       success(res){
-                        if(!res.data.success){
-                          app.globalData.login = false;
-                          wx.showToast({
-                            title: '登录过期',
-                            icon: 'error'
-                          })
-                          setTimeout(() => {
-                            wx.switchTab({
-                              url: '../main-personal/index',
-                            })
-                          },500)
+                        const data = JSON.parse(res.data);
+                        console.log(data)
+                        if(!data.success){
+                          // app.globalData.login = false;
+                          // wx.showToast({
+                          //   title: '登录过期',
+                          //   icon: 'error'
+                          // })
+                          // setTimeout(() => {
+                          //   wx.switchTab({
+                          //     url: '../main-personal/index',
+                          //   })
+                          // },500)
                         }
-                        wx.setStorageSync('token', res.data.token)
+                        wx.setStorageSync('token', data.token)
                         wx.showToast({
                           title: '图片上传成功',
                           icon: 'success',
                           duration: 1000
                         })
+                        setTimeout(() => {
+                          wx.reLaunch({
+                            url: 'index',
+                          }) 
+                        },1000)
                       }
                     })
                   }
@@ -737,7 +752,8 @@ Page({
             fail: (res) => {
               app.globalData.login = false;
               wx.showToast({
-                title: '登录过期',
+                title: '发生错误',
+                content: '请联系技术人员',
                 icon: 'error'
               })
               setTimeout(() => {
@@ -746,14 +762,15 @@ Page({
                 })
               },500)
             }
-          })  
+          }) 
         }
         this.setData({hideLoading: true,chartReady: true,needImage: data.needImage})
       },
       fail: (res) => {
         app.globalData.login = false;
         wx.showToast({
-          title: '登录过期',
+          title: '发生错误',
+          content: '请联系技术人员',
           icon: 'error'
         })
         setTimeout(() => {
@@ -779,7 +796,23 @@ function getLineOption() {
     },
     tooltip: {
       show: true,
-      trigger: 'axis'
+      trigger: 'axis',
+      formatter: (params) => {
+        let time = params[0].data;
+        let s = time%60;
+        time = (time - s)/60;
+        let m = time%60;
+        time = (time - m)/60;
+        let h = time;
+        let result = '';
+        if(h != 0)
+          result += h + '时'
+        if(m != 0)
+          result += m + '分'
+        if(s != 0)
+          result += s + '秒'
+        return result;
+      },
     },
     xAxis: {
       type: 'category',
@@ -788,13 +821,31 @@ function getLineOption() {
       // show: false
     },
     yAxis: {
+      name: '秒',
       x: 'center',
       type: 'value',
       splitLine: {
         lineStyle: {
           type: 'dashed'
         }
-      }
+      },
+      formatter: (params) => {
+        console.log(params)
+        let time = params[0].data;
+        let s = time%60;
+        time = (time - s)/60;
+        let m = time%60;
+        time = (time - m)/60;
+        let h = time;
+        let result = '';
+        if(h != 0)
+          result += h + '时'
+        if(m != 0)
+          result += m + '分'
+        if(s != 0)
+          result += s + '秒'
+        return result;
+      },
       // show: false
     },
     series: [{

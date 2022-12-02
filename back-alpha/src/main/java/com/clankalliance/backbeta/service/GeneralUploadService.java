@@ -8,4 +8,6 @@ public interface GeneralUploadService {
 
     CommonResponse handleSave(MultipartFile file, String token, String nickName);
 
+    CommonResponse handleAvatarSave(MultipartFile file,String token);
+
 }

@@ -6,7 +6,11 @@
     <scroll-view class="scroll" >
       <view class="scrollBox">
         <block wx:for="{{post}}" wx:key="index">
-          <button class="scrollItem" bind:tap="showDetail({{index}})">{{item.title}}</button>
+          <view class="unit">
+            <button class="articleButton" bind:tap="showDetail({{index}})">
+              <text>{{item.title}}</text>
+            </button>
+          </view>
         </block>
       </view>
     </scroll-view>

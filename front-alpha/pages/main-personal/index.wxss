@@ -97,3 +97,31 @@
   width: 100%;
   text-align: right;
 }
+.popOutWindow{
+  height: 30vh;
+  background-color: #fff;
+  text-align: center;
+}
+.inputArea{
+  padding-top: 3vh;
+  padding-bottom: 4vh;
+}
+.inputLine{
+  margin: auto;
+  width: 55vw;
+  border-bottom-style: dashed;
+  border-color: #486484;
+  border-width: 2px;
+}
+.popOutText{
+  color: #007af2;
+  font-size: 3vh;
+}
+.submitButton{
+  width: 90vw;
+  height: 10vh;
+  background-color: #007af2;
+  border-radius: 4vw;
+  color: #FFF;
+  font-size: 4vh;
+}

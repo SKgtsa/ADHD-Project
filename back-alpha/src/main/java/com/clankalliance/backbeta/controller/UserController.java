@@ -1,5 +1,6 @@
 package com.clankalliance.backbeta.controller;
 
+import com.clankalliance.backbeta.request.InfoUpdateRequest;
 import com.clankalliance.backbeta.request.TokenCheckRequest;
 import com.clankalliance.backbeta.request.UserLoginRequest;
 import com.clankalliance.backbeta.request.UserSaveRequest;
@@ -29,7 +30,7 @@ public class UserController {
 
     @PostMapping("/login")
     public CommonLoginResponse login(@RequestBody UserLoginRequest request){
-        return userService.handleLogin(request.getCode(), request.getSignature(), request.getRawData());
+        return userService.handleLogin(request.getCode());
     }
 
 
@@ -43,9 +44,23 @@ public class UserController {
         return userService.handleFindUserInfo(request.getToken());
     }
 
-    @RequestMapping("findMainInfo")
+    @RequestMapping("/findMainInfo")
     public MainInfoResponse findMainInfo(@RequestBody TokenCheckRequest request){
         return userService.handleMainInfo(request.getToken());
     }
 
+    @RequestMapping("/updateInfo")
+    public CommonResponse updateInfo(@RequestBody InfoUpdateRequest request){
+        return userService.handleUpdate(request.getNickName(),request.getAvatarURL(),request.getToken());
+    }
+
+    @RequestMapping("/updateAvatar")
+    public CommonResponse updateAvatar(@RequestBody InfoUpdateRequest request){
+        return userService.handleUpdateAvatar(request.getAvatarURL(), request.getToken());
+    }
+
+    @RequestMapping("/updateNickName")
+    public CommonResponse updateNickName(@RequestBody InfoUpdateRequest request){
+        return userService.handleUpdateNickName(request.getNickName(), request.getToken());
+    }
 }

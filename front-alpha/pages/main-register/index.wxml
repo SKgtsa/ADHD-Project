@@ -1,0 +1,8 @@
+<!--pages/main-register/index.wxml-->
+<view>
+  <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+    <image class="avatar" src="{{resultAvatar}}"></image>
+  </button> 
+  <input bindblur="onInputBlur" type="nickname" class="weui-input" placeholder="请输入昵称"/>
+  <button bindtap="submit">提交</button>
+</view>

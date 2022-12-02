@@ -39,21 +39,16 @@ public class UserServiceImpl implements UserService {
     private TrainingService trainingService;
 
     @Override
-    public CommonLoginResponse handleLogin(String code,String signature,String rawData) {
+    public CommonLoginResponse handleLogin(String code) {
         CommonLoginResponse  response = new CommonLoginResponse<>();
         WXLoginResponse result;
         if(code.equals("114514")){
             result = new WXLoginResponse();
-            result.setOpenid(signature);
         }else{
             //接受前端code 使用code向微信要openId 以此作为登录凭证，并自动注册
             result =  PostRequestUtils.sendPostRequest("https://api.weixin.qq.com/sns/jscode2session?appid=wxacb26bacd3280bd1&secret=b8fe129603fd9cfc2432a3651fc6d07f&js_code=" + code + "&grant_type=authorization_code",null);
             System.out.println("openId: " + result.getOpenid());
             System.out.println("session_key: " + result.getSession_key());
-            if(!SignatureVerificationUtil.verify(signature,result.getSession_key(),rawData)){
-                response.setSuccess(false);
-                return response;
-            }
         }
         System.out.println("intoHandleLogin");
         Optional<User> uop = userRepository.findUserByOpenId(result.getOpenid());
@@ -69,14 +64,21 @@ public class UserServiceImpl implements UserService {
             user = new User();
             user.setWxOpenId(result.getOpenid());
             user.setGold(0);
+            user.setNickName("微信用户");
+            user.setImageURL("/static/avatar/default.jpg");
             response.setNeedRegister(true);
         }else{
             user = uop.get();
-            response.setNeedRegister(false);
+            if(user.getNickName() == null || user.getNickName().equals("微信用户")){
+                response.setNeedRegister(true);
+            }else{
+                response.setNeedRegister(false);
+            }
         }
         userRepository.save(user);
         response.setToken(token);
         response.setSuccess(true);
+        response.setContent(user);
         System.out.println(response);
         return response;
     }
@@ -102,6 +104,19 @@ public class UserServiceImpl implements UserService {
         response.setMessage("查询成功");
         return response;
     }
+
+    @Override
+    public CommonResponse changeNickName(String nickName,String token){
+        CommonResponse response = tokenUtil.tokenCheck(token);
+        if(!response.getSuccess())
+            return response;
+        User user = userRepository.findUserByOpenId(response.getMessage()).get();
+        user.setNickName(nickName);
+        userRepository.save(user);
+        response.setMessage("修改成功");
+        return response;
+    }
+
 
     @Override
     public MainInfoResponse handleMainInfo(String token){
@@ -176,6 +191,44 @@ public class UserServiceImpl implements UserService {
         response.setCheckInArray(checkInList);
         response.setDayOfWeek(dayOfWeek);
         response.setLastDateTraining(lastDateData);
+        response.setSuccess(true);
+        return response;
+    }
+
+
+    public CommonResponse handleUpdate(String nickName,String avatarURL,String token){
+        CommonResponse response = tokenUtil.tokenCheck(token);
+        if(!response.getSuccess())
+            return  response;
+        User user = userRepository.findUserByOpenId(response.getMessage()).get();
+        user.setNickName(nickName);
+        user.setImageURL(avatarURL);
+        userRepository.save(user);
+        response.setMessage("修改成功");
+        response.setSuccess(true);
+        return response;
+    }
+
+    public CommonResponse handleUpdateNickName(String nickName,String token){
+        CommonResponse response = tokenUtil.tokenCheck(token);
+        if(!response.getSuccess())
+            return  response;
+        User user = userRepository.findUserByOpenId(response.getMessage()).get();
+        user.setNickName(nickName);
+        userRepository.save(user);
+        response.setMessage("修改成功");
+        response.setSuccess(true);
+        return response;
+    }
+
+    public CommonResponse handleUpdateAvatar(String avatarURL,String token){
+        CommonResponse response = tokenUtil.tokenCheck(token);
+        if(!response.getSuccess())
+            return  response;
+        User user = userRepository.findUserByOpenId(response.getMessage()).get();
+        user.setImageURL(avatarURL);
+        userRepository.save(user);
+        response.setMessage("修改成功");
         response.setSuccess(true);
         return response;
     }

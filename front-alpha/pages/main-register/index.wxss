@@ -1,0 +1,12 @@
+/* pages/main-register/index.wxss */
+.avatar-wrapper{
+  width: 60vw;
+  height: 60vw;
+  border-radius: 30vw;
+  padding: 0;
+}
+.avatar{
+  width: 60vw;
+  padding: 0;
+  margin: 0;
+}

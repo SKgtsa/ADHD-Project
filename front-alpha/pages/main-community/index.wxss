@@ -33,7 +33,7 @@
 }
 .community-note{
     text-align: center;
-    background-color: #100964;
+    background-color: #007af2;
     width: 94vw;
     height: 20vh;
     padding-top: 10vh;
@@ -56,4 +56,34 @@
     font-size: 3.5vh;
     color: #FFF;
     font-weight: bold;
+}
+.unit{
+  height: 9vh;
+  width: 90vw;
+  padding-left: 5vw;
+}
+.articleButton{
+  border-style: none;
+  width: 100%;
+  padding: 1.2vh;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  font-size: 2vh;
+  line-height: 3vh;
+  border-width: 0;
+  border-radius: 3vw;
+  background-color: rgba(150, 187, 255, 0.233);
+  box-shadow: 10px 10px 10px 5px rgba(40, 29, 167, 0.4);
+  padding-left: 4vw;
+  padding-right: 4vw;
+  color: #486484;
+  
+}
+.articleHeader{
+
+}
+.button{
+  
+  
 }

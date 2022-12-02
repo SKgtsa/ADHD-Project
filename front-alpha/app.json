@@ -6,7 +6,12 @@
     "pages/main-device/index",
     "pages/detail-line-graph/index",
     "pages/main-device-date/index",
-    "pages/main-device-date-detail/index"
+    "pages/main-device-date-detail/index",
+    "pages/main-register/index",
+    "pages/avatar-detail/index",
+    "pages/personal-avatar/index",
+    "pages/register-name/index",
+    "pages/register-avatar/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

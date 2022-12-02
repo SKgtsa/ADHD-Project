@@ -40,13 +40,13 @@
   color: #486484;
   
 }
-.scroll{
-  height: 100vh;
-}
 .unit{
   height: 17vh;
   width: 90vw;
   padding-left: 5vw;
+}
+.scroll{
+  height: 100vh;
 }
 .left{
   display: flex;

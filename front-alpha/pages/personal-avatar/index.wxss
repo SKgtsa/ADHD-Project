@@ -1,0 +1,16 @@
+.container{
+  background-color: black;
+  padding-top: 5vh;
+  padding-bottom: 5vh;
+}
+.avatar{
+  width: 90vw;
+  height: 90vw;
+}
+.avatar-wrapper{
+  width: 90vw;
+  height: 10vh;
+  border-radius: 5vw;
+  font-size: 3vh;
+  color: #007af2;
+}

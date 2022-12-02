@@ -1,0 +1,8 @@
+<!--pages/personal-avatar/index.wxml-->
+<view class="container">
+  <view class="avatarWrapper">
+    <image class="avatar" src="{{resultAvatar}}"></image>
+  </view>
+  <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">更换头像</button>
+</view>
+

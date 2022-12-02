@@ -76,15 +76,16 @@ Page({
         },
         fail: (res) => {
           app.globalData.login = false;
-            wx.showToast({
-              title: '登录过期',
-              icon: 'error'
+          wx.showToast({
+            title: '发生错误',
+            content: '请联系技术人员',
+            icon: 'error'
+          })
+          setTimeout(() => {
+            wx.switchTab({
+              url: '../main-personal/index',
             })
-            setTimeout(() => {
-              wx.switchTab({
-                url: '../main-personal/index',
-              })
-            },500)
+          },500)
         }
       })
     }

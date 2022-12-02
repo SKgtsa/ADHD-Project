@@ -1,7 +1,7 @@
 <!--pages/main-device/index.wxml-->
 <view class="mainContainer">
     <view class="titleContainer">
-        <text class="title">过去七天训练时长(小时)</text>
+        <text class="title">过去七天训练时长</text>
     </view>
     <view class="container" wx:if="{{chartReady}}">
         <ec-canvas class="lineChart" id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>

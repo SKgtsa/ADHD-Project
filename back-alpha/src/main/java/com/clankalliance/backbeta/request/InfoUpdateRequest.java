@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//用户登录请求对象
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserLoginRequest {
+@NoArgsConstructor
+public class InfoUpdateRequest {
 
-    private String code;
+    public String avatarURL;
+
+    public String nickName;
+
+    public String token;
 
 }
