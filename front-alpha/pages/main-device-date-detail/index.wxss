@@ -53,7 +53,6 @@ ec-canvas {
   border-width: 0;
   border-radius: 5vw;
   background-color: rgba(150, 187, 255, 0.233);
-  box-shadow: 8px 8px 9px 2px rgba(40, 29, 167, 0.4);
   padding-left: 4vw;
   padding-right: 4vw;
   color: #486484;

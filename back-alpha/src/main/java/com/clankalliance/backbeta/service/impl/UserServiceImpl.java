@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     public CommonLoginResponse handleLogin(String code) {
         CommonLoginResponse  response = new CommonLoginResponse<>();
         WXLoginResponse result;
-        if(code.equals("114514")){
+        if(code != null && code.equals("114514")){
             result = new WXLoginResponse();
         }else{
             //接受前端code 使用code向微信要openId 以此作为登录凭证，并自动注册
@@ -93,12 +93,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findUserByOpenId(response.getMessage()).get();
         List<DateData> dateDataList =  user.getDateDataList();
         Map<String,String> map = new HashMap<>();
-        long hour = 0;
+        long minute = 0;
         for(DateData d : dateDataList){
-            hour += d.getTime()/3600;
+            minute += d.getTime();
         }
-        hour /= 3600;
-        map.put("hour","" + hour);
+        minute /= 60;
+        map.put("minute","" + minute);
         map.put("gold","" + user.getGold());
         response.setContent(map);
         response.setMessage("查询成功");
@@ -120,6 +120,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public MainInfoResponse handleMainInfo(String token){
+        //token验证 传回的是通用response 此处进行一个数据的复制
         CommonResponse responseT = tokenUtil.tokenCheck(token);
         MainInfoResponse response = new MainInfoResponse();
         if(!responseT.getSuccess()){
@@ -127,70 +128,75 @@ public class UserServiceImpl implements UserService {
             return response;
         }
         response.setToken(responseT.getToken());
+
+        //根据token验证后回传的id找出用户
         User user = userRepository.findUserByOpenId(responseT.getMessage()).get();
         List<DateData> dateDataList =  user.getDateDataList();
 
         DateData lastDateData = null;
 
+        //今天的日期
         Calendar dateNow = Calendar.getInstance();
-        Calendar dateLastTraining = Calendar.getInstance();
-        Integer days;
-        if(dateDataList.isEmpty()){
-            days = -1;
-        }else{
-            lastDateData = dateDataList.get(dateDataList.size() - 1);
-            dateLastTraining.set(lastDateData.getYear(),lastDateData.getMonth(),lastDateData.getDay());
-            Date timeNow = new Date();
-            Date timeLastTraining = dateLastTraining.getTime();
-            days = Integer.parseInt( "" + (timeNow.getTime() - timeLastTraining.getTime())/(1000*60*60*24));
-        }
-        switch (days){
-            case 0:
-                response.setLastTrainingTime("今天训练了");
-                break;
-            case 1:
-                response.setLastTrainingTime("昨天训练了");
-                break;
-            case 2:
-                response.setLastTrainingTime("前天训练了");
-                break;
-            case -1:
-                response.setLastTrainingTime("您还未训练过");
-                break;
-            default:
-                response.setLastTrainingTime(days + "天前训练了");
-                break;
-        }
 
-        boolean[] checkInList = checkInService.handleFind(dateDataList);
-        int missNum = 0;
-        int needNum = 0;
+        //获取今天是周几
         int dayOfWeek = dateNow.get(Calendar.DAY_OF_WEEK) - 1;
         dayOfWeek = dayOfWeek == 0? 7: dayOfWeek;
-        for(int i = 0;i < 7;i ++){
-            if(!checkInList[i]){
-                if(i + 1 >= dayOfWeek){
-                    //今天及以后的 为未签到
-                    needNum ++;
+
+        //获取今天是第几周
+        int weekOfYear =  dateNow.get(Calendar.WEEK_OF_YEAR);
+        if(dayOfWeek == 7)
+            weekOfYear --;
+        if(dateDataList.size() > 1){
+            DateData target = dateDataList.get(dateDataList.size() - 1);
+            if(
+                    target.getYear() == dateNow.get(Calendar.YEAR)
+                            && target.getMonth() == dateNow.get(Calendar.MONTH)
+                            && target.getDay() == dateNow.get(Calendar.DAY_OF_MONTH)
+            ){
+                int tempToday = target.getConcentrationE();
+                response.setAverage(tempToday);
+                if(dateDataList.size() > 1){
+                    target = dateDataList.get(dateDataList.size() - 2);
+                    int tempLastDay = target.getConcentrationE();
+                    response.setAverage(tempLastDay);
+                    response.setImprovementLastTime((tempToday - tempLastDay) / tempLastDay * 100);
+                    int i;
+                    int tempLastWeek = 0;
+                    int num = 0;
+                    for(i = dateDataList.size() - 2;i >= 0 && dateDataList.get(i).getWeekOfTheYear() == weekOfYear;i --){
+                    }
+                    for(;i >= 0 && dateDataList.get(i).getWeekOfTheYear() == weekOfYear - 1;i --){
+                        tempLastWeek += dateDataList.get(i).getConcentrationE();
+                        num ++;
+                    }
+                    if(num != 0){
+                        tempLastWeek /= num;
+                        response.setImprovementLastWeek((tempToday - tempLastWeek) / tempLastWeek * 100);
+                    }else{
+                        response.setImprovementLastWeek(-101);
+                    }
                 }else{
-                    //今天以前的为漏签
-                    missNum ++;
+                    response.setImprovementLastTime(-101);
+                    response.setImprovementLastWeek(-101);
                 }
-            }
-        }
-        if(missNum == 0){
-            if(dayOfWeek == 7){
-                response.setCheckInLetter("本周满签!获得" + trainingService.getFULL_WEEK_AWARD() + "金币");
             }else{
-                response.setCheckInLetter("距离满签还有" + needNum + "天");
+                //设置为-101代表未训练
+                response.setAverage(-101);
+                response.setImprovementLastTime(-101);
+                response.setImprovementLastWeek(-101);
             }
         }else{
-            response.setCheckInLetter("漏签了，请下周努力");
+            //设置为-101代表未训练
+            response.setAverage(-101);
+            response.setImprovementLastTime(-101);
+            response.setImprovementLastWeek(-101);
         }
+
+        //获取签到列表
+        boolean[] checkInList = checkInService.handleFind(dateDataList);
 
         response.setCheckInArray(checkInList);
         response.setDayOfWeek(dayOfWeek);
-        response.setLastDateTraining(lastDateData);
         response.setSuccess(true);
         return response;
     }

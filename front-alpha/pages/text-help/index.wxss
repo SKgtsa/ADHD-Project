@@ -1,0 +1,9 @@
+/* pages/text-help/index.wxss */
+.page{
+  background-color: #6FA3FC;
+  color: #FFF;
+  height: 150vh;
+  font-size: 2.7vh;
+  line-height: 4vh;
+  font-weight: 500;
+}

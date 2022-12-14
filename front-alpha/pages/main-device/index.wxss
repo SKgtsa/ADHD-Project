@@ -1,11 +1,29 @@
 /* pages/main-device/index.wxss */
-ec-canvas {
-    width: 100%;
-    height: 100%;
+.welcome{
+  width: 100vw;
+  height: 6vh;
+  border-radius: 6vw;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  color: #FFF;
+}
+.welcomeNote{
+  font-size: 4vh;
+  padding-top: 2vh;
+  width: 47.5vw;
+}
+.userName{
+  font-size: 3.7vh;
+  text-align: right;
+  padding-right: 5vw;
+  padding-top: 1vh;
+  width: 47.5vw;
 }
 .mainContainer{
     text-align: center;
-    background-color: rgba(150, 187, 255, 0.233);
+    background-color: #6FA3FC;
+    height: 100vh;
 }
 .titleContainer{
   width: 100vw;
@@ -51,35 +69,24 @@ ec-canvas {
 }
 .buttonArea{
   display: flex;
-  flex-direction: row;
-  padding-top: 66vh;
+  flex-direction: column;
   padding-bottom: 5vh;
+  padding-top: 3vh;
 }
-.detailedButton{
-  width: 43vw;
-  height: 23vh;
-  border-radius: 5vw;
+.buttonWrapper{
+  height: 12vh;
+}
+.button{
+  margin: auto;
+  width: 90vw;
+  height: 10vh;
+  border-radius: 4vw;
   border-width: 2vw;
   border-style: none;
   background-color: #FFF;
-  color: #007af2;
-  font-size: 13vw;
+  color: #707070;
+  font-size: 6vw;
   font-weight: bolder;
-  box-shadow: 10px 10px 10px 5px rgba(40, 29, 167, 0.4);  
-
-}
-.syncButton{
-  width: 43vw;
-  height: 23vh;
-  border-radius: 5vw;
-  border-width: 2vw;
-  border-style: none;
-  background-color: #FFF;
-  color: #007af2;
-  font-size: 13vw;
-  font-weight: bolder;
-  box-shadow: 10px 10px 10px 5px rgba(40, 29, 167, 0.4);  
-
 }
 .mask{
   z-index: 1;
@@ -114,4 +121,28 @@ ec-canvas {
   background-size: 30vw;
   z-index: 999;
   padding-left: 21vw;
+}
+.guideButton{
+  width: 90vw;
+  height: 28vh;
+  background-color: #FFF;
+  color: #707070;
+  border-radius: 5vw;
+  border-style: none;
+  margin: 30% auto;
+  display: flex;
+  flex-direction: column;
+}
+.guideTop{
+  font-size: 4vh;
+  font-weight: 600;
+  line-height: 3vh;
+}
+.guideBottom{
+  font-size: 2vh;
+}
+.guideText{
+  display: flex;
+  flex-direction: column;
+  margin: auto;
 }

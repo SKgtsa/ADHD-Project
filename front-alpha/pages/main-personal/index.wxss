@@ -1,32 +1,31 @@
 /* pages/main-personal/index.wxss */
 .container{
     text-align: center;
-    background-color: #e2f0fe;
-    padding-top: 5vh;
+    background-color: #6FA3FC;
+    padding-top: 4.2vh;
 }
 .userinfo{
-    padding-top: 10vh;
-    width: 80vw;
-    height: 75vh;
+    padding-top: 7vh;
+    width: 85vw;
+    height: 77vh;
     background-color: #FFF;
     text-align: center;
     border-radius: 10vw;
-    box-shadow: 10px 10px 10px 5px rgba(40, 29, 167, 0.4);  
 }
 .userinfo-nickname{
     width: 100%;
     font-weight: 700;
-    color: #486484;
+    color: #707070;
 }
 .userinfo-avatar{
-  width: 30vw;
-  height: 30vw;
-  border-radius: 15vw;
+  width: 35vw;
+  height: 35vw;
+  border-radius: 17.5vw;
 }
 .userinfo-avatar-picture{
-  width: 30vw;
-  height: 30vw;
-  border-radius: 15vw;
+  width: 35vw;
+  height: 35vw;
+  border-radius: 17.5vw;
   position: absolute;
   left: 0;
 }
@@ -39,45 +38,52 @@
   text-align: center;
 }
 
-.lineBox{
+.listBox{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 80vw;
-  padding-left: 2vw;
-  padding-top: 5vh;
-  font-size: 4vw;
+  font-size: 5vw;
+  margin: auto;
+  font-weight: 600;
 }
-.left{
-  width: 50%;
-  text-align: left;
+.top{
+  width: 100%;
+  text-align: center;
 }
-.right{
-  width: 50%;
-  text-align: right;
+.bottom{
+  padding-top: 2vh;
+  width: 100%;
+  text-align: center;
 }
-.leftBox{
-  padding-top: 3vh;
+.topBox{
+  padding-top: 2.5vh;
   display: flex;
   flex-direction: column;
   text-align: center;
-  width: 35vw;
-  height: 15vh;
-  background-color: rgba(150, 187, 255, 0.233);
-  box-shadow: 5px 10px 15px 4px rgba(40, 29, 167, 0.4);  
-  border-radius: 5vw;
-  color: #486484;
+  margin: auto;
+  width: 75vw;
+  height: 6.5vh;
+  background-color: #FFF;
+  border-radius: 2vw;
+  border-color: #707070;
+  border-width: 2px;
+  border-style: solid;
+  color: #000;
 }
-.rightBox{
-  padding-top: 3vh;
+.bottomBox{
+  padding-top: 2.5vh;
   display: flex;
   flex-direction: column;
-  text-align: left;
-  width: 35vw;
-  height: 15vh;
-  background-color: rgba(150, 187, 255, 0.233);
-  box-shadow: 5px 10px 15px 4px rgba(40, 29, 167, 0.4);  
-  border-radius: 5vw;
-  color: #486484;
+  text-align: center;
+  margin: auto;
+  width: 75vw;
+  height: 6.5vh;
+  background-color: #FFF;
+  border-radius: 2vw;
+  border-color: #707070;
+  border-width: 2px;
+  border-style: solid;
+  color: #707070;
 }
 .rightText{
   z-index: 2;
@@ -110,7 +116,7 @@
   margin: auto;
   width: 55vw;
   border-bottom-style: dashed;
-  border-color: #486484;
+  border-color: #707070;
   border-width: 2px;
 }
 .popOutText{
@@ -124,4 +130,16 @@
   border-radius: 4vw;
   color: #FFF;
   font-size: 4vh;
+}
+.bottomText{
+  margin: auto 0;
+  color: #FFF;
+  font-size: 5vw;
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+.editIcon{
+  width: 3.5vh;
+  height: 3.5vh;
 }

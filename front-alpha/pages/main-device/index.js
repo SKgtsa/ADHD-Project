@@ -386,6 +386,14 @@ Page({
                     serviceId: app.globalData.serviceId,
                     characteristicId: app.globalData.characteristicId,
                     value: buffer.buffer,
+                    success:(res) =>{
+                      console.log("发送成功 收到回传")
+                      console.log(res);
+                    },
+                    fail: (res) => {
+                      console.log("发送失败 收到回传")
+                      console.log(res)
+                    }
                   })
                 },300)
                 
@@ -437,12 +445,12 @@ Page({
                   wx.reLaunch({
                     url: 'index',
                   }) 
-                },500)
-              } ,500)
+                },1000)
+              } ,1000)
               wx.showToast({
                 title: '数据全部发送成功',
                 icon: 'success',
-                duration: 1000
+                duration: 2000
               })
             }
           }else{
@@ -573,33 +581,7 @@ Page({
     startFindTime: null,
     connectTime: 0,
     hideLoading: true,
-    chartReady: false,
-    ecLine: {
-      onInit: function (canvas, width, height, dpr) {
-        const lineChart = echarts.init(canvas, null, {
-          width: width,
-          height: height,
-          devicePixelRatio: dpr // new
-        });
-        canvas.setChart(lineChart);
-        lineChart.setOption(getLineOption());
-
-        return lineChart;
-      }
-    },
-    ecGauge: {
-      onInit: function (canvas, width, height, dpr) {
-        const gaugeChart = echarts.init(canvas, null, {
-          width: width,
-          height: height,
-          devicePixelRatio: dpr // new
-        });
-        canvas.setChart(gaugeChart);
-        gaugeChart.setOption(getGaugeOption());
-
-        return gaugeChart;
-      }
-    }
+    chartReady: false
   },
   detailedButton: function() {
     wx.navigateTo({
@@ -611,6 +593,11 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
+  toTextGuide(){
+    wx.navigateTo({
+      url: '../text-help/index',
+    })
+  },
   onShow() {
     if(!app.globalData.login){
       wx.switchTab({
@@ -619,7 +606,7 @@ Page({
     }
     console.log('intoOnShow()')
     console.log(wx.getStorageSync('token'))
-   
+    this.setData({userInfo: app.globalData.userInfo})
   },
   onLoad(){
     if(this.options){
@@ -640,20 +627,20 @@ Page({
         const data = res.data;
         console.log(data)
         if(data.token == null){
-          // app.globalData.login = false;
-          // wx.showToast({
-          //   title: '登录过期',
-          //   icon: 'error'
-          // })
-          // setTimeout(() => {
-          //   wx.switchTab({
-          //     url: '../main-personal/index',
-          //   })
-          // },500)
+          app.globalData.login = false;
+          wx.showToast({
+            title: '登录过期',
+            icon: 'error'
+          })
+          setTimeout(() => {
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
+          },500)
         }
         console.log(res);
         app.globalData.gaugeData = data.average;
-        app.globalData.detailedGraphY = data.content;
+        app.globalData.sevenDayGraphY = data.content;
 
         const date = new Date();
         let y = date.getFullYear();
@@ -692,7 +679,7 @@ Page({
             }
           }
         }
-        app.globalData.detailedGraphX = graphX;
+        app.globalData.sevenDayGraphX = graphX;
         console.log(graphX)
         wx.setStorageSync('token', data.token)
         if(data.needImage){
@@ -783,131 +770,6 @@ Page({
   }
 });
 
-
-function getLineOption() {
-  return {
-
-    grid: {
-      containLabel: true,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      top: 38
-    },
-    tooltip: {
-      show: true,
-      trigger: 'axis',
-      formatter: (params) => {
-        let time = params[0].data;
-        let s = time%60;
-        time = (time - s)/60;
-        let m = time%60;
-        time = (time - m)/60;
-        let h = time;
-        let result = '';
-        if(h != 0)
-          result += h + '时'
-        if(m != 0)
-          result += m + '分'
-        if(s != 0)
-          result += s + '秒'
-        return result;
-      },
-    },
-    xAxis: {
-      type: 'category',
-      boundaryGap: true,
-      data: app.globalData.detailedGraphX,
-      // show: false
-    },
-    yAxis: {
-      name: '秒',
-      x: 'center',
-      type: 'value',
-      splitLine: {
-        lineStyle: {
-          type: 'dashed'
-        }
-      },
-      formatter: (params) => {
-        console.log(params)
-        let time = params[0].data;
-        let s = time%60;
-        time = (time - s)/60;
-        let m = time%60;
-        time = (time - m)/60;
-        let h = time;
-        let result = '';
-        if(h != 0)
-          result += h + '时'
-        if(m != 0)
-          result += m + '分'
-        if(s != 0)
-          result += s + '秒'
-        return result;
-      },
-      // show: false
-    },
-    series: [{
-      type: 'line',
-      smooth: true,
-      data: app.globalData.detailedGraphY
-    }],
-    needImage: false,
-  };
-}
-function getGaugeOption() {
-  return{
-    series: [{
-      title: {
-        offsetCenter: [0,'70%'],
-        show: true,
-        color: '#486484',
-        fontWeight: 'bold',
-        fontSize: 20
-      },
-      type: 'gauge',
-      radius: '90%',
-      center: ['50%','55%'],
-      detail: {
-        formatter: '{value}%',
-        textStyle: {
-          fontWeight: 'normal',
-          color: '#007af2'
-        },
-      },
-      axisLine: {
-        show: true,
-        lineStyle: {
-          color: [[1,'#fff']],
-          width:7
-        }
-      },
-      axisTick: {
-        show: false
-      },
-      axisLabel: {
-        show: false
-      },
-      splitLine: {
-        show: false
-      },
-      pointer: {
-        width: 15,
-        itemStyle: {
-          color: '#486484'
-        }
-      },
-      data: [{
-        value: app.globalData.gaugeData,
-        name: '平均专注率',
-        textStyle: {
-          color: '#FFF'
-        }
-      }]
-
-    }]};
-}
 //数据备份
 // {
 //   time: 'a',

@@ -15,6 +15,8 @@ App({
     // baseURL: 'http://clankalliance.com',
     detailedGraphX: null,
     detailedGraphY: null,
+    sevenDayGraphX: null,
+    sevenDayGraphY: null,
     gaugeData: null,
     userInfo: null,
     sysinfo: null,

@@ -66,7 +66,7 @@ public class TrainingServiceImpl implements TrainingService {
         System.out.println("************************");
         CommonResponse response = new CommonResponse<>();
         //测试后门 上线时会去掉
-        if(token.equals("114514")){
+        if(token != null && token.equals("114514")){
             response.setSuccess(true);
             response.setMessage("o1JHJ4rRpzIAw4rYUv90GXo5q3Yc");
         }else{
@@ -178,7 +178,7 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public FindGraphResponse handleFindGraph(String token, String id) {
         CommonResponse responseT = new CommonResponse<>();
-        if(token.equals("114514")){
+        if(token != null && token.equals("114514")){
             responseT.setSuccess(true);
             responseT.setMessage("o1JHJ4rRpzIAw4rYUv90GXo5q3Yc");
         }else{
@@ -306,7 +306,7 @@ public class TrainingServiceImpl implements TrainingService {
             DateData date = dateDataList.get(dateDataListLength - dateIter);
             List<Training> trainingList = date.getTrainingList();
             trainingIter = trainingList.size() - 1;
-            while(trainingIter >= 0){
+            while(trainingIter >= 0 && daysBetween <= 6){
                 String graph[] = trainingList.get(trainingIter).getGraph().split(",");
                 for(String s : graph){
                     totalC += Integer.parseInt(s);
@@ -334,7 +334,7 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public CommonResponse handleFindDateList(String token,Integer startIndex, Integer length){
         CommonResponse response = new CommonResponse<>();
-        if(token.equals("114514")){
+        if(token != null && token.equals("114514")){
             response.setSuccess(true);
             response.setMessage("o1JHJ4rRpzIAw4rYUv90GXo5q3Yc");
         }else{
@@ -352,7 +352,9 @@ public class TrainingServiceImpl implements TrainingService {
         }
         dateDataListIndex = startIndex;
         int endIndex = dateDataListIndex - length <= 0? 0: dateDataListIndex - length;
-        response.setContent(dateDataList.subList(endIndex ,dateDataList.size() > 0? dateDataListIndex + 1: 0));
+        List<DateData> targetList = dateDataList.subList(endIndex ,dateDataList.size() > 0? dateDataListIndex + 1: 0);
+        Collections.reverse(targetList);
+        response.setContent(targetList);
         response.setMessage("" + (endIndex == 0? -2: endIndex));
         return response;
     }
@@ -366,7 +368,7 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public CommonResponse handleFindDateData(String token,String id){
         CommonResponse response = new CommonResponse<>();
-        if(token.equals("114514")){
+        if(token != null && token.equals("114514")){
             response.setSuccess(true);
             response.setMessage("o1JHJ4rRpzIAw4rYUv90GXo5q3Yc");
         }else{

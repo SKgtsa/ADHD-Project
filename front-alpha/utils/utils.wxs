@@ -52,7 +52,7 @@ function handleDayOfWeekColor(index,dayOfWeek) {
   if(index == dayOfWeek - 1){
     return 'color: #007af2'
   }else{
-    return 'color: #486484'
+    return 'color: #707070'
   }
 }
 

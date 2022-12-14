@@ -16,25 +16,26 @@
         <!--用户名-->
         <view bindtap="changeNickName" style="padding: 4vw">
             <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+            <image src="https://chenanbella.cn/static/editNameIcon.png" class="editIcon"></image>
         </view>
         <view class="detailedInfo" style="{{login ? '  display: inline;': 'display: none;'}}">
-          <view class="lineBox">
-            <view class="left">
-              <view class="leftBox">
-                <text>您已坚持训练</text>
-                <text style="line-height: 18vw;"><text style="color: #007af2;font-weight: bolder;font-size: 20vw;">{{hour}}</text>小时</text>
+          <view class="listBox">
+            <view class="top">
+              <view class="topBox">
+                <text>宝贝已坚持训练: <text style="color: #FF9811;"><text style="font-weight: bolder;">{{minute}}</text>分钟</text></text>
               </view>
             </view>
-            <view class="right">
-              <view class="rightBox">
-                <text class="rightText">总金币数:</text>
-                <view class="goldBox">
-                  <text class="goldNum">{{userInfo.gold}}</text>
-                </view>
+            <view class="bottom">
+              <view class="bottomBox">
+                <text>宝贝总共获得总金币数: <text style="color: #FF9811;"><text style="font-weight: bolder;">{{gold}}</text>个</text></text>
               </view>
             </view>
           </view>
         </view>  
+    </view>
+    <view class="bottomText">
+      <text>宝⻉家⻓，您⾟苦啦！</text>
+      <text>让我们⼀起坚持！</text>
     </view>
 </view>
 <page-container show="{{showChangeNickName}}" overlay="{{true}}"  position="top" custom-style="">

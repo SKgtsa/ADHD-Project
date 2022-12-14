@@ -19,20 +19,29 @@ public class MainInfoResponse {
     //今天是周几
     private Integer dayOfWeek;
 
-    //上次训练是什么时候 今天/昨天/前天/n天前
-    private String lastTrainingTime;
-
     //签到列表 true代表签到成功
     private boolean[] checkInArray;
 
-    //本周签到情况 满签+金币 或 距满签还有几天 或 漏签
-    private String checkInLetter;
+    //今天训练的平均专注度
+    private Integer average;
 
-    //平均专注度
-    private Integer concentrationE;
+    //今天训练比上次进步的百分比
+    private Integer improvementLastTime;
 
-    //最近的一天训练数据
-    private DateData lastDateTraining;
+    //今天训练比上一周训练进步的百分比
+    private Integer improvementLastWeek;
+
+//    //上次训练是什么时候 今天/昨天/前天/n天前
+//    private String lastTrainingTime;
+
+//    //本周签到情况 满签+金币 或 距满签还有几天 或 漏签
+//    private String checkInLetter;
+
+//    //平均专注度
+//    private Integer concentrationE;
+
+//    //最近的一天训练数据
+//    private DateData lastDateTraining;
 
 
 }

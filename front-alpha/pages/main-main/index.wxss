@@ -38,33 +38,32 @@ ec-canvas {
   padding-left: 15vw;
 }
 .page{
-  background-color: rgba(150, 187, 255, 0.233);
-  width: 100%;
-  height: 100%;
+  background-color: #6FA3FC;
+  width: 100vw;
+  height: 100vh;
   padding-top: 3vh;
 }
 .welcome{
-  background-color: #FFF;
-  width: 90vw;
-  height: 23vh;
+  width: 95vw;
+  height: 6vh;
   border-radius: 6vw;
   margin: auto;
   display: flex;
-  flex-direction: column;
-  box-shadow: 5px 10px 15px 4px rgba(40, 29, 167, 0.4);  
+  flex-direction: row;
+  color: #FFF;
 }
 .welcomeNote{
-  font-size: 8vh;
+  font-size: 4vh;
   padding-top: 1vh;
   padding-left: 3vw;
-  color: #007af2;
+  width: 47.5vw;
 }
 .userName{
-  font-size: 4vh;
+  font-size: 3.7vh;
   text-align: right;
   padding-right: 5vw;
   padding-top: 1vh;
-  color: #486484;
+  width: 47.5vw;
 }
 .lastTrainingArea{
   padding-top: 2vh;
@@ -79,7 +78,6 @@ ec-canvas {
   flex-direction: column;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
-  box-shadow: 5px 10px 15px 4px rgba(40, 29, 167, 0.4);  
 }
 .lastTraining{
   font-size: 5vh;
@@ -117,8 +115,7 @@ ec-canvas {
   border-color: #007af2;
   border-style: solid;
   border-top-style: none;
-  border-width: 5px;
-  box-shadow: 5px 5px 10px 2px rgba(40, 29, 167, 0.4);  
+  border-width: 5px; 
 }
 .syncData{
   width: 45vw;
@@ -133,50 +130,54 @@ ec-canvas {
   border-style: solid;
   border-top-style: none;
   border-width: 5px;
-  box-shadow: 5px 5px 10px 2px rgba(40, 29, 167, 0.4);  
-
 }
 .complexData{
   width: 90vw;
-
   margin: auto;
   padding-top: 2vh;
 }
 .checkIn{
   width: 90vw;
-  height: 20vh;
+  height: 27vh;
   background-color: #FFF;
   border-radius: 5vw;
-  border-bottom-left-radius: 0;
-  box-shadow: 5px 10px 15px 4px rgba(40, 29, 167, 0.4);  
-
 }
 .checkInCardName{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
   padding-left: 2vw;
   padding-top: 1vh;
+  font-size: 3vw;
+  color: #707070;
+}
+.checkInButtomMessage{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  font-size: 3vw;
+  color: #707070;
+}
+.checkInName{
+  font-size: 7vw;
+  font-weight: 600;
 }
 .checkInImage{
   width: 3vw;
   height: 3vw;
 }
-.checkInName{
-  font-size: 7vw;
-  color: #007af2;
-  line-height: 1vh;
-}
-.weekCheck{
-
+.checkInText{
+  width: 3vw;
+  height: 3vw;
+  font-size: 8vw;
+  margin: auto;
+  text-align: center;
 }
 .checkInContainer{
-
-}
-.weekDayBlock{
-
+  text-align: center;
 }
 .checkInBlock{
-
-}
-.today{
+  text-align: center;
 
 }
 .complexBottom{
@@ -190,14 +191,6 @@ ec-canvas {
   background-color: #FFF;
   border-bottom-right-radius: 5vw;
   border-bottom-left-radius: 5vw;
-  box-shadow: 5px 15px 15px 4px rgba(40, 29, 167, 0.4);  
-
-}
-.gaugeArea{
-  height: 45vw;
-  width: 45vw;
-  padding-top: 4vw;
-  padding-left: 5vw;
 }
 .container{
   height: 40vw;
@@ -208,11 +201,6 @@ ec-canvas {
   display: flex;
   flex-direction: column;
   position: relative;
-  box-shadow: 5px 10px 15px 4px rgba(40, 29, 167, 0.4);  
-
-}
-.gaugeChart{
-  
 }
 .weekCheck{
   display: flex;
@@ -225,8 +213,15 @@ ec-canvas {
 .checkInBlock{
   width: 10vw;
   height: 10vw;
-  border-radius: 3vw;
   margin: auto;
+  background-color: #FFF;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #707070;
+  border-radius: 0;
+}
+.checkInBlockWrapper{
+  padding-left: 1vw;
 }
 .checkInImage{
   width: 10vw;
@@ -241,7 +236,6 @@ ec-canvas {
   width: 90vw;
   height: 28vh;
   background-color: #FFF;
-  box-shadow: 5px 10px 15px 4px rgba(40, 29, 167, 0.4);  
   border-radius: 5vw;
   margin: auto;
   display: flex;
@@ -283,4 +277,43 @@ ec-canvas {
   font-size: 4vh;
   line-height: 4vh;
   padding-top: 4.5vh;
+}
+.guideButton{
+  width: 90vw;
+  height: 28vh;
+  background-color: #FFF;
+  color: #707070;
+  border-radius: 5vw;
+  border-style: none;
+  margin: 5% auto;
+  display: flex;
+  flex-direction: column;
+}
+.guideTop{
+  font-size: 4vh;
+  font-weight: 600;
+  line-height: 3vh;
+}
+.guideBottom{
+  font-size: 2vh;
+}
+.guideText{
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+.newDataCard{
+  width: 90vw;
+  height: 20vh;
+  background-color: #FFF;
+  border-radius: 5vw;
+  margin: 3% auto;
+  padding-top: 4vh;
+  font-size: 3.5vh;
+  line-height: 4.5vh;
+  color: #707070;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
 }

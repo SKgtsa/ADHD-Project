@@ -1,5 +1,6 @@
 // pages/main-device-date/index.js
 //训练详情页 列出训练日列表
+import * as echarts from '../../ec-canvas/echarts';
 const app = getApp();
 Page({
 
@@ -16,11 +17,28 @@ Page({
     dataList: [
 
     ],
+    graphReady: false,
     requesting: false,
     colorSet: ['#7ecbff','#ffa447','#ffa6c4','#1eccc3','#ffa4a3'],
     //骨架屏用的两个参数
     showMask: true,
     tempList: [1,1,1,1,1,1,1,1,1,1],
+    chartReady: false,
+    ecLine: {
+      onInit: function (canvas, width, height, dpr) {
+        const lineChart = echarts.init(canvas, null, {
+          width: width,
+          height: height,
+          devicePixelRatio: dpr // new
+        });
+        console.log("width: " + width);
+        console.log("height: " + height);
+        canvas.setChart(lineChart);
+        lineChart.setOption(getLineOption());
+
+        return lineChart;
+      }
+    },
   },
   refresh(){
     if(this.data.startIndex == -2){
@@ -138,6 +156,7 @@ Page({
     }else{
       this.refresh();
     }
+    this.setData({graphReady: true})
   },
 
   clear(){
@@ -198,3 +217,78 @@ Page({
 
   }
 })
+function getLineOption() {
+  return {
+    grid: {
+      containLabel: true,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      top: 38
+    },
+    tooltip: {
+      show: true,
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow'
+      },
+      formatter: (params) => {
+        let time = params[0].data;
+        let s = time%60;
+        time = (time - s)/60;
+        let m = time%60;
+        time = (time - m)/60;
+        let h = time;
+        let result = '';
+        if(h != 0)
+          result += h + '时'
+        if(m != 0)
+          result += m + '分'
+        if(s != 0)
+          result += s + '秒'
+        return result;
+      },
+    },
+    xAxis: {
+      type: 'category',
+      boundaryGap: true,
+      data: app.globalData.sevenDayGraphX,
+      // data: ['A','B','C']
+      // show: false
+    },
+    yAxis: {
+      name: '秒',
+      x: 'center',
+      type: 'value',
+      splitLine: {
+        lineStyle: {
+          type: 'dashed'
+        }
+      },
+      formatter: (params) => {
+        console.log(params)
+        let time = params[0].data;
+        let s = time%60;
+        time = (time - s)/60;
+        let m = time%60;
+        time = (time - m)/60;
+        let h = time;
+        let result = '';
+        if(h != 0)
+          result += h + '时'
+        if(m != 0)
+          result += m + '分'
+        if(s != 0)
+          result += s + '秒'
+        return result;
+      },
+      // show: false
+    },
+    series: [{
+      type: 'line',
+      smooth: true,
+      data: app.globalData.sevenDayGraphY
+    }],
+    needImage: false,
+  };
+}

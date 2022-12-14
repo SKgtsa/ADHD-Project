@@ -71,11 +71,10 @@ public class ManipulateUtil {
     public static boolean deleteExpiredStatus(String id, boolean deleteTarget){
         long currentTime = System.currentTimeMillis();
         boolean find = false;
-        while(headNode.getNext() != null && headNode.getNext().getNext() != null && currentTime - headNode.getNext().getUpdateTime() >= STATUS_EXPIRE_TIME){
-            if(headNode.getNext().getToken().equals(id) || headNode.getNext().getUserId().equals(id)){
+        while(headNode.getNext() != null && headNode.getNext().getNext() != null &&  currentTime - headNode.getNext().getUpdateTime() >= STATUS_EXPIRE_TIME){
+            if(headNode.getNext().getToken() != null && headNode.getNext().getUserId() != null &&  (headNode.getNext().getToken().equals(id) || headNode.getNext().getUserId().equals(id))){
                 find = true;
             }
-
             headNode.setNext(headNode.getNext().getNext());
         }
         if(deleteTarget && !find){
@@ -85,7 +84,7 @@ public class ManipulateUtil {
             StatusNode lastNode = headNode;
             StatusNode node = headNode.getNext();
             while(node != null && !find){
-                if(node.getToken().equals(id) || node.getUserId().equals(id)){
+                if(node.getToken() != null && node.getUserId() != null && (node.getToken().equals(id) || node.getUserId().equals(id))){
                     deleteNextStatus(lastNode);
                     find = true;
                 }
@@ -93,7 +92,6 @@ public class ManipulateUtil {
                 node = node.getNext();
             }
         }
-
         return find;
     }
 
@@ -135,6 +133,9 @@ public class ManipulateUtil {
      * @return
      */
     public static StatusNode findStatusByToken(String token){
+        System.out.println("*******************");
+        System.out.println("根据token查找状态");
+        System.out.println("当前链表: " + headNode);
         System.out.println("验证token : " + token);
         if(deleteExpiredStatus(token, false)){
             //token已过期并删除
@@ -147,7 +148,7 @@ public class ManipulateUtil {
             StatusNode node = headNode.getNext();
             boolean find = false;
             while(node != null && !find){
-                if(node.getToken().equals(token)){
+                if(node.getToken() != null && node.getToken().equals(token)){
                     result = node;
                     deleteNextStatus(lastNode);
                     find = true;
@@ -157,7 +158,6 @@ public class ManipulateUtil {
             }
             System.out.println("节点搜索结果: " + result);
             System.out.println("*******************");
-
             return result;
         }
     }

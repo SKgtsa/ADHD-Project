@@ -17,74 +17,53 @@
   </view>
 </page-container> -->
 <wxs module="utils" src="../../utils/utils.wxs"></wxs>
-<scroll-view>
+<view>
   <view class="page">
     <view class="welcome">
-      <text class="welcomeNote">欢迎回来</text>
+      <text class="welcomeNote">欢迎回来 !</text>
       <text class="userName">{{userInfo.nickName}}</text>
-    </view>
-    <view class="lastTrainingArea">
-      <view class="lastTrainingCard">
-        <text class="lastTraining">{{lastTrainingTime}}</text>
-        <text class="trainingTime" wx:if="{{lastTrainingTime != '您还未训练过'}}">{{utils.handleTime(lastDateTraining.time)}}</text>
-        <text class="trainingLetter">{{trainingLetter}}</text>
-      </view>
-    </view>
-    <view class="trainingButtonGroup">
-      <button class="checkTraining" bind:tap="toDeviceDetail">查看训练</button>
-      <button class="syncData" bind:tap="toDataSync">同步数据</button>
     </view>
     <view class="complexData">
       <view class="checkIn">
         <view class="checkInCardName">
-          <image class="checkInImage" src="https://chenanbella.cn/static/checkIn.png"/>
-          <text class="checkInName">本周签到</text>
+          <text class="checkInName">本周签到次数:{{checkInDay}}天</text>
+          <text>加油,鼓励宝贝继续努力哦!</text>
         </view>
       <!--宽横行展示本周签到-->
         <view class="weekCheck">
           <block wx:for="{{checkInArray}}" wx:for-index="index" wx:key="id">
             <view class = "checkInContainer">
               <view class="weekDayBlock">
-                <text style="{{utils.handleDayOfWeekColor(index,dayOfWeek)}}">星期{{utils.handleWeek(index)}}</text>
+                <text style="{{utils.handleDayOfWeekColor(index,dayOfWeek)}}">周{{utils.handleWeek(index)}}</text>
               </view>
-              <view 
-              class="checkInBlock" 
-              style="{{utils.handleCheckInBackground(item)}}">
-                <image 
-                class="checkInImage" 
-                src="{{item? 'https://chenanbella.cn/static/checkInSuccess.png': 'https://chenanbella.cn/static/checkInFail.png'}}"
-                wx:if="{{!((!item && index >= dayOfWeek - 1) || (item && index > dayOfWeek - 1))}}"/>
+              <view class="checkInBlockWrapper">
+                <view class="checkInBlock">
+                  <text class="checkInText" style="{{item? 'color: #FF9811': 'color: #707070'}}" wx:if="{{!((!item && index >= dayOfWeek - 1) || (item && index > dayOfWeek - 1))}}">{{!item? 'x':'√'}}</text>
+                </view>
               </view>
-              <text class="today">{{todayList[index]}}</text>
             </view>
           </block>
         </view>
-      </view>
-      <view class="complexBottom">
-        <view class="fullCheck">
-          <text>{{checkInLetter}}</text>
-        </view>
-        <view class="gaugeArea">
-          <view class="container" wx:if="{{chartReady}}">
-          <ec-canvas wx:if="{{!showGauge}}" class="gaugeChart" id="mychart-dom-gauge" canvas-id="mychart-gauge" ec="{{ ecGauge }}"></ec-canvas>
-          </view>
+        <view class="checkInButtomMessage">
+          <text>⽅框中 × 的意思是 当天未签到</text>
+          <text>⽅框中 √ 的意思是 当天已签到</text>
         </view>
       </view>
     </view>
-    <view class="helpCard">
-      <text class="helpLetter">遇到问题？</text>
-      <view class="helpButtonGroup">
-        <button bind:tap="advice" class="adviceButton">
-          <text>反馈</text>
-          <text>&</text>
-          <text>建议</text>
-        </button>
-        <button bind:tap="quickGuide" class="communityButton">指南社区</button>
-      </view>
+    <view class="newDataCard">
+      <text>宝⻉的平均专注率为: <text style="color: #FF9811;font-weight: bolder;">{{average}}</text></text>
+      <text>⽐上⼀次训练进步了: <text style="color: #FF9811;font-weight: bolder;">{{improvementLastTime}}</text></text>
+      <text>⽐上⼀周训练进步了: <text style="color: #FF9811;font-weight: bolder;">{{improvementLastWeek}}</text></text>
+      <text style="font-size: 2vh;font-weight: 400;padding-top: 0.8vh;">每⼀次进步来之不易！⿎励⼀下宝⻉吧！</text>
     </view>
-    <view style="height: 15vh;"></view>
+    <button class="guideButton">
+      <view class="guideText">
+        <text class="guideTop">训练指南</text>
+        <text class="guideBottom">点击获取训练演⽰视频</text>
+      </view>
+    </button>
   </view>
-</scroll-view>
+</view>
 
 
 <page-container show="{{showAdvicePage}}" overlay="{{true}}"  position="top" custom-style="">

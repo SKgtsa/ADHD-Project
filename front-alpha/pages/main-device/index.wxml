@@ -1,29 +1,38 @@
 <!--pages/main-device/index.wxml-->
 <view class="mainContainer">
-    <view class="titleContainer">
-        <text class="title">过去七天训练时长</text>
+  <view class="welcome">
+    <text class="welcomeNote">欢迎回来 !</text>
+    <text class="userName">{{userInfo.nickName}}</text>
+  </view>
+  <view class="buttonArea">
+    <view class="buttonWrapper">
+      <button class="button" bindtap="toTextGuide">开始训练</button>
     </view>
-    <view class="container" wx:if="{{chartReady}}">
-        <ec-canvas class="lineChart" id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>
-        <ec-canvas wx:if="{{!showGauge}}" class="gaugeChart" id="mychart-dom-gauge" canvas-id="mychart-gauge" ec="{{ ecGauge }}"></ec-canvas>
+    <view class="buttonWrapper">
+      <button bind:tap="startSync" class="button">同步数据</button>
     </view>
-    <view class="buttonArea">
-      <button class="detailedButton" bind:tap="detailedButton">详情</button>
-      <button bind:tap="startSync" class="syncButton">同步</button>
+    <view class="buttonWrapper">
+      <button class="button" bind:tap="detailedButton">查看训练数据</button>
     </view>
-    <page-container bind:enter="openBLEWindow" bind:leave="closeBLEWindow" show="{{showBlueToothPage}}" position="bottom" overlay="{{true}}">
-      <view class="mask">
-        <view class="popOutWindow">
-          <view class="pattern">
-            <view class="BlueToothLetter">
-              <text>{{blueToothStatus}}</text>
-              <text>请保持蓝牙开启，不要退出本页面</text>
-            </view>
+  </view>
+  <button class="guideButton">
+    <view class="guideText">
+      <text class="guideTop">训练指南</text>
+      <text class="guideBottom">点击获取训练演⽰视频</text>
+    </view>
+  </button>
+  <page-container bind:enter="openBLEWindow" bind:leave="closeBLEWindow" show="{{showBlueToothPage}}" position="bottom" overlay="{{true}}">
+    <view class="mask">
+      <view class="popOutWindow">
+        <view class="pattern">
+          <view class="BlueToothLetter">
+            <text>{{blueToothStatus}}</text>
+            <text>请保持蓝牙开启，不要退出本页面</text>
           </view>
         </view>
       </view>
-    </page-container>
-    
+    </view>
+  </page-container>
 </view>
 <loading hidden="{{hideLoading}}">请稍候</loading>
 

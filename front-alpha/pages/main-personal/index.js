@@ -111,7 +111,7 @@ Page({
             console.log(res);
             const data = res.data;
             wx.setStorageSync('token', data.token);
-            this.setData({gold: data.content.gold,hour: data.content.hour,hideLoading: true})
+            this.setData({gold: data.content.gold,minute: data.content.minute,hideLoading: true})
             console.log('本地存储token变更为' + data.token)
             console.log('*******登陆结束********')
           }

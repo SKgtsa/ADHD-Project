@@ -5,6 +5,15 @@
     <view class="pageName">
       <text>训练信息</text>
     </view>
+    <view class="wrapper">
+      
+      <view class="container">
+        <!-- <view class="nameWrapper">
+          <text class="chartName">过去七天训练时长</text>
+        </view> -->
+        <ec-canvas class="lineChart" id="mychart-dom-line" wx:if="graphReady" canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>
+      </view>
+    </view>
     <view class="pageContainer">
         <view class="unit" wx:for="{{dataList}}" wx:for-index="index" wx:key="id">
           <button class="button" bind:tap="jump" data-target="{{index}}">
@@ -23,7 +32,7 @@
           </button>
         </view>
         <!--骨架屏-->
-        <view class="unit"  wx:if="{{showMask}}" wx:for="{{tempList}}">
+        <view class="unit"  wx:if="{{showMask}}" wx:for="{{tempList}}" wx:key="key">
           <button class="button">
             <view style="background-color: #486484;width: 50vw;height: 4vh;border-radius: 3vw;"></view>
             <view class="bottomBox">

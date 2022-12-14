@@ -20,6 +20,7 @@ Page({
       timeVariance: null
     },
     //骨架屏用的两个参数
+    showMask: true,
     hideLoading: true,
     tempList: [1,1,1,1,1,1,1,1,1,1],
     trainingList: [],
@@ -32,8 +33,9 @@ Page({
           height: height,
           devicePixelRatio: dpr // new
         });
+        console.log("width: " + width);
+        console.log("height: " + height);
         canvas.setChart(lineChart);
-        console.log(app)
         lineChart.setOption(getLineOption());
 
         return lineChart;
@@ -196,7 +198,7 @@ Page({
         app.globalData.detailedGraphY = graphY;
         console.log(app.globalData.detailedGraphY);
         wx.setStorageSync('token', data.token)
-        this.setData({hideLoading: true,chartReady: true})
+        this.setData({hideLoading: true,chartReady: true,showMask: false})
       },
       fail: (res) => {
         console.log(res)
@@ -251,7 +253,6 @@ Page({
 });
 function getLineOption() {
   return {
-
     grid: {
       containLabel: true,
       left: 0,
