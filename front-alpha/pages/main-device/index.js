@@ -4,6 +4,7 @@ import * as echarts from '../../ec-canvas/echarts';
 const app = getApp();
 Page({
   bleGetDeviceServices(deviceId){
+    var that = this;
     wx.getBLEDeviceServices({
       deviceId, // 搜索到设备的 deviceId
       success: (res) => {
@@ -11,13 +12,14 @@ Page({
         for (let i = 0; i < res.services.length; i++) {
           if (res.services[i].isPrimary) {
             // 可根据具体业务需要，选择一个主服务进行通信
-            this.bleGetDeviceCharacteristics(deviceId,res.services[i].uuid)
+            that.bleGetDeviceCharacteristics(deviceId,res.services[i].uuid)
           }
         }
       }
     })
   },
   bleGetDeviceCharacteristics(deviceId,serviceId){
+    var that = this;
     wx.getBLEDeviceCharacteristics({
       deviceId, // 搜索到设备的 deviceId
       serviceId, // 上一步中找到的某个服务
@@ -33,8 +35,8 @@ Page({
             // dataView.setUint8(0, 0)
             // let senddata = 'FF';
             // let buffer = this.hexString2ArrayBuffer(senddata);
-            var buffer = this.stringToBytes("connected")
-            this.setData({
+            var buffer = that.stringToBytes("connected")
+            that.setData({
               'deviceId':deviceId,
               'serviceId':serviceId,
               'characteristicId':item.uuid
@@ -111,104 +113,104 @@ Page({
       fail: function () { }
     }
   },
-  versionCompare: function (ver1, ver2) { //版本比较
-    var version1pre = parseFloat(ver1)
-    var version2pre = parseFloat(ver2)
-    var version1next = parseInt(ver1.replace(version1pre + ".", ""))
-    var version2next = parseInt(ver2.replace(version2pre + ".", ""))
-    if (version1pre > version2pre)
-        return true
-    else if (version1pre < version2pre) 
-        return false
-    else {
-        if (version1next > version2next)
-            return true
-        else
-            return false
-    }
-  },
+  // versionCompare: function (ver1, ver2) { //版本比较
+  //   var version1pre = parseFloat(ver1)
+  //   var version2pre = parseFloat(ver2)
+  //   var version1next = parseInt(ver1.replace(version1pre + ".", ""))
+  //   var version2next = parseInt(ver2.replace(version2pre + ".", ""))
+  //   if (version1pre > version2pre)
+  //       return true
+  //   else if (version1pre < version2pre) 
+  //       return false
+  //   else {
+  //       if (version1next > version2next)
+  //           return true
+  //       else
+  //           return false
+  //   }
+  // },
   //兼容性检查
-  checkBLESupport(){
-    let result = false;
-    //Android 从微信 6.5.7 开始支持，iOS 从微信 6.5.6 开始支持
-    //第一项，如果手机是android系统，需要判断版本信息
-    if (app.getPlatform() == "android") {
-      console.log('successA')
-      if(this.versionCompare("6.5.7", app.getVersion())){
-        console.log('微信版本过低')
-        wx.showModal({
-          title: '提示',
-          content: '当前微信版本过低，请更新至最新版本',
-          showCancel: false
-        });
-      }else if(!this.versionCompare("6.0.0", app.getSystem().replace("Android","").replace(" ",""))){
-        console.log('微信版本满足')
-        // wx.getSetting({
-        //   success: (res) => {
-        //     console.log('成功获得权限信息')
-        //     let statu = res.authSetting;
-        //     if(!statu['scope.addPhoneCalendar.userLocation']){
-        //       console.log('无定位权限')
-        //       wx.showModal({
-        //         cancelColor: 'cancelColor',
-        //         title: '温馨提示',
-        //         content: '请授予位置服务权限，以便搜索设备',
-        //         success: (tip) => {
-        //           if(tip.confirm){
-        //             wx.openSetting({
-        //               success: (data) => {
-        //                 if(data.authSetting["scope.userLocation"] === true){
-        //                   wx.showToast({
-        //                     title: '授权成功',
-        //                     icon: 'success',
-        //                     duration: 1000
-        //                   })
-        //                   result = true;
-        //                 }else{
-        //                   wx.showToast({
-        //                     title: '授权失败',
-        //                     icon: 'error',
-        //                     duration: 1000
-        //                   })
-        //                 }
-        //               }
-        //             })
-        //           }else{
-        //             console.log('点击取消')
-        //           }
-        //         }
-        //       })
-        //     }else{
-        //       //存在权限
-        //       console.log('已授予定位权限')
-        //       result = true;
-        //     }
-        //   }
-        // })
-        result = true;
-      }else if(!this.versionCompare(app.getSystem().replace("Android", "").replace(" ", "")), "4.3.0"){
-        console.log('手机系统太老')
-        wx.showToast({
-          title: '温馨提示',
-          content: '您的手机系统版本过低，无法操作蓝牙设备',
-          icon: 'error',
-          duration: 1000
-        })
-      }else{
-        console.log('其他系统，默认支持')
-        result = true;
-      }
-      return result;
-    }
-    //第二项，如果手机是ios系统，需要判断版本信息
-    if (app.getPlatform() == "ios" && versionCompare("6.5.6", app.getVersion())) {
-      wx.showModal({
-        title: '提示',
-        content: '当前微信版本过低，请更新至最新版本',
-        showCancel: false
-      });
-    }
-  },
+  // checkBLESupport(){
+  //   let result = false;
+  //   //Android 从微信 6.5.7 开始支持，iOS 从微信 6.5.6 开始支持
+  //   //第一项，如果手机是android系统，需要判断版本信息
+  //   if (app.getPlatform() == "android") {
+  //     console.log('successA')
+  //     if(this.versionCompare("6.5.7", app.getVersion())){
+  //       console.log('微信版本过低')
+  //       wx.showModal({
+  //         title: '提示',
+  //         content: '当前微信版本过低，请更新至最新版本',
+  //         showCancel: false
+  //       });
+  //     }else if(!this.versionCompare("6.0.0", app.getSystem().replace("Android","").replace(" ",""))){
+  //       console.log('微信版本满足')
+  //       // wx.getSetting({
+  //       //   success: (res) => {
+  //       //     console.log('成功获得权限信息')
+  //       //     let statu = res.authSetting;
+  //       //     if(!statu['scope.addPhoneCalendar.userLocation']){
+  //       //       console.log('无定位权限')
+  //       //       wx.showModal({
+  //       //         cancelColor: 'cancelColor',
+  //       //         title: '温馨提示',
+  //       //         content: '请授予位置服务权限，以便搜索设备',
+  //       //         success: (tip) => {
+  //       //           if(tip.confirm){
+  //       //             wx.openSetting({
+  //       //               success: (data) => {
+  //       //                 if(data.authSetting["scope.userLocation"] === true){
+  //       //                   wx.showToast({
+  //       //                     title: '授权成功',
+  //       //                     icon: 'success',
+  //       //                     duration: 1000
+  //       //                   })
+  //       //                   result = true;
+  //       //                 }else{
+  //       //                   wx.showToast({
+  //       //                     title: '授权失败',
+  //       //                     icon: 'error',
+  //       //                     duration: 1000
+  //       //                   })
+  //       //                 }
+  //       //               }
+  //       //             })
+  //       //           }else{
+  //       //             console.log('点击取消')
+  //       //           }
+  //       //         }
+  //       //       })
+  //       //     }else{
+  //       //       //存在权限
+  //       //       console.log('已授予定位权限')
+  //       //       result = true;
+  //       //     }
+  //       //   }
+  //       // })
+  //       result = true;
+  //     }else if(!this.versionCompare(app.getSystem().replace("Android", "").replace(" ", "")), "4.3.0"){
+  //       console.log('手机系统太老')
+  //       wx.showToast({
+  //         title: '温馨提示',
+  //         content: '您的手机系统版本过低，无法操作蓝牙设备',
+  //         icon: 'error',
+  //         duration: 1000
+  //       })
+  //     }else{
+  //       console.log('其他系统，默认支持')
+  //       result = true;
+  //     }
+  //     return result;
+  //   }
+  //   //第二项，如果手机是ios系统，需要判断版本信息
+  //   if (app.getPlatform() == "ios" && versionCompare("6.5.6", app.getVersion())) {
+  //     wx.showModal({
+  //       title: '提示',
+  //       content: '当前微信版本过低，请更新至最新版本',
+  //       showCancel: false
+  //     });
+  //   }
+  // },
   //计时器 会调用自己 起到刷新时间的作用
   timing(){
     console.log('timing')
@@ -233,13 +235,15 @@ Page({
   },
   //蓝牙初始化，开始搜索设备
   bleInit() {
-    if(this.checkBLESupport()){
+    var that = this;
+    if(true){
       //初始化开始
       this.setData({startFindTime: new Date().getTime()})
       console.log('searchBle')
       this.setData({deviceFoundStart: true})
       this.timing()
       // 监听扫描到新设备事件
+      let that = this;
       wx.onBluetoothDeviceFound((res) => {
         res.devices.forEach((device) => {
           // 这里可以做一些过滤
@@ -247,9 +251,9 @@ Page({
           if(device.name == "Nero_Car_Service"){
             console.log('found Nero_Car_Service!!')
             // 找到设备开始连接
-            this.bleConnection(device.deviceId);
+            that.bleConnection(device.deviceId);
             wx.stopBluetoothDevicesDiscovery()
-            this.setData({deviceFoundStart: false, deviceId: device.deviceId})
+            that.setData({deviceFoundStart: false, deviceId: device.deviceId})
             app.globalData.deviceId = device.deviceId;
             
           }else{
@@ -260,27 +264,39 @@ Page({
         // 
       })
 
+      wx.openBluetoothAdapter({
+        mode: 'peripheral',
+        success:(res) => {
+          console.log('從機模式開啓成功')
+        },
+        fail:(res) => {
+          console.log('從機模式開啓失敗 錯誤報告如下')
+          console.log(res)
+        }
+      })
       // 初始化蓝牙模块
       wx.openBluetoothAdapter({
         mode: 'central',
         success: (res) => {
-          this.setData({blueToothAdapterStart: true})
+          that.setData({blueToothAdapterStart: true})
           // 开始搜索附近的蓝牙外围设备
           wx.startBluetoothDevicesDiscovery({
             allowDuplicatesKey: false,
           })
         },
         fail: (res) => {
+          console.log('中心模式失敗');
+          console.log(res);
           if (res.errCode !== 10001) {
-            this.setData({blueToothAdapterStart: false})
+            that.setData({blueToothAdapterStart: false})
             wx.showToast({
               title: '蓝牙错误',
             })
             return;
           }
-          this.setData({blueToothAdapterStart: true})
+          that.setData({blueToothAdapterStart: true})
           wx.onBluetoothAdapterStateChange((res) => {
-            this.setData({onBlueToothAdapterStateChange: true})
+            that.setData({onBlueToothAdapterStateChange: true})
             if (!res.available) return
             // 开始搜寻附近的蓝牙外围设备
             wx.startBluetoothDevicesDiscovery({
@@ -289,11 +305,10 @@ Page({
           })
         }
       })
-      var that = this
       //正在同步数据
       let inProcess = false;
       wx.onBLECharacteristicValueChange((result) => {
-        this.setData({onBLECharaValueChange: true})
+        that.setData({onBLECharaValueChange: true})
         console.log('onBLECharacteristicValueChange',result.value)
         let hex = that.ab2hex(result.value)
         const input = that.hextoString(hex);
@@ -310,7 +325,7 @@ Page({
           if(startMark == 'aaa'){
             //取控制信号后的整个字符串 拼接进syncResult 进行同步数据的积累
             //整个数据收取完成后整个发给后端处理
-            this.data.syncResult = input.substring(3);
+            that.data.syncResult = input.substring(3);
             console.log('接收到开始信号 存储开始信号后的数据： ' + this.data.syncResult)
             //设置布尔值inProcess
             //代表已进入数据收取过程
@@ -325,21 +340,22 @@ Page({
             console.log('接收到停止信号: ' + endMark)
             //接收到数据发送终止符 发送数据 取字符串开头到倒数第四位为数据
             //拼接给syncResult 之后发送给后端
-            this.data.syncResult += input.substring(0,input.length - 3)
-            if(this.data.syncResult.substring(0,3) == 'aaa'){
-              this.setData({syncResult: this.data.syncResult.substring(3)})
+            that.data.syncResult += input.substring(0,input.length - 3)
+            if(that.data.syncResult.substring(0,3) == 'aaa'){
+              that.setData({syncResult: that.data.syncResult.substring(3)})
             }
-            console.log( "同步结果: " + this.data.syncResult)
+            console.log( "同步结果: " + that.data.syncResult)
             let str = '';
             console.log('发送数据')
             console.log("token: " + wx.getStorageSync('token'))
-            console.log("rawData: " + this.data.syncResult)
+            console.log("rawData: " + that.data.syncResult)
+            var that = this;
             wx.request({
               url: 'https://chenanbella.cn/api/training/save',
               method: 'POST',
               data: {
                 token: wx.getStorageSync('token'),
-                rawData: this.data.syncResult
+                rawData: that.data.syncResult
               },
               success(res){
                 const data = res.data;
@@ -400,6 +416,7 @@ Page({
                 wx.setStorageSync('token', res.data.token)
               },
               fail(res){
+                console.log(res);
                 app.globalData.login = false;
                 wx.showToast({
                   title: '发生错误',
@@ -432,7 +449,7 @@ Page({
                 },300)
               },
             })
-            this.data.syncResult = '';
+            that.data.syncResult = '';
             console.log('清空syncResult: ' + this.data.syncResult);
             if(input.substring(input.length - 3) == 'ddd' || error){
               //本次发送的数据包结尾为ddd 代表所有数据已发送完毕
@@ -440,7 +457,7 @@ Page({
               //发送完毕 卸载蓝牙 延迟一秒，防止有需要蓝牙的异步函数还没有执行完的情况
               console.log('接收到数据为ddd 或者发生了错误 进入蓝牙卸载环节')
               setTimeout(() => {
-                this.setData({showBlueToothPage: false})
+                that.setData({showBlueToothPage: false})
                 setTimeout(() => {
                   wx.reLaunch({
                     url: 'index',
@@ -456,7 +473,7 @@ Page({
           }else{
             //接收数据 因为设备连接后会首先发来Nero_Car_Service 所以滤过该信号
             if(input != 'Nero_Car_Service'){
-              this.data.syncResult += input;
+              that.data.syncResult += input;
             }
           }
         }
@@ -466,14 +483,15 @@ Page({
   },
   //根据设备id连接设备
   bleConnection(deviceId){
+    var that = this;
     wx.createBLEConnection({
       deviceId, // 搜索到设备的 deviceId
       success: () => {
         // 连接成功，获取服务
         
         console.log('连接成功，获取服务')
-        this.setData({blueToothConnceted: true, blueToothStatus: '设备已连接，正在传输数据', deviceId: deviceId})
-        this.bleGetDeviceServices(deviceId)
+        that.setData({blueToothConnceted: true, blueToothStatus: '设备已连接，正在传输数据', deviceId: deviceId})
+        that.bleGetDeviceServices(deviceId)
         wx.showToast({
           title: '连接成功',
           icon: 'success',
@@ -491,9 +509,9 @@ Page({
       fail: (res)=>{
         console.log('连接失败')
         console.log(res)
-        this.setData({blueToothConnceted: false})
+        that.setData({blueToothConnceted: false})
         setTimeout(() => {
-          this.bleConnection(deviceId);
+          that.bleConnection(deviceId);
         },500)
       }
     })
@@ -548,15 +566,15 @@ Page({
   },
   closeBLEWindow: function(){
     console.log('closeConnection')
-    this.uninstallBle();
-    this.setData({showGauge: false})
+    that.uninstallBle();
+    that.setData({showGauge: false})
     
   },
   connectionFailed: function (){
-    this.setData({showBlueToothPage: false})
+    that.setData({showBlueToothPage: false})
   },
   connectionSucceeded: function (){
-    this.setData({showBlueToothPage: false})
+    that.setData({showBlueToothPage: false})
   },
   data: {
     //蓝牙状态参数
@@ -618,6 +636,7 @@ Page({
         this.detailedButton();
       }
     }
+    var that = this;
     this.setData({hideLoading: false})
     wx.request({
       url: app.globalData.baseURL +  '/api/training/findLastSevenDay',
@@ -682,6 +701,7 @@ Page({
         app.globalData.sevenDayGraphX = graphX;
         console.log(graphX)
         wx.setStorageSync('token', data.token)
+        var that = this;
         if(data.needImage){
           wx.showModal({
             title: '请上传训练图片',
@@ -737,6 +757,7 @@ Page({
               }
             },
             fail: (res) => {
+              console.log(res);
               app.globalData.login = false;
               wx.showToast({
                 title: '发生错误',
@@ -751,9 +772,10 @@ Page({
             }
           }) 
         }
-        this.setData({hideLoading: true,chartReady: true,needImage: data.needImage})
+        that.setData({hideLoading: true,chartReady: true,needImage: data.needImage})
       },
       fail: (res) => {
+        console.log(res)
         app.globalData.login = false;
         wx.showToast({
           title: '发生错误',

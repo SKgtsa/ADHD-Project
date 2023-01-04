@@ -16,6 +16,7 @@ import com.clankalliance.backbeta.utils.PostRequestUtils;
 import com.clankalliance.backbeta.utils.SignatureVerificationUtil;
 import com.clankalliance.backbeta.utils.StatusManipulateUtils.ManipulateUtil;
 import com.clankalliance.backbeta.utils.TokenUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -35,8 +36,12 @@ public class UserServiceImpl implements UserService {
     @Resource
     private CheckInService checkInService;
 
-    @Resource
-    private TrainingService trainingService;
+
+    @Value("${wx.secret}")
+    private String secret;
+
+    @Value("${wx.appId}")
+    private String appId;
 
     @Override
     public CommonLoginResponse handleLogin(String code) {
@@ -46,7 +51,7 @@ public class UserServiceImpl implements UserService {
             result = new WXLoginResponse();
         }else{
             //接受前端code 使用code向微信要openId 以此作为登录凭证，并自动注册
-            result =  PostRequestUtils.sendPostRequest("https://api.weixin.qq.com/sns/jscode2session?appid=wxacb26bacd3280bd1&secret=b8fe129603fd9cfc2432a3651fc6d07f&js_code=" + code + "&grant_type=authorization_code",null);
+            result =  PostRequestUtils.sendPostRequest("https://api.weixin.qq.com/sns/jscode2session?appid=" + appId + "&secret=" + secret +  "&js_code=" + code + "&grant_type=authorization_code",null);
             System.out.println("openId: " + result.getOpenid());
             System.out.println("session_key: " + result.getSession_key());
         }

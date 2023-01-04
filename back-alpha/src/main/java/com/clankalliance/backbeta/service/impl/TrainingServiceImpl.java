@@ -85,10 +85,17 @@ public class TrainingServiceImpl implements TrainingService {
         //********* 更新属性 对训练平均值和长度进行存储，提高效率***********
         String[] graph = data[2].split(",");
         long total = 0;
+        Integer average = 0;
         for(String s : graph){
             total += Long.parseLong(s);
         }
-        Integer average = Integer.parseInt("" + total/ graph.length);
+        try{
+            average = Integer.parseInt("" + total/ graph.length);
+        }catch (Exception e){
+            response.setMessage("请不要上传空数据");
+            response.setSuccess(false);
+            return response;
+        }
         //**********************************************************
         //为训练数据制定的更短的id生成规则
         System.out.println(calendar.get(Calendar.MONTH) + "月");
