@@ -19,4 +19,6 @@ public class LastSevenResponse {
 
     private boolean needImage;
 
+    private boolean needComment;
+
 }

@@ -4,6 +4,7 @@ package com.clankalliance.backbeta.service;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.response.FindGraphResponse;
 import com.clankalliance.backbeta.response.LastSevenResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 
 public interface TrainingService {
@@ -25,10 +26,8 @@ public interface TrainingService {
 
     CommonResponse handleFindDateData(String token,String id);
 
-    Boolean needImage(String wxOpenId);
+    LastSevenResponse needImageComment(String wxOpenId, LastSevenResponse response);
 
-    void updateImage(String filePath,String wxOpenId);
-
-//    HalfTrainingData handleFindLastDate(List<Training> trainingList);
+    CommonResponse handleComment(MultipartFile audioFile, String text, String token);
 
 }

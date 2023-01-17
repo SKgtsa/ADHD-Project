@@ -57,6 +57,9 @@ public class DateData {
     @OneToMany
     private List<Training> trainingList;
 
+    //用户的评价与感受
+    private String comment;
+
     public DateData(String wxOpenId){
         this.id = DateDataIdGenerator.next(wxOpenId);
         this.imageName = null;
@@ -71,7 +74,7 @@ public class DateData {
         this.trainingNum = 0;
         this.concentrationE = 0;
         this.time = 0;
-        this.trainingList = new ArrayList<Training>();
+        this.trainingList = new ArrayList<>();
     }
 
     public void addTraining(Training t){

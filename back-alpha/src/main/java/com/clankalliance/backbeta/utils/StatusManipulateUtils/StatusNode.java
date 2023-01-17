@@ -31,7 +31,7 @@ public class StatusNode {
         this.updateTime = System.currentTimeMillis();
         this.token = DigestUtils.sha1Hex("" + this.userId + this.updateTime);
         //五位验证码
-        String randomNum = "000000" + RandomGenerator.getDefault().nextInt(99999);
-        this.verifyCode = randomNum.substring(randomNum.length() - 7, randomNum.length() - 1);
+        int random = (int) ((99999-10000+1)*Math.random()+10000);
+        this.verifyCode = "" + random;
     }
 }

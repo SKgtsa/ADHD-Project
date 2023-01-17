@@ -1,6 +1,4 @@
-import * as echarts from '../../ec-canvas/echarts';
 //设备页
-
 const app = getApp();
 Page({
   bleGetDeviceServices(deviceId){
@@ -36,7 +34,7 @@ Page({
             // let senddata = 'FF';
             // let buffer = this.hexString2ArrayBuffer(senddata);
             var buffer = that.stringToBytes("connected")
-            that.setData({
+            this.setData({
               'deviceId':deviceId,
               'serviceId':serviceId,
               'characteristicId':item.uuid
@@ -96,6 +94,7 @@ Page({
     return out
   },
   ab2hex(buffer) {
+    console.log('ab2hex方法正常执行')
     var hexArr = Array.prototype.map.call(
       new Uint8Array(buffer),
       function (bit) {
@@ -235,7 +234,6 @@ Page({
   },
   //蓝牙初始化，开始搜索设备
   bleInit() {
-    var that = this;
     if(true){
       //初始化开始
       this.setData({startFindTime: new Date().getTime()})
@@ -243,7 +241,7 @@ Page({
       this.setData({deviceFoundStart: true})
       this.timing()
       // 监听扫描到新设备事件
-      let that = this;
+      var that = this;
       wx.onBluetoothDeviceFound((res) => {
         res.devices.forEach((device) => {
           // 这里可以做一些过滤
@@ -253,9 +251,8 @@ Page({
             // 找到设备开始连接
             that.bleConnection(device.deviceId);
             wx.stopBluetoothDevicesDiscovery()
-            that.setData({deviceFoundStart: false, deviceId: device.deviceId})
+            this.setData({deviceFoundStart: false, deviceId: device.deviceId})
             app.globalData.deviceId = device.deviceId;
-            
           }else{
             console.log("not Nero_Car_Service")
           }
@@ -263,10 +260,11 @@ Page({
         // 找到要搜索的设备后，及时停止扫描
         // 
       })
-
       wx.openBluetoothAdapter({
         mode: 'peripheral',
         success:(res) => {
+          that.ab2hex()
+          this.ab2hex()
           console.log('從機模式開啓成功')
         },
         fail:(res) => {
@@ -278,7 +276,8 @@ Page({
       wx.openBluetoothAdapter({
         mode: 'central',
         success: (res) => {
-          that.setData({blueToothAdapterStart: true})
+          console.log('中心模式成功')
+          this.setData({blueToothAdapterStart: true})
           // 开始搜索附近的蓝牙外围设备
           wx.startBluetoothDevicesDiscovery({
             allowDuplicatesKey: false,
@@ -288,15 +287,15 @@ Page({
           console.log('中心模式失敗');
           console.log(res);
           if (res.errCode !== 10001) {
-            that.setData({blueToothAdapterStart: false})
+            this.setData({blueToothAdapterStart: false})
             wx.showToast({
               title: '蓝牙错误',
             })
             return;
           }
-          that.setData({blueToothAdapterStart: true})
+          this.setData({blueToothAdapterStart: true})
           wx.onBluetoothAdapterStateChange((res) => {
-            that.setData({onBlueToothAdapterStateChange: true})
+            this.setData({onBlueToothAdapterStateChange: true})
             if (!res.available) return
             // 开始搜寻附近的蓝牙外围设备
             wx.startBluetoothDevicesDiscovery({
@@ -308,24 +307,23 @@ Page({
       //正在同步数据
       let inProcess = false;
       wx.onBLECharacteristicValueChange((result) => {
-        that.setData({onBLECharaValueChange: true})
+        this.setData({onBLECharaValueChange: true})
         console.log('onBLECharacteristicValueChange',result.value)
-        let hex = that.ab2hex(result.value)
-        const input = that.hextoString(hex);
+        let hex = this.ab2hex(result.value)
+        const input = this.hextoString(hex);
         console.log('hextoString',input)
         console.log('hex',hex)
         let error = false;
         if(!inProcess){
           //没有在发送 此时检测开始信号
           //截取前三位 作为控制信号
-          
           const startMark = input.substring(0,3);
           console.log("StartMark: input.substring(0,3)  " + startMark)
           //头部标记为aaa
           if(startMark == 'aaa'){
             //取控制信号后的整个字符串 拼接进syncResult 进行同步数据的积累
             //整个数据收取完成后整个发给后端处理
-            that.data.syncResult = input.substring(3);
+            this.data.syncResult = input.substring(3);
             console.log('接收到开始信号 存储开始信号后的数据： ' + this.data.syncResult)
             //设置布尔值inProcess
             //代表已进入数据收取过程
@@ -340,22 +338,21 @@ Page({
             console.log('接收到停止信号: ' + endMark)
             //接收到数据发送终止符 发送数据 取字符串开头到倒数第四位为数据
             //拼接给syncResult 之后发送给后端
-            that.data.syncResult += input.substring(0,input.length - 3)
-            if(that.data.syncResult.substring(0,3) == 'aaa'){
-              that.setData({syncResult: that.data.syncResult.substring(3)})
+            this.data.syncResult += input.substring(0,input.length - 3)
+            if(this.data.syncResult.substring(0,3) == 'aaa'){
+              this.setData({syncResult: this.data.syncResult.substring(3)})
             }
-            console.log( "同步结果: " + that.data.syncResult)
+            console.log( "同步结果: " + this.data.syncResult)
             let str = '';
             console.log('发送数据')
             console.log("token: " + wx.getStorageSync('token'))
-            console.log("rawData: " + that.data.syncResult)
-            var that = this;
+            console.log("rawData: " + this.data.syncResult)
             wx.request({
               url: 'https://chenanbella.cn/api/training/save',
               method: 'POST',
               data: {
                 token: wx.getStorageSync('token'),
-                rawData: that.data.syncResult
+                rawData: this.data.syncResult
               },
               success(res){
                 const data = res.data;
@@ -449,7 +446,7 @@ Page({
                 },300)
               },
             })
-            that.data.syncResult = '';
+            this.data.syncResult = '';
             console.log('清空syncResult: ' + this.data.syncResult);
             if(input.substring(input.length - 3) == 'ddd' || error){
               //本次发送的数据包结尾为ddd 代表所有数据已发送完毕
@@ -457,7 +454,7 @@ Page({
               //发送完毕 卸载蓝牙 延迟一秒，防止有需要蓝牙的异步函数还没有执行完的情况
               console.log('接收到数据为ddd 或者发生了错误 进入蓝牙卸载环节')
               setTimeout(() => {
-                that.setData({showBlueToothPage: false})
+                this.setData({showBlueToothPage: false})
                 setTimeout(() => {
                   wx.reLaunch({
                     url: 'index',
@@ -473,7 +470,7 @@ Page({
           }else{
             //接收数据 因为设备连接后会首先发来Nero_Car_Service 所以滤过该信号
             if(input != 'Nero_Car_Service'){
-              that.data.syncResult += input;
+              this.data.syncResult += input;
             }
           }
         }
@@ -490,7 +487,7 @@ Page({
         // 连接成功，获取服务
         
         console.log('连接成功，获取服务')
-        that.setData({blueToothConnceted: true, blueToothStatus: '设备已连接，正在传输数据', deviceId: deviceId})
+        this.setData({blueToothConnceted: true, blueToothStatus: '设备已连接，正在传输数据', deviceId: deviceId})
         that.bleGetDeviceServices(deviceId)
         wx.showToast({
           title: '连接成功',
@@ -509,7 +506,7 @@ Page({
       fail: (res)=>{
         console.log('连接失败')
         console.log(res)
-        that.setData({blueToothConnceted: false})
+        this.setData({blueToothConnceted: false})
         setTimeout(() => {
           that.bleConnection(deviceId);
         },500)
@@ -556,25 +553,23 @@ Page({
   startSync: function (){
     this.setData({showBlueToothPage: true})
     console.log('startSync')
-    
   },
   openBLEWindow: function(){
-
     this.setData({showGauge: true,blueToothStatus: '正在搜索蓝牙设备'})
     this.bleInit()
     console.log('end')
   },
   closeBLEWindow: function(){
     console.log('closeConnection')
-    that.uninstallBle();
-    that.setData({showGauge: false})
+    this.uninstallBle();
+    this.setData({showGauge: false})
     
   },
   connectionFailed: function (){
-    that.setData({showBlueToothPage: false})
+    this.setData({showBlueToothPage: false})
   },
   connectionSucceeded: function (){
-    that.setData({showBlueToothPage: false})
+    this.setData({showBlueToothPage: false})
   },
   data: {
     //蓝牙状态参数
@@ -625,6 +620,7 @@ Page({
     console.log('intoOnShow()')
     console.log(wx.getStorageSync('token'))
     this.setData({userInfo: app.globalData.userInfo})
+    console.log('版本4')
   },
   onLoad(){
     if(this.options){
@@ -636,7 +632,6 @@ Page({
         this.detailedButton();
       }
     }
-    var that = this;
     this.setData({hideLoading: false})
     wx.request({
       url: app.globalData.baseURL +  '/api/training/findLastSevenDay',
@@ -701,7 +696,7 @@ Page({
         app.globalData.sevenDayGraphX = graphX;
         console.log(graphX)
         wx.setStorageSync('token', data.token)
-        var that = this;
+        console.log('data.needComment: ' + data.needComment)
         if(data.needImage){
           wx.showModal({
             title: '请上传训练图片',
@@ -728,16 +723,7 @@ Page({
                         const data = JSON.parse(res.data);
                         console.log(data)
                         if(!data.success){
-                          // app.globalData.login = false;
-                          // wx.showToast({
-                          //   title: '登录过期',
-                          //   icon: 'error'
-                          // })
-                          // setTimeout(() => {
-                          //   wx.switchTab({
-                          //     url: '../main-personal/index',
-                          //   })
-                          // },500)
+                          //补充登陆失败管理
                         }
                         wx.setStorageSync('token', data.token)
                         wx.showToast({
@@ -771,8 +757,21 @@ Page({
               },500)
             }
           }) 
+        }else if(data.needComment){
+          console.log('进入needComment')
+          wx.reLaunch({
+            url: '../comment-submit/index',
+            success: (res) => {
+              console.log('成功')
+              console.log(res)
+            },
+            fail: (res) => {
+              console.log('失败')
+              console.log(res)
+            }
+          })
         }
-        that.setData({hideLoading: true,chartReady: true,needImage: data.needImage})
+        this.setData({hideLoading: true,chartReady: true,needImage: data.needImage})
       },
       fail: (res) => {
         console.log(res)

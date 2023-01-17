@@ -21,7 +21,7 @@
       <text class="guideBottom">点击获取训练演⽰视频</text>
     </view>
   </button>
-  <page-container bind:enter="openBLEWindow" bind:leave="closeBLEWindow" show="{{showBlueToothPage}}" position="bottom" overlay="{{true}}">
+  <page-container bind:enter="openBLEWindow" bind:leave="closeBLEWindow" show="{{showBlueToothPage}}" position="bottom" style="background-color: rgba(0, 0, 0, 0);">
     <view class="mask">
       <view class="popOutWindow">
         <view class="pattern">

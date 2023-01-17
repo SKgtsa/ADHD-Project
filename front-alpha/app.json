@@ -12,7 +12,8 @@
     "pages/personal-avatar/index",
     "pages/register-name/index",
     "pages/register-avatar/index",
-    "pages/text-help/index"
+    "pages/text-help/index",
+    "pages/comment-submit/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

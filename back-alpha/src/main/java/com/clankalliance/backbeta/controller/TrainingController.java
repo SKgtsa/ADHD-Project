@@ -8,7 +8,9 @@ import com.clankalliance.backbeta.response.LastSevenResponse;
 import com.clankalliance.backbeta.service.TrainingService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
@@ -66,5 +68,16 @@ public class TrainingController {
         return trainingService.handleFindDateData(request.getToken(), request.getId());
     }
 
+    /**
+     * 接收音频与文本 保存并与今日训练建立联系
+     * @param audioFile
+     * @param text
+     * @param token
+     * @return
+     */
+    @RequestMapping("/saveComment")
+    public CommonResponse saveComment(@RequestParam("audio") MultipartFile audioFile, @RequestParam("text") String text, @RequestParam("token") String token){
+        return trainingService.handleComment(audioFile, text, token);
+    }
 
 }

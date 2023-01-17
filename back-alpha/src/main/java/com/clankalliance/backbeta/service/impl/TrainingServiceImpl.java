@@ -10,16 +10,17 @@ import com.clankalliance.backbeta.repository.UserRepository;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.response.FindGraphResponse;
 import com.clankalliance.backbeta.response.LastSevenResponse;
+import com.clankalliance.backbeta.service.GeneralUploadService;
 import com.clankalliance.backbeta.service.TrainingService;
 
 import com.clankalliance.backbeta.utils.DateDataIdGenerator;
-import com.clankalliance.backbeta.utils.HalfTrainingData;
 import com.clankalliance.backbeta.utils.TokenUtil;
 import com.clankalliance.backbeta.utils.TrainingIdGenerator;
-import lombok.Data;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.*;
 
 
@@ -45,6 +46,9 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Resource
     private DateDataRepository dateDataRepository;
+
+    @Resource
+    private GeneralUploadService generalUploadService;
 
     @Override
     public Integer getFULL_WEEK_AWARD() {
@@ -271,7 +275,7 @@ public class TrainingServiceImpl implements TrainingService {
             response.setSuccess(false);
             return response;
         }else{
-            response.setNeedImage(needImage(responseT.getMessage()));
+            response = needImageComment(responseT.getMessage(), response);
             response.setSuccess(true);
             response.setToken(responseT.getToken());
         }
@@ -390,10 +394,11 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public Boolean needImage(String wxOpenId){
+    public LastSevenResponse needImageComment(String wxOpenId, LastSevenResponse response){
         User user = userRepository.findUserByOpenId(wxOpenId).get();
         List<DateData> dateDataList = user.getDateDataList();
-        boolean result = false;
+        boolean needImage = false;
+        boolean needComment = false;
         if(dateDataList.size() > 0){
             DateData dateData = dateDataList.get(dateDataList.size() - 1);
             Calendar calendar = Calendar.getInstance();
@@ -401,32 +406,71 @@ public class TrainingServiceImpl implements TrainingService {
                dateData.getYear().equals(calendar.get(Calendar.YEAR))
                && dateData.getMonth().equals(calendar.get(Calendar.MONTH))
                && dateData.getDay().equals(calendar.get(Calendar.DAY_OF_MONTH))
-               && dateData.getImageName() == null
             ){
-                result = true;
+                if(dateData.getImageName() == null)
+                    needImage = true;
+                String filename = calendar.get(Calendar.YEAR) + "年" + (calendar.get(Calendar.MONTH) + 1) + "月" + calendar.get(Calendar.DAY_OF_MONTH) + "日" + user.getNickName() + ".mp3";
+                String parent = System.getProperty("user.dir") + "/static/audio";
+                // File对象指向这个路径，file是否存在
+                File dir = new File(parent);
+                File audioToday = new File(dir, filename); // 是一个空文件
+                if(!audioToday.exists() && dateData.getComment() == null){
+                    needComment = true;
+                }
             }
         }
-        return result;
+        response.setNeedImage(needImage);
+        response.setNeedComment(needComment);
+        return response;
     }
 
     @Override
-    public void updateImage(String filePath,String wxOpenId){
-        User user = userRepository.findUserByOpenId(wxOpenId).get();
+    public CommonResponse handleComment(MultipartFile audioFile, String text, String token){
+        if(text == null && audioFile.isEmpty()){
+            CommonResponse response = new CommonResponse<>();
+            response.setMessage("音频与文本不能均为空");
+            response.setSuccess(false);
+            return response;
+        }
+        CommonResponse response = tokenUtil.tokenCheck(token);
+        if(!response.getSuccess())
+            return response;
+        Optional<User> uop = userRepository.findUserByOpenId(response.getMessage());
+        if(uop.isEmpty()){
+            response.setMessage("用户不存在");
+            response.setSuccess(false);
+        }
+        User user = uop.get();
         List<DateData> dateDataList = user.getDateDataList();
-        if(dateDataList.size() > 0){
+        Calendar calendar = Calendar.getInstance();
+        if(!dateDataList.isEmpty()){
             DateData dateData = dateDataList.get(dateDataList.size() - 1);
-            Calendar calendar = Calendar.getInstance();
             if(
                     dateData.getYear().equals(calendar.get(Calendar.YEAR))
-                            && dateData.getMonth().equals(calendar.get(Calendar.MONTH))
-                            && dateData.getDay().equals(calendar.get(Calendar.DAY_OF_MONTH))
-            ){
-                dateData.setImageName(filePath);
-                dateDataRepository.save(dateData);
-                dateDataList.set(dateDataList.size() - 1,dateData);
+                    && dateData.getMonth().equals(calendar.get(Calendar.MONTH))
+                    && dateData.getDay().equals(calendar.get(Calendar.DAY_OF_MONTH))){
+                if(text != null) {
+                    dateData.setComment(text);
+                    dateDataRepository.save(dateData);
+                }
+                if(!audioFile.isEmpty())
+                    if(!generalUploadService.handleAudioFileSave(audioFile, user.getWxOpenId(), user.getNickName())){
+                        response.setSuccess(false);
+                        response.setMessage("音频保存出错");
+                        return response;
+                    }
+            }else{
+                response.setSuccess(false);
+                response.setMessage("今日未训练");
+                return response;
             }
+        }else{
+            response.setSuccess(false);
+            response.setMessage("今日未训练");
+            return response;
         }
-        user.setDateDataList(dateDataList);
-        userRepository.save(user);
+        response.setSuccess(true);
+        response.setMessage("保存成功");
+        return response;
     }
 }

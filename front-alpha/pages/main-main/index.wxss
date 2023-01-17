@@ -40,7 +40,7 @@ ec-canvas {
 .page{
   background-color: #6FA3FC;
   width: 100vw;
-  height: 100vh;
+  height: 97vh;
   padding-top: 3vh;
 }
 .welcome{

@@ -1,0 +1,19 @@
+<!--pages/comment-submit/index.wxml-->
+<view class="mainContainer">
+  <view class="textArea">
+    <a>请在此处打字记录今日训练或是选择在下方使用语言记录</a>
+    <textarea bind:input="onTextChange" value="{{text}}" class="input" auto-focus="true"></textarea>
+  </view>
+  <view class="audioArea">
+    <a class="time">{{timeShown}}</a>
+    <view style="{{recording || playing ? 'padding: 8vh':'padding-top: 4vh'}}">
+      <button style="{{recording || playing ? 'width: 8vh;height: 8vh; border-radius: 0; background-color: #FFF':'width: 20vh;height : 20vh; background-color: rgba(0,0,0,0)'}}" bind:tap="tapAudioButton" >
+        <image src="{{needRecord? 'https://chenanbella.cn/static/audioRecord.png': 'https://chenanbella.cn/static/play.png'}}" wx:if="{{!recording}}" class="buttonImage" ></image>
+      </button>
+    </view>
+    
+    <button wx:if="{{!recording && !needRecord}}" bind:tap="deleteRecording">删除音频</button>
+    <button bind:tap="submit" wx:if="{{filePath != '' || text != ''}}">提交</button>
+
+  </view>
+</view>

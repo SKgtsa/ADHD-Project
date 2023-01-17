@@ -10,4 +10,6 @@ public interface GeneralUploadService {
 
     CommonResponse handleAvatarSave(MultipartFile file,String token);
 
+    boolean handleAudioFileSave(MultipartFile audioFile, String wxOpenId, String nickName);
+
 }
