@@ -19,6 +19,7 @@ Page({
     timeShown: '0:00',
     playing: false,
     timeSecond: 0,
+    recordTimeSecond: 0,
     filePath: ''
   },
   onTextChange(e){
@@ -89,23 +90,45 @@ Page({
       that.setData({
         recording: false,
         needRecord: false,
-        filePath: res.tempFilePath
+        filePath: res.tempFilePath,
+        recordTimeSecond: that.data.timeSecond,
       })
       console.log(that.data)
     })
   },
   startPlaying(){
     this.setData({
-      playing: true
+      playing: true,
+      timeShown: '0:00',
+      timeSecond: 0
     })
     audio = wx.createInnerAudioContext();
     audio.src = this.data.filePath;
+    var that = this;
+    recordTimeInterval = setInterval(function() {
+      console.log('进入recordTimeInterval')
+      that.data.timeSecond ++;
+      var second = that.data.timeSecond;
+      var timeFormated = (second - second % 60)/60 + ':' + (second % 60 > 9? second % 60 : ('0' + second % 60));
+      that.setData({
+        timeShown: timeFormated
+      })
+      console.log('循环更新data')
+      console.log(that.data)
+      if(that.data.timeSecond >= that.data.recordTimeSecond){
+        setTimeout(() => {
+          that.endPlaying();
+        },500)
+      }
+    },1000)
     audio.autoplay = true
   },
   endPlaying(){
     this.setData({
-      playing: false
+      playing: false,
+      timeShown: this.data.recordTime
     })
+    clearInterval(recordTimeInterval);
     audio.stop()
   },
   deleteRecording(){
@@ -128,17 +151,18 @@ Page({
       }
       if(this.data.filePath == ''){
         wx.request({
-          url: app.globalData.baseURL + '/api/training/saveComment',
+          url: app.globalData.baseURL + '/api/training/saveCommentText',
           formData: {
             'token': wx.getStorageSync('token'),
-            'text': this.data.text,
-            'audio': null
+            'text': this.data.text
           },
           success: (res) => {
             const data = res.data;
             console.log('提交成功')
             console.log(res)
             wx.setStorageSync('token', data.token)
+            app.globalData.login = data.success;
+
             wx.showToast({
               title: '提交成功',
               icon: 'success',
@@ -175,10 +199,12 @@ Page({
             'text': this.data.text
           },
           success: (res) => {
-            const data = res.data;
+            const data = JSON.parse(res.data);
             console.log('提交成功')
             console.log(res)
             wx.setStorageSync('token', data.token)
+            console.log('token更新为' + data.token)
+            app.globalData.login = data.success;
             wx.showToast({
               title: '提交成功',
               icon: 'success',

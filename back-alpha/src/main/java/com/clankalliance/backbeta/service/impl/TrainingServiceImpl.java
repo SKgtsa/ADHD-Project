@@ -449,7 +449,7 @@ public class TrainingServiceImpl implements TrainingService {
                     dateData.getYear().equals(calendar.get(Calendar.YEAR))
                     && dateData.getMonth().equals(calendar.get(Calendar.MONTH))
                     && dateData.getDay().equals(calendar.get(Calendar.DAY_OF_MONTH))){
-                if(text != null) {
+                if(text != null && !text.equals("[object Null]") ) {
                     dateData.setComment(text);
                     dateDataRepository.save(dateData);
                 }

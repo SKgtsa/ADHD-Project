@@ -613,6 +613,7 @@ Page({
   },
   onShow() {
     if(!app.globalData.login){
+      console.log('登陆状态失效')
       wx.switchTab({
         url: '../main-personal/index',
       })
@@ -623,8 +624,8 @@ Page({
     console.log('版本4')
   },
   onLoad(){
-    if(this.options){
-      console.log(this.options.showBlueToothPage)
+    if(this.options != {}){
+      console.log(this.options)
       this.setData({
         showBlueToothPage: this.options.showBlueToothPage,
       })
@@ -633,6 +634,7 @@ Page({
       }
     }
     this.setData({hideLoading: false})
+    console.log('findLastSevenDay方法 token为' + wx.getStorageSync('token'))
     wx.request({
       url: app.globalData.baseURL +  '/api/training/findLastSevenDay',
       method: 'POST',

@@ -1,7 +1,7 @@
 <!--pages/comment-submit/index.wxml-->
 <view class="mainContainer">
   <view class="textArea">
-    <a>请在此处打字记录今日训练或是选择在下方使用语言记录</a>
+    <a class="description">请在此处打字记录今日训练或是选择在下方使用语言记录</a>
     <textarea bind:input="onTextChange" value="{{text}}" class="input" auto-focus="true"></textarea>
   </view>
   <view class="audioArea">
@@ -11,9 +11,11 @@
         <image src="{{needRecord? 'https://chenanbella.cn/static/audioRecord.png': 'https://chenanbella.cn/static/play.png'}}" wx:if="{{!recording}}" class="buttonImage" ></image>
       </button>
     </view>
-    
-    <button wx:if="{{!recording && !needRecord}}" bind:tap="deleteRecording">删除音频</button>
-    <button bind:tap="submit" wx:if="{{filePath != '' || text != ''}}">提交</button>
-
+    <view class="buttonWrapper">
+      <button class="deleteSubmitButton" wx:if="{{!recording && !needRecord}}" bind:tap="deleteRecording">删除音频</button>
+    </view>
+    <view class="buttonWrapper">
+      <button class="deleteSubmitButton" bind:tap="submit" wx:if="{{filePath != '' || text != ''}}">提交</button>
+    </view>
   </view>
 </view>

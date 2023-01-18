@@ -152,7 +152,7 @@ public class GeneralUploadServiceImpl implements GeneralUploadService {
 
     public boolean handleAudioFileSave(MultipartFile audioFile, String wxOpenId, String nickName){
         String parent =
-                System.getProperty("user.dir") + "/static/audio";
+                System.getProperty("user.dir") + "/static/audio/" + wxOpenId;
         // File对象指向这个路径，file是否存在
         File dir = new File(parent);
         if (!dir.exists()) { // 检测目录是否存在

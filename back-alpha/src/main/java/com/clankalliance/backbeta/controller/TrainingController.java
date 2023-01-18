@@ -80,4 +80,15 @@ public class TrainingController {
         return trainingService.handleComment(audioFile, text, token);
     }
 
+    /**
+     * 只上传文本
+     * @param text
+     * @param token
+     * @return
+     */
+    @RequestMapping("/saveCommentText")
+    public CommonResponse saveCommentText(@RequestParam("text") String text, @RequestParam("token") String token){
+        return trainingService.handleComment(null, text, token);
+    }
+
 }

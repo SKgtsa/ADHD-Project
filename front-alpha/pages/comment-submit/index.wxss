@@ -33,3 +33,17 @@ button::after{
   width: 10vh;
   height: 10vh;
 }
+.deleteSubmitButton{
+  width: 90%;
+  height: 8vh;
+  font-size: 3vh;
+  font-weight: 600;
+  color: #777;
+}
+.buttonWrapper{
+  padding-top: 3vh;
+}
+.description{
+  font-size: 3vh;
+  font-weight: 600;
+}
