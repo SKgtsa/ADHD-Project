@@ -78,8 +78,7 @@ public class DateData {
     }
 
     public void addTraining(Training t){
-        String[] graph = t.getGraph().split(",");
-        this.time += graph.length;
+        this.time += t.getLength();
         this.gold += t.getGold();
         concentrationE = (concentrationE*trainingNum + t.getAverage())/(++trainingNum);
         trainingList.add(t);

@@ -12,7 +12,6 @@ ec-canvas {
   width: 100vw;
   position: absolute;
   top: 9vh;
-  border-radius: 5vw;
   background-color: #eff7ff;
 }
 .lineChart{

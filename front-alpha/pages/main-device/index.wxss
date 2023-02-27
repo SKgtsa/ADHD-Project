@@ -62,11 +62,6 @@
   padding-left: 3vw;
   box-shadow: 10px 10px 10px 5px rgba(40, 29, 167, 0.4);  
 }
-.gaugeChart{
-    padding: 0;
-    width: 24vh;
-    height: 29vh;
-}
 .buttonArea{
   display: flex;
   flex-direction: column;
@@ -81,11 +76,10 @@
   width: 90vw;
   height: 10vh;
   border-radius: 4vw;
-  border-width: 2vw;
   border-style: none;
   background-color: #FFF;
   color: #707070;
-  font-size: 6vw;
+  font-size: 4vh;
   font-weight: bolder;
 }
 .mask{
@@ -129,7 +123,7 @@
   color: #707070;
   border-radius: 5vw;
   border-style: none;
-  margin: 30% auto;
+  margin: auto;
   display: flex;
   flex-direction: column;
 }

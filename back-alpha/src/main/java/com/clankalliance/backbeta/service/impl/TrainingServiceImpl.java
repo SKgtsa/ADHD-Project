@@ -16,6 +16,7 @@ import com.clankalliance.backbeta.service.TrainingService;
 import com.clankalliance.backbeta.utils.DateDataIdGenerator;
 import com.clankalliance.backbeta.utils.TokenUtil;
 import com.clankalliance.backbeta.utils.TrainingIdGenerator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,12 +29,18 @@ import java.util.*;
 public class TrainingServiceImpl implements TrainingService {
 
     //完整签到一周可获得的奖励
-    private final Integer FULL_WEEK_AWARD = 15;
+    @Value("${adhdTraining.full_week_award}")
+    private Integer FULL_WEEK_AWARD;
 
     //图像的分辨率 代表最终传回前端的图像中点的个数的最大值
     //当图像点数超过该值的1.5倍，会对本图像平均分GRAPH_RESOLUTION端求平均值
     //来获得最终图像
-    private final Integer GRAPH_RESOLUTION = 40;
+    @Value("${adhdTraining.graph_resolution}")
+    private Integer GRAPH_RESOLUTION;
+
+    //签到所需的最短训练时长
+    @Value("${adhdTraining.check_in_min_time}")
+    private Integer CHECK_IN_MIN_TIME;
 
     @Resource
     private TokenUtil tokenUtil;
@@ -51,6 +58,11 @@ public class TrainingServiceImpl implements TrainingService {
     private GeneralUploadService generalUploadService;
 
     @Override
+    public Integer getCHECK_IN_MIN_TIME() {
+        return CHECK_IN_MIN_TIME;
+    }
+
+    @Override
     public Integer getFULL_WEEK_AWARD() {
         return FULL_WEEK_AWARD;
     }
@@ -66,7 +78,7 @@ public class TrainingServiceImpl implements TrainingService {
         System.out.println("\n\n\n\n\n\n\n************************");
         System.out.println("\t\t\t接收到原始数据");
         System.out.println("\t\t\t" + rawData);
-        System.out.println("\t\t\t应为<训练编号>;<金币数>;点1,点2,...点n,");
+        System.out.println("\t\t\t应为<训练编号>;<金币数>;<时间>;点1,点2,...点n,");
         System.out.println("************************");
         CommonResponse response = new CommonResponse<>();
         //测试后门 上线时会去掉
@@ -83,13 +95,13 @@ public class TrainingServiceImpl implements TrainingService {
             rawData += ",";
         //原本在此去除rawData末端的';' 现废弃，由前端去头去尾
 //        rawData = rawData.substring(0, rawData.length() - 2);
-        //格式:  编号;金币;图像 对应data[0] data[1] data[2]
+        //格式:  编号;金币;时间(秒);图像 对应data[0] data[1] data[2] data[3]
         String[] data = rawData.split(";");
         Calendar calendar = Calendar.getInstance();
         //********* 更新属性 对训练平均值和长度进行存储，提高效率***********
-        String[] graph = data[2].split(",");
+        String[] graph = data[3].split(",");
         long total = 0;
-        Integer average = 0;
+        Integer average;
         for(String s : graph){
             total += Long.parseLong(s);
         }
@@ -115,7 +127,13 @@ public class TrainingServiceImpl implements TrainingService {
         }catch (Exception e){
             gold = 0;
         }
-        Training training = new Training(TrainingIdGenerator.nextId(response.getMessage()),mark,gold, data[2],average, graph.length );
+        Integer time;
+        try{
+            time = Integer.parseInt(data[2]);
+        }catch (Exception e){
+            time = graph.length;
+        }
+        Training training = new Training(TrainingIdGenerator.nextId(response.getMessage()),mark,gold, data[2],average, time );
         try{
             trainingRepository.save(training);
         }catch (Exception e){
@@ -149,20 +167,21 @@ public class TrainingServiceImpl implements TrainingService {
         //满签条件：今天是周日 且训练列表里末尾训练时间为周六 则进一步判断
         //此处训练列表以时间顺序同步，拥有顺序，也能保证查询时最省时
         if(calendar.get(Calendar.DAY_OF_WEEK) == 1 && dateDataList.size() > 0 && dateDataList.get(dateDataList.size() - 1).getDayOfTheWeek() == 7){
-            //周日为一周的第一天，故此处减一
-            int weekOfTheYear = calendar.get(Calendar.WEEK_OF_YEAR) - 1;
-            //当前签到日为周日，不需判断
-            boolean weekContainer[] = {false,false,false,false,false,false,true};
-            int i = dateDataList.size() - 1;
-            //倒序遍历本周所有训练
-            while(i >= 0 && dateDataList.get(i).getWeekOfTheYear() == weekOfTheYear){
-                weekContainer[dateDataList.get(i).getDayOfTheWeek() - 2] = true;
-                i--;
-            }
-            //若有一天未签到，本周不满签
-            for(boolean b: weekContainer){
-                if(!b)
-                    fullCheckIn = false;
+            if(dateData.getTime() >= getCHECK_IN_MIN_TIME()){//周日为一周的第一天，故此处减一
+                int weekOfTheYear = calendar.get(Calendar.WEEK_OF_YEAR) - 1;
+                //当前签到日为周日，不需判断
+                boolean weekContainer[] = {false, false, false, false, false, false, true};
+                int i = dateDataList.size() - 1;
+                //倒序遍历本周所有训练
+                while (i >= 0 && dateDataList.get(i).getWeekOfTheYear() == weekOfTheYear && dateDataList.get(i).getTime() >= getCHECK_IN_MIN_TIME()) {
+                    weekContainer[dateDataList.get(i).getDayOfTheWeek() - 2] = true;
+                    i--;
+                }
+                //若有一天未签到，本周不满签
+                for (boolean b : weekContainer) {
+                    if (!b)
+                        fullCheckIn = false;
+                }
             }
             //完整签到一周
             if(fullCheckIn)
@@ -215,10 +234,9 @@ public class TrainingServiceImpl implements TrainingService {
         String halfResult[] = training.getGraph().split(",");
         int result[];
 
-        //图像数据的时间长度，方便前端处理
+        //图像数据的时间长度 2023.2.27更改为上传时一并传时间
         //在前端计算出对应每一点的时间
-        int sec = halfResult.length;
-        response.setSec(sec);
+        response.setSec(training.getLength());
 
         //图像过长，以分段取平均值的方式缩短来保证正常显示
         if(halfResult.length > 1.5 * GRAPH_RESOLUTION){
@@ -281,9 +299,7 @@ public class TrainingServiceImpl implements TrainingService {
         }
         User user = userRepository.findUserByOpenId(responseT.getMessage()).get();
         List<DateData> dateDataList = user.getDateDataList();
-
         Double result[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0};
-
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH,-7);
         int year = calendar.get(Calendar.YEAR);
@@ -323,7 +339,7 @@ public class TrainingServiceImpl implements TrainingService {
                     totalC += Integer.parseInt(s);
                     totalNum ++;
                 }
-                result[6 - daysBetween] += graph.length;
+                result[6 - daysBetween] += trainingList.get(trainingIter).getLength();
                 trainingIter --;
             }
             dateIter++;
@@ -344,13 +360,7 @@ public class TrainingServiceImpl implements TrainingService {
      */
     @Override
     public CommonResponse handleFindDateList(String token,Integer startIndex, Integer length){
-        CommonResponse response = new CommonResponse<>();
-        if(token != null && token.equals("114514")){
-            response.setSuccess(true);
-            response.setMessage("o1JHJ4rRpzIAw4rYUv90GXo5q3Yc");
-        }else{
-            response = tokenUtil.tokenCheck(token);
-        }
+        CommonResponse response = tokenUtil.tokenCheck(token);
         if(!response.getSuccess())
             return response;
         User user = userRepository.findUserByOpenId(response.getMessage()).get();
@@ -359,10 +369,10 @@ public class TrainingServiceImpl implements TrainingService {
         int dateDataListIndex;
         if(startIndex == -1){
             //初次请求，第一次加载页面时的请求
-            startIndex = dateDataList.size() - 1 >= 0? dateDataList.size() - 1: 0;
+            startIndex = Math.max(dateDataList.size() - 1, 0);
         }
         dateDataListIndex = startIndex;
-        int endIndex = dateDataListIndex - length <= 0? 0: dateDataListIndex - length;
+        int endIndex = Math.max(dateDataListIndex - length, 0);
         List<DateData> targetList = dateDataList.subList(endIndex ,dateDataList.size() > 0? dateDataListIndex + 1: 0);
         Collections.reverse(targetList);
         response.setContent(targetList);
@@ -378,13 +388,7 @@ public class TrainingServiceImpl implements TrainingService {
      */
     @Override
     public CommonResponse handleFindDateData(String token,String id){
-        CommonResponse response = new CommonResponse<>();
-        if(token != null && token.equals("114514")){
-            response.setSuccess(true);
-            response.setMessage("o1JHJ4rRpzIAw4rYUv90GXo5q3Yc");
-        }else{
-            response = tokenUtil.tokenCheck(token);
-        }
+        CommonResponse response = tokenUtil.tokenCheck(token);
         if(!response.getSuccess())
             return response;
         DateData dateData = dateDataRepository.findDateDataById(id).get();
@@ -409,13 +413,20 @@ public class TrainingServiceImpl implements TrainingService {
             ){
                 if(dateData.getImageName() == null)
                     needImage = true;
-                String filename = calendar.get(Calendar.YEAR) + "年" + (calendar.get(Calendar.MONTH) + 1) + "月" + calendar.get(Calendar.DAY_OF_MONTH) + "日" + user.getNickName() + ".mp3";
-                String parent = System.getProperty("user.dir") + "/static/audio";
+                String parent = System.getProperty("user.dir") + "/static/audio/" + wxOpenId;
                 // File对象指向这个路径，file是否存在
                 File dir = new File(parent);
-                File audioToday = new File(dir, filename); // 是一个空文件
-                if(!audioToday.exists() && dateData.getComment() == null){
-                    needComment = true;
+                if(dateData.getComment() == null){
+                    String[] fileList = dir.list();
+                    boolean findFileToday = false;
+                    for(String s : fileList){
+                        if(s.contains(calendar.get(Calendar.YEAR) + "年" + (calendar.get(Calendar.MONTH) + 1) + "月" + calendar.get(Calendar.DAY_OF_MONTH) + "日")){
+                            findFileToday = true;
+                            break;
+                        }
+                    }
+                    if(!findFileToday)
+                        needComment = true;
                 }
             }
         }

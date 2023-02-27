@@ -30,4 +30,6 @@ public interface TrainingService {
 
     CommonResponse handleComment(MultipartFile audioFile, String text, String token);
 
+    Integer getCHECK_IN_MIN_TIME();
+
 }

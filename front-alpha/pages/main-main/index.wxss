@@ -141,6 +141,8 @@ ec-canvas {
   height: 27vh;
   background-color: #FFF;
   border-radius: 5vw;
+  display: flex;
+  flex-direction: column;
 }
 .checkInCardName{
   display: flex;
@@ -148,18 +150,18 @@ ec-canvas {
   text-align: center;
   padding-left: 2vw;
   padding-top: 1vh;
-  font-size: 3vw;
+  font-size: 2vh;
   color: #707070;
 }
 .checkInButtomMessage{
   display: flex;
   flex-direction: column;
   text-align: center;
-  font-size: 3vw;
+  font-size: 2vh;
   color: #707070;
 }
 .checkInName{
-  font-size: 7vw;
+  font-size: 4vh;
   font-weight: 600;
 }
 .checkInImage{
@@ -206,13 +208,13 @@ ec-canvas {
   display: flex;
   flex-direction: row;
   font-weight: 600;
-  font-size: 4vw;
+  font-size: 3vh;
   padding-top: 1.5vh;
-  padding-left: 2.5vw;
+  margin: auto;
 }
 .checkInBlock{
-  width: 10vw;
-  height: 10vw;
+  width: 6vh;
+  height: 6vh;
   margin: auto;
   background-color: #FFF;
   border-style: solid;

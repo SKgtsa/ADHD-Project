@@ -3,7 +3,6 @@ package com.clankalliance.backbeta.controller;
 import com.clankalliance.backbeta.request.InfoUpdateRequest;
 import com.clankalliance.backbeta.request.TokenCheckRequest;
 import com.clankalliance.backbeta.request.UserLoginRequest;
-import com.clankalliance.backbeta.request.UserSaveRequest;
 import com.clankalliance.backbeta.response.CommonLoginResponse;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.response.MainInfoResponse;

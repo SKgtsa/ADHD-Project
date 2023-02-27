@@ -31,6 +31,6 @@ public class Training {
     //训练数据的平均值
     private Integer average;
 
-    //训练数据的长度
+    //训练数据的时间
     private Integer length;
 }

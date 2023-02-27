@@ -6,6 +6,7 @@ import com.clankalliance.backbeta.entity.arrayTraining.Training;
 import com.clankalliance.backbeta.repository.UserRepository;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.service.CheckInService;
+import com.clankalliance.backbeta.service.TrainingService;
 import com.clankalliance.backbeta.utils.TokenUtil;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +18,8 @@ import java.util.List;
 @Service
 public class CheckInServiceImpl implements CheckInService {
 
-
     @Resource
-    private TokenUtil tokenUtil;
-
-    @Resource
-    private UserRepository userRepository;
-
-
+    private TrainingService trainingService;
 
     /**
      * 传入训练列表
@@ -40,7 +35,7 @@ public class CheckInServiceImpl implements CheckInService {
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         int index = dateDataList.size() - 1;
         if(dayOfWeek == 1){
-            if(dateDataList.size() > 0 && dateDataList.get(index).getWeekOfTheYear() == weekOfTheYear){
+            if(dateDataList.size() > 0 && dateDataList.get(index).getWeekOfTheYear() == weekOfTheYear && dateDataList.get(index).getTime() >= trainingService.getCHECK_IN_MIN_TIME()){
                 checkInWeek[6] = true;
                 index --;
             }
@@ -50,7 +45,10 @@ public class CheckInServiceImpl implements CheckInService {
         for(;index >= 0 && dateDataList.get(index).getWeekOfTheYear() == weekOfTheYear; index --){
             temp = dateDataList.get(index).getDayOfTheWeek() - 2;
             if(temp >= 0){
-                checkInWeek[temp] =true;
+                DateData dateData = dateDataList.get(index);
+                if (dateData.getTime() >= trainingService.getCHECK_IN_MIN_TIME()){
+                    checkInWeek[temp] =true;
+                }
             }
         }
         return checkInWeek;
