@@ -52,10 +52,7 @@ public class UserServiceImpl implements UserService {
         }else{
             //接受前端code 使用code向微信要openId 以此作为登录凭证，并自动注册
             result =  PostRequestUtils.sendPostRequest("https://api.weixin.qq.com/sns/jscode2session?appid=" + appId + "&secret=" + secret +  "&js_code=" + code + "&grant_type=authorization_code",null);
-            System.out.println("openId: " + result.getOpenid());
-            System.out.println("session_key: " + result.getSession_key());
         }
-        System.out.println("intoHandleLogin");
         Optional<User> uop = userRepository.findUserByOpenId(result.getOpenid());
 
 
@@ -84,7 +81,6 @@ public class UserServiceImpl implements UserService {
         response.setToken(token);
         response.setSuccess(true);
         response.setContent(user);
-        System.out.println(response);
         return response;
     }
 

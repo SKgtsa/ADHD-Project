@@ -79,6 +79,7 @@ public class TrainingServiceImpl implements TrainingService {
         System.out.println("\t\t\t接收到原始数据");
         System.out.println("\t\t\t" + rawData);
         System.out.println("\t\t\t应为<训练编号>;<金币数>;<时间>;点1,点2,...点n,");
+        System.out.println("\t\t\t或<训练编号>;<金币数>;点1,点2,...点n,");
         System.out.println("************************");
         CommonResponse response = new CommonResponse<>();
         //测试后门 上线时会去掉
@@ -98,8 +99,15 @@ public class TrainingServiceImpl implements TrainingService {
         //格式:  编号;金币;时间(秒);图像 对应data[0] data[1] data[2] data[3]
         String[] data = rawData.split(";");
         Calendar calendar = Calendar.getInstance();
+        String[] graph;
+        if(data.length == 4){
+            //有时间
+            graph = data[3].split(",");
+        }else{
+            //没时间
+            graph = data[2].split(",");
+        }
         //********* 更新属性 对训练平均值和长度进行存储，提高效率***********
-        String[] graph = data[3].split(",");
         long total = 0;
         Integer average;
         for(String s : graph){
@@ -128,12 +136,17 @@ public class TrainingServiceImpl implements TrainingService {
             gold = 0;
         }
         Integer time;
-        try{
-            time = Integer.parseInt(data[2]);
-        }catch (Exception e){
-            time = graph.length;
+        if(data.length == 4){
+            try{
+                time = Integer.parseInt(data[2]);
+            }catch (Exception e){
+                time = graph.length;
+            }
+        }else{
+            time = graph.length;;
         }
-        Training training = new Training(TrainingIdGenerator.nextId(response.getMessage()),mark,gold, data[2],average, time );
+
+        Training training = new Training(TrainingIdGenerator.nextId(response.getMessage()),mark,gold, data[data.length - 1],average, time );
         try{
             trainingRepository.save(training);
         }catch (Exception e){
