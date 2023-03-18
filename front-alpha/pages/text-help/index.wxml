@@ -1,11 +1,23 @@
 <!--pages/text-help/index.wxml-->
 <view class="page">
-  <h1 style="font-size: 5vh;font-weight: bolder;line-height: 10vh;">这里是标题</h1>
+  <view class="wrapper">
+    <view class="container" >
+      <ec-canvas type="2d" class="lineChart"  wx:if="{{training}}" id="mychart-dom-line"  canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>
+      <a wx:if="{{!training}}">当前没有进行训练</a>
+    </view>
+  </view>
+  <view>
+  <slider bindchange="sliderChange" step="1" show-value min="0" max="100" value="{{threshold}}" />
+  </view>
+
+  
+  <!-- <h1 style="font-size: 5vh;font-weight: bolder;line-height: 10vh;">这里是标题</h1>
   <view style="text-indent: 2em;">
   未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排</view>
   <view style="text-indent: 2em;">
   未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例</view>
   <view style="text-indent: 2em;">
   未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排
-  示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例</view>
+  示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例未排版示例</view> -->
+  
 </view>

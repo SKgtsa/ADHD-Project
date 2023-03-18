@@ -26,7 +26,8 @@ App({
     deviceId: '',
     serviceId: '',
     syncResult: '',
-    infoChanged: null
+    infoChanged: null,
+    timer: null,
   },
   getLogin: function() {
     return this.globalData.login

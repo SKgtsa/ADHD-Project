@@ -38,4 +38,6 @@ public class User {
     @OneToMany
     private List<DateData> dateDataList;
 
+    private Integer threshold;
+
 }

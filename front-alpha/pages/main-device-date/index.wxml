@@ -25,7 +25,7 @@
               </view>
               <view class="right">
                 <text>获得<text style="color: #007af2; font-weight: 800;">{{item.gold}}</text>枚金币</text>
-                <text>{{item.timeVariance > 300? "训练不太规范":"训练很规范"}}</text>
+                <text>{{item.timeVariance > 300000? "训练不太规范":"训练很规范"}}</text>
                 <text><text style="color: #007af2; font-weight: 800;">{{item.trainingNum}}</text>次训练</text>
               </view>
             </view>

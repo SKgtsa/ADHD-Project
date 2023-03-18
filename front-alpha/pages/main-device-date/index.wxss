@@ -11,6 +11,14 @@
   background-color: #FFF;
   position: relative;
 }
+.lineChart{
+  padding: 0;
+  margin: 0;
+  height: 36vh;
+  width: 78vw;
+  padding-right: 4vw;
+  padding-left: 4vw;
+}
 .nameWrapper{
   width: 100%;
   text-align: left;
@@ -20,14 +28,6 @@
 }
 .chartName{
 
-}
-.lineChart{
-  padding: 0;
-  margin: 0;
-  height: 36vh;
-  width: 78vw;
-  padding-right: 4vw;
-  padding-left: 4vw;
 }
 .main{
   display: flex;

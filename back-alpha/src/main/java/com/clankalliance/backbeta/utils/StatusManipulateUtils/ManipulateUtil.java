@@ -110,7 +110,18 @@ public class ManipulateUtil {
      * @param userId 用户id
      */
     public static void appendStatus(String userId){
-        endNode.setNext(new StatusNode(userId));
+        endNode.setNext(new StatusNode(userId,-1));
+        endNode = endNode.getNext();
+    }
+
+    /**
+     * 新增状态，根据旧节点只更新点数据
+     * @param oldNode 旧节点
+     * @param dot 新的点数据
+     */
+    public static void appendStatus(StatusNode oldNode,int dot){
+        oldNode.setCurrentDot(dot);
+        endNode.setNext(oldNode);
         endNode = endNode.getNext();
     }
 
@@ -131,6 +142,34 @@ public class ManipulateUtil {
             boolean find = false;
             while(node != null && !find){
                 if(node.getToken() != null && node.getToken().equals(token)){
+                    result = node;
+                    deleteNextStatus(lastNode);
+                    find = true;
+                }
+                lastNode = node;
+                node = node.getNext();
+            }
+            return result;
+        }
+    }
+
+
+    /**
+     * 根据用户id查找状态
+     * @param id 用户id
+     * @return
+     */
+    public static StatusNode findStatusById(String id){
+        if(deleteExpiredStatus(id, false)){
+            return new StatusNode();
+        }else{
+            //进一步判定
+            StatusNode lastNode = headNode;
+            StatusNode result = new StatusNode();
+            StatusNode node = headNode.getNext();
+            boolean find = false;
+            while(node != null && !find){
+                if(node.getUserId() != null && node.getUserId().equals(id)){
                     result = node;
                     deleteNextStatus(lastNode);
                     find = true;

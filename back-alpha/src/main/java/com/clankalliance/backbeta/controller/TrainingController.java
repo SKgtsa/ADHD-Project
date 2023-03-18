@@ -5,11 +5,9 @@ import com.clankalliance.backbeta.request.*;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.response.FindGraphResponse;
 import com.clankalliance.backbeta.response.LastSevenResponse;
+import com.clankalliance.backbeta.response.TestResponse;
 import com.clankalliance.backbeta.service.TrainingService;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -89,6 +87,40 @@ public class TrainingController {
     @RequestMapping("/saveCommentText")
     public CommonResponse saveCommentText(@RequestParam("text") String text, @RequestParam("token") String token){
         return trainingService.handleComment(null, text, token);
+    }
+
+    @RequestMapping("/test")
+    public TestResponse test(@RequestBody TestRequest request){
+        System.out.println("测试接口收到数据如下");
+        System.out.println(request);
+        return new TestResponse("test_ok",System.currentTimeMillis());
+    }
+
+    @GetMapping("/testget")
+    public TestResponse testGet(@RequestBody TestRequest request){
+        System.out.println("get测试接口收到数据如下");
+        System.out.println(request);
+        return new TestResponse("test_ok",System.currentTimeMillis());
+    }
+
+    @PostMapping("/testpost")
+    public TestResponse testPost(@RequestBody TestRequest request){
+        System.out.println("post测试接口收到数据如下");
+        System.out.println(request);
+        return new TestResponse("test_ok",System.currentTimeMillis());
+    }
+
+
+    @GetMapping("/testgetn")
+    public TestResponse testNoValueGet(){
+        System.out.println("无参数get接口收到请求");
+        return new TestResponse("test_ok",System.currentTimeMillis());
+    }
+
+    @PostMapping("/testpostn")
+    public TestResponse testNoValuePost(){
+        System.out.println("无参数post接口收到请求");
+        return new TestResponse("test_ok",System.currentTimeMillis());
     }
 
 }

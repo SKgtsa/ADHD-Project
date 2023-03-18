@@ -18,6 +18,22 @@ Page({
       }
     })
   },
+  findFirstLastChar(c,str){
+    for(let i = 0;i < str.length;i ++){
+      if(str.charAt(i) !== c){
+        return i - 1;
+      }
+    }
+    return str.length - 1;
+  },
+  findLastFirstChar(c,str){
+    for(let i = str.length - 1;i >= 0;i --){
+      if(str.charAt(i) !== c){
+        return i + 1;
+      }
+    }
+    return 0;
+  },
   bleGetDeviceCharacteristics(deviceId,serviceId){
     console.log('3')
     var that = this;
@@ -68,7 +84,6 @@ Page({
             })
           }
           if (item.properties.notify || item.properties.indicate) {
-            console.log('6')
             // 必须先启用 wx.notifyBLECharacteristicValueChange 才能监听到设备 onBLECharacteristicValueChange 事件
             wx.notifyBLECharacteristicValueChange({
               deviceId,
@@ -76,7 +91,6 @@ Page({
               characteristicId: item.uuid,
               state: true,
               success: () => {
-                console.log('7')
               }
             })
             //正在同步数据
@@ -84,22 +98,19 @@ Page({
             console.log('8')
             wx.onBLECharacteristicValueChange((result) => {
               this.setData({onBLECharaValueChange: true})
-              console.log('onBLECharacteristicValueChange',result.value)
               let hex = this.ab2hex(result.value)
               const input = this.hextoString(hex);
-              console.log('hextoString',input)
-              console.log('hex',hex)
               let error = false;
               if(!inProcess){
                 //没有在发送 此时检测开始信号
                 //截取前三位 作为控制信号
-                const startMark = input.substring(0,3);
-                console.log("StartMark: input.substring(0,3)  " + startMark)
+                const startMark = input.substring(0,1);
+                console.log("StartMark: " + startMark)
                 //头部标记为aaa
-                if(startMark == 'aaa'){
+                if(startMark === 'a'){
                   //取控制信号后的整个字符串 拼接进syncResult 进行同步数据的积累
                   //整个数据收取完成后整个发给后端处理
-                  this.data.syncResult = input.substring(3);
+                  this.data.syncResult = input.substring(this.findFirstLastChar('a',input) + 1);
                   console.log('接收到开始信号 存储开始信号后的数据： ' + this.data.syncResult)
                   //设置布尔值inProcess
                   //代表已进入数据收取过程
@@ -108,21 +119,23 @@ Page({
               }else{
                 //正在发送
                 //截取末三位 作为控制信号 控制数据收取的停止时机
-                const endMark = input.substring(input.length - 3);
+                const endMark = input.substring(input.length - 1);
                 console.log('endMark: ' + endMark)
-                if(endMark == "ccc" || endMark == "ddd"){
-                  console.log('接收到停止信号: ' + endMark)
+                if(endMark === "c" || endMark === "d"){
+                  console.log('endMark: ' + endMark)
                   //接收到数据发送终止符 发送数据 取字符串开头到倒数第四位为数据
                   //拼接给syncResult 之后发送给后端
-                  this.data.syncResult += input.substring(0,input.length - 3)
-                  if(this.data.syncResult.substring(0,3) == 'aaa'){
-                    this.setData({syncResult: this.data.syncResult.substring(3)})
+                  if(endMark === 'c'){
+                    this.data.syncResult += input.substring(0,this.findLastFirstChar('c',input))
+                  }else{
+                    this.data.syncResult += input.substring(0,this.findLastFirstChar('d',input))
+                  }
+                  if(this.data.syncResult.charAt(0) === 'a'){
+                    this.setData({syncResult: this.data.syncResult.substring(this.findFirstLastChar('a',input) + 1)})
                   }
                   console.log( "同步结果: " + this.data.syncResult)
                   let str = '';
                   console.log('发送数据')
-                  console.log("token: " + wx.getStorageSync('token'))
-                  console.log("rawData: " + this.data.syncResult)
                   wx.request({
                     url: 'https://chenanbella.cn/api/training/save',
                     method: 'POST',
@@ -131,19 +144,6 @@ Page({
                       rawData: this.data.syncResult
                     },
                     success(res){
-                      const data = res.data;
-                      if(data.token == null){
-                        // app.globalData.login = false;
-                        // wx.showToast({
-                        //   title: '登录过期',
-                        //   icon: 'error'
-                        // })
-                        // setTimeout(() => {
-                        //   wx.switchTab({
-                        //     url: '../main-personal/index',
-                        //   })
-                        // },500)
-                      }
                       console.log("发送成功 收到反馈如下")
                       console.log(res)
                       //保存成功,向设备发送数据
@@ -167,7 +167,7 @@ Page({
                         //   app.globalData.login = false;
                         // }
                       }
-                      console.log("开始向设备发送数据 " + str)
+                      console.log("开始向设备发送标志 " + str)
                       //如果出现bug 给写特征值的函数加个延时
                       setTimeout(() => {
                         wx.writeBLECharacteristicValue({
@@ -223,8 +223,7 @@ Page({
                     },
                   })
                   this.data.syncResult = '';
-                  console.log('清空syncResult: ' + this.data.syncResult);
-                  if(input.substring(input.length - 3) == 'ddd' || error){
+                  if(endMark === 'd' || error){
                     //本次发送的数据包结尾为ddd 代表所有数据已发送完毕
                     //error代表出现了错误
                     //发送完毕 卸载蓝牙 延迟一秒，防止有需要蓝牙的异步函数还没有执行完的情况
@@ -633,7 +632,7 @@ Page({
         url: '../main-personal/index',
       })
     }
-    console.log('intoOnShow()')
+    console.log('intoOnShow()A')
     console.log(wx.getStorageSync('token'))
     this.setData({userInfo: app.globalData.userInfo})
     console.log('版本4')
