@@ -13,7 +13,8 @@
     "pages/register-name/index",
     "pages/register-avatar/index",
     "pages/text-help/index",
-    "pages/comment-submit/index"
+    "pages/comment-submit/index",
+    "pages/main-device-setting/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

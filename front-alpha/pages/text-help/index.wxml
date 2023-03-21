@@ -1,13 +1,15 @@
 <!--pages/text-help/index.wxml-->
 <view class="page">
   <view class="wrapper">
+    <view style="height: 5vh;" />
     <view class="container" >
       <ec-canvas type="2d" class="lineChart"  wx:if="{{training}}" id="mychart-dom-line"  canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>
       <a wx:if="{{!training}}">当前没有进行训练</a>
     </view>
   </view>
   <view>
-  <slider bindchange="sliderChange" step="1" show-value min="0" max="100" value="{{threshold}}" />
+    <slider bindchange="sliderChange" step="1" show-value min="0" max="100" value="{{threshold}}" />
+    <button bind:tap="changeMap" >更换地图</button>
   </view>
 
   

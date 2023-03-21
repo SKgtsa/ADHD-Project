@@ -5,6 +5,7 @@ import com.clankalliance.backbeta.entity.arrayTraining.Training;
 import com.clankalliance.backbeta.repository.TrainingRepository;
 import com.clankalliance.backbeta.repository.UserRepository;
 import com.clankalliance.backbeta.response.CommonResponse;
+import com.clankalliance.backbeta.response.cart.CartSettingBody;
 import com.clankalliance.backbeta.service.CartService;
 import com.clankalliance.backbeta.utils.TokenUtil;
 import com.clankalliance.backbeta.utils.TrainingIdGenerator;
@@ -28,11 +29,16 @@ public class CartServiceImpl implements CartService {
 
     public CommonResponse updateDot(String id, int dot){
         CommonResponse response = tokenUtil.updateDot(id,dot);
-        if(response.getSuccess()){
-            User user = userRepository.findUserByOpenId(id).get();
-            response.setContent(user.getThreshold());
+        Optional<User> uop = userRepository.findUserByOpenId(id);
+        if(uop.isPresent()){
+            User user = uop.get();
+            response.setContent(new CartSettingBody(user.getThreshold(), user.getMap()));
+            response.setMessage("已更新后端数据");
+            response.setSuccess(true);
         }else{
-            response.setContent(-1);
+            response.setContent(new CartSettingBody(-1, 0));
+            response.setMessage("用户不存在");
+            response.setSuccess(false);
         }
         return response;
     }
@@ -91,6 +97,26 @@ public class CartServiceImpl implements CartService {
             return response;
         User user = userRepository.findUserByOpenId(response.getMessage()).get();
         response.setContent(user.getThreshold());
+        return response;
+    }
+
+    public CommonResponse updateMap(String token,Integer map){
+        CommonResponse response = tokenUtil.tokenCheck(token);
+        if(!response.getSuccess()){
+            response.setMessage("登录失效");
+            return response;
+        }
+        User user = userRepository.findUserByOpenId(response.getMessage()).get();
+        user.setMap(map);
+        try{
+            userRepository.save(user);
+        }catch (Exception e){
+            response.setContent(e);
+            response.setSuccess(false);
+            response.setMessage("保存错误");
+            return response;
+        }
+        response.setMessage("保存成功");
         return response;
     }
 

@@ -153,7 +153,8 @@ Page({
             const data = JSON.parse(JSON.stringify(res)).data;
             if(data.success){
               console.log("*****登录成功*****")
-              wx.setStorageSync("token",data.token)
+              wx.setStorageSync("token",data.token);
+              wx.setStorageSync('id', data.content.wxOpenId);
               console.log('本地存储token变更为' + data.token)
               data.content.imageURL = app.globalData.baseURL + data.content.imageURL;
               app.globalData.login = true;

@@ -1,0 +1,12 @@
+<view class="mainContainer">
+  <view>
+    <view style="height: 5vh;"/>
+    <text class="upperText">wifi名称</text>
+    <input bindblur="onNameChange" value="{{wifiName}}" bind:input="onNameChange" class="input" placeholder="请输入名称"/>
+    <text class="upperText">wifi密码</text>
+    <input bindblur="onPassChange" value="{{wifiPass}}" bind:input="onPassChange" class="input" password="true" placeholder="请输入密码"/>
+    <text class="lowerText">设置将会在下一次连接小车时同步</text>
+    <view style="height: 20vh;"/>
+    <button class="submitButton" bindtap="save">保存设置</button>
+  </view>
+</view>

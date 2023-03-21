@@ -28,7 +28,57 @@ Page({
     //   }
     // },
   },
-
+  changeMap(){
+    var that = this;
+    wx.scanCode({
+      success(res){
+        var result = res.result;
+        try{
+          Number(result);
+        }catch(e){
+          wx.showToast({
+            title: '二维码错误',
+            content: '请扫描官方地图二维码',
+            icon: 'error',
+            duration: 900
+          })
+          return;
+        }
+        wx.request({
+          url: app.globalData.baseURL + '/api/cart/updateMap',
+          method: 'POST',
+          data: {
+            token: wx.getStorageSync('token'),
+            map: result
+          },
+          success: (res) => {
+            if(res.data.success){
+              wx.setStorageSync('token', res.data.token)
+              wx.showToast({
+                title: '更换成功',
+                duration: 900
+              })
+            }else{
+              wx.showToast({
+                title: '发生错误',
+                content: '请联系技术人员',
+                icon: 'error',
+                duration: 900
+              })
+            }
+          },
+          fail: (res) => {
+            wx.showToast({
+              title: '发生错误',
+              content: '请联系技术人员',
+              icon: 'error',
+              duration: 900
+            })
+          }
+        })
+      }
+    })
+  },
   sliderChange(e){
     var that = this;
     that.setData({
@@ -59,7 +109,7 @@ Page({
   onLoad(options) {
     var that = this;
     wx.request({
-      url: app.globalData.baseURL + '/api/cart/getDot',
+      url: app.globalData.baseURL + '/api/cart/getThreshold',
       method: 'POST',
       data: {
         token: wx.getStorageSync('token')
@@ -186,7 +236,8 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
-
+    clearInterval(app.globalData.timer);
+    app.globalData.timer = null;
   },
 
   /**

@@ -40,4 +40,7 @@ public class User {
 
     private Integer threshold;
 
+    //用户选定的地图编号(0代表未选择地图)
+    private Integer map = 0;
+
 }

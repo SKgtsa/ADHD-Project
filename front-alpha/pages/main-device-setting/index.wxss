@@ -1,0 +1,38 @@
+/* pages/main-device-setting/index.wxss */
+.mainContainer{
+  text-align: center;
+  background-color: #6FA3FC;
+  height: 100vh;
+}
+.input{
+  height: 10vh;
+  font-size: 5vh;
+  background-color: #FFF;
+  width: 90vw;
+  margin: 0 auto;
+  border-radius: 1.5vh;
+}
+.upperText{
+  color: #FFF;
+  font-size: 8vw;
+  text-align: left;
+  padding-top: 3vh;
+  padding-left: 3vw;
+  padding-bottom: 5vh;
+}
+.submitButton{
+  width: 90vw;
+  height: 10vh;
+  background-color: #007af2;
+  border-radius: 4vw;
+  color: #FFF;
+  font-size: 4vh;
+}
+.lowerText{
+  color: #FFF;
+  font-size: 6vw;
+  text-align: left;
+  padding-top: 3vh;
+  padding-left: 3vw;
+  padding-bottom: 5vh;
+}

@@ -14,4 +14,6 @@ public interface CartService {
 
     CommonResponse getThreshold(String token);
 
+    CommonResponse updateMap(String token,Integer map);
+
 }

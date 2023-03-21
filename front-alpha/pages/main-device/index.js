@@ -46,14 +46,7 @@ Page({
           let item = res.characteristics[i]
           console.log(item)
           if (item.properties.write) { // 该特征值可写
-            // 本示例是向蓝牙设备发送一个 0x00 的 16 进制数据
-            // 实际使用时，应根据具体设备协议发送数据
-            // let buffer = new ArrayBuffer(1)
-            // let dataView = new DataView(buffer)
-            // dataView.setUint8(0, 0)
-            // let senddata = 'FF';
-            // let buffer = this.hexString2ArrayBuffer(senddata);
-            var buffer = that.stringToBytes("connected")
+            var buffer = that.stringToBytes(JSON.stringify(that.data.cartSetting));
             this.setData({
               'deviceId':deviceId,
               'serviceId':serviceId,
@@ -61,13 +54,7 @@ Page({
             })
             app.globalData.deviceId = deviceId;
             app.globalData.serviceId = serviceId;
-            app.globalData.characteristicId = item.uuid; 
-            console.log('发送数据 connected')
-            console.log('deviceId: ' + deviceId)
-            console.log('serviceId: ' + serviceId)
-            console.log('characteristicId: ' + item.uuid);
-            console.log(buffer)
-            console.log('结束发送')
+            app.globalData.characteristicId = item.uuid;
             wx.writeBLECharacteristicValue({
               deviceId,
               serviceId,
@@ -608,11 +595,21 @@ Page({
     startFindTime: null,
     connectTime: 0,
     hideLoading: true,
-    chartReady: false
+    chartReady: false,
+    cartSetting:{
+      wifiName: null,
+      wifiPass: null,
+      id: null,
+    }
   },
   detailedButton: function() {
     wx.navigateTo({
       url: '../main-device-date/index',
+    })
+  },
+  settingButton: function() {
+    wx.navigateTo({
+      url: '../main-device-setting/index',
     })
   },
   onReady() {
@@ -632,10 +629,19 @@ Page({
         url: '../main-personal/index',
       })
     }
-    console.log('intoOnShow()A')
-    console.log(wx.getStorageSync('token'))
     this.setData({userInfo: app.globalData.userInfo})
-    console.log('版本4')
+    let wifiName = wx.getStorageSync('wifiName');
+    let wifiPass = wx.getStorageSync('wifiPass');
+    if(!(wifiName && wifiPass)){
+      this.settingButton();
+    }
+    this.setData({
+      cartSetting:{
+        wifiName: wx.getStorageSync('wifiName'),
+        wifiPass: wx.getStorageSync('wifiPass'),
+        id: wx.getStorageSync('id')
+      }
+    })
   },
   onLoad(){
     if(this.options != {}){
