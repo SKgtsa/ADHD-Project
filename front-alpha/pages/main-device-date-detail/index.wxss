@@ -56,7 +56,6 @@ ec-canvas {
   padding-left: 4vw;
   padding-right: 4vw;
   color: #486484;
-  
 }
 .scroll{
   height: 100vh;

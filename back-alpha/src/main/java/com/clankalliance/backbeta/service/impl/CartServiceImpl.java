@@ -7,6 +7,7 @@ import com.clankalliance.backbeta.repository.UserRepository;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.response.cart.CartSettingBody;
 import com.clankalliance.backbeta.service.CartService;
+import com.clankalliance.backbeta.service.TrainingService;
 import com.clankalliance.backbeta.utils.TokenUtil;
 import com.clankalliance.backbeta.utils.TrainingIdGenerator;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,9 @@ public class CartServiceImpl implements CartService {
 
     @Resource
     private TrainingRepository trainingRepository;
+
+    @Resource
+    private TrainingService trainingService;
 
 
     public CommonResponse updateDot(String id, int dot){
@@ -56,14 +60,15 @@ public class CartServiceImpl implements CartService {
         for(String s : graphArray)
             average += Integer.parseInt(s);
         average /= graphArray.length;
-        Training training = new Training(TrainingIdGenerator.nextId(id),mark,gold,graph + ',',average,time);
+
         try{
-            trainingRepository.save(training);
+            trainingService.handleSaveGraph(id, mark, gold, graph + ',', average, time);
         }catch (Exception e){
             response.setMessage(e.toString());
             response.setSuccess(false);
             return response;
         }
+
         response.setMessage("上传成功");
         response.setSuccess(true);
         return response;

@@ -24,75 +24,6 @@ Page({
   onChange(e){
     this.data.suggestion = e.detail.value;
   },
-
-  // adviceSubmit : function (){
-  //   console.log('submit')
-  //   console.log(this.data.suggestion)
-  //   this.setData({hideLoading: true})
-  //   wx.request({
-  //     url: app.globalData.baseURL + `/api/suggestion/suggest`,
-  //     method :'POST',
-  //     data:{
-  //       content:this.data.suggestion,
-  //       token: wx.getStorageSync('token')
-  //     },
-  //     success:(res)=>{
-  //       console.log('IntoProcessC')
-  //       console.log(JSON.stringify(res));
-  //       const data = JSON.parse(JSON.stringify(res)).data;
-  //       this.setData({hideLoading: true})
-  //       if(data.token == null){
-  //         app.globalData.login = false;
-  //         wx.showToast({
-  //           title: '登录过期',
-  //           icon: 'error'
-  //         })
-  //         setTimeout(() => {
-  //           wx.switchTab({
-  //             url: '../main-personal/index',
-  //           })
-  //         },500)
-  //       }
-  //       wx.setStorageSync("token",data.token)
-  //       console.log('本地存储token变更为' + data.token)
-  //       console.log(data.token);
-  //       if(data.success){
-  //         wx.showToast({
-  //           title: '发送成功',
-  //           duration: 2000,
-  //           icon: 'success',
-  //           mask: true
-  //         })
-  //       }else{
-  //         wx.showToast({
-  //           title: '请先登录',
-  //           duration: 2000,
-  //           icon: 'error',
-  //           mask: true
-  //         })
-  //         setTimeout(() => {
-  //           wx.switchTab({
-  //             url: '../main-personal/index',
-  //           })
-  //         },500)
-  //       }
-
-  //     },
-  //     fail: (res) => {
-  //       app.globalData.login = false;
-  //       wx.showToast({
-  //         title: '发生错误',
-  //         content: '请联系技术人员',
-  //         icon: 'error'
-  //       })
-  //       setTimeout(() => {
-  //         wx.switchTab({
-  //           url: '../main-personal/index',
-  //         })
-  //       },500)
-  //     }
-  //   })
-  // },
   quickGuide: function() {
     wx.navigateTo({
       url: '../main-community/index',
@@ -107,11 +38,15 @@ Page({
   toDeviceDetail: function() {
     //实现按按钮跳转到设备页并再次跳转前往详情页
     //(跳转同时调用设备页的函数，涉及一个跨页面的函数调用)
-    wx.navigateTo({
+    wx.reLaunch({
       url: '../main-device-date/index',
     })
   },
-
+  toForum: function(){
+    wx.reLaunch({
+      url: '../main-community/index'
+    })
+  },
   toCheckInPage : function() {
     wx.switchTab({
       url: '../main-checkIn/index'

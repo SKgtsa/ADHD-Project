@@ -32,4 +32,6 @@ public interface TrainingService {
 
     Integer getCHECK_IN_MIN_TIME();
 
+    boolean handleSaveGraph(String userId,Integer mark, Integer gold, String graph, Integer average, Integer time );
+
 }

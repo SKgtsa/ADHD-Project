@@ -2,6 +2,7 @@ package com.clankalliance.backbeta.controller;
 
 
 import com.clankalliance.backbeta.request.*;
+import com.clankalliance.backbeta.request.Forum.SaveCommentRequest;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.response.FindGraphResponse;
 import com.clankalliance.backbeta.response.LastSevenResponse;
@@ -80,13 +81,11 @@ public class TrainingController {
 
     /**
      * 只上传文本
-     * @param text
-     * @param token
      * @return
      */
     @RequestMapping("/saveCommentText")
-    public CommonResponse saveCommentText(@RequestParam("text") String text, @RequestParam("token") String token){
-        return trainingService.handleComment(null, text, token);
+    public CommonResponse saveCommentText(@RequestBody SaveCommentTextRequest request){
+        return trainingService.handleComment(null, request.getText(), request.getToken());
     }
 
     @RequestMapping("/test")

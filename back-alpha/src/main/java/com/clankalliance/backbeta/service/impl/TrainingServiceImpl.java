@@ -89,6 +89,8 @@ public class TrainingServiceImpl implements TrainingService {
         }else{
             response = tokenUtil.tokenCheck(token);
         }
+        if(rawData.length() < 5)
+            return response;
 
         if(!response.getSuccess())
             return response;
@@ -98,7 +100,6 @@ public class TrainingServiceImpl implements TrainingService {
 //        rawData = rawData.substring(0, rawData.length() - 2);
         //格式:  编号;金币;时间(秒);图像 对应data[0] data[1] data[2] data[3]
         String[] data = rawData.split(";");
-        Calendar calendar = Calendar.getInstance();
         String[] graph;
         if(data.length == 4){
             //有时间
@@ -122,7 +123,6 @@ public class TrainingServiceImpl implements TrainingService {
         }
         //**********************************************************
         //为训练数据制定的更短的id生成规则
-        System.out.println(calendar.get(Calendar.MONTH) + "月");
         Integer mark;
         try{
             mark = Integer.parseInt(data[0]);
@@ -145,21 +145,30 @@ public class TrainingServiceImpl implements TrainingService {
         }else{
             time = graph.length;;
         }
-
-        Training training = new Training(TrainingIdGenerator.nextId(response.getMessage()),mark,gold, data[data.length - 1],average, time );
+        boolean hasImage ;
         try{
-            trainingRepository.save(training);
+            hasImage = handleSaveGraph(response.getMessage(), mark, gold, data[data.length - 1], average, time);
         }catch (Exception e){
             response.setSuccess(false);
             response.setMessage("保存失败");
             return response;
         }
-        boolean hasImage = false;
-        User user = userRepository.findUserByOpenId(response.getMessage()).get();
-        List<DateData> dateDataList = user.getDateDataList();
-        user.setGold(user.getGold() + Integer.parseInt(data[1]));
 
-        String dateDataId = DateDataIdGenerator.next(response.getMessage());
+        response.setContent(hasImage);
+        response.setMessage("保存成功");
+        return response;
+    }
+
+    public boolean handleSaveGraph(String userId,Integer mark, Integer gold, String graph, Integer average, Integer time ){
+        Calendar calendar = Calendar.getInstance();
+        Training training = new Training(TrainingIdGenerator.nextId(userId),mark,gold, graph,average, time );
+        trainingRepository.save(training);
+        boolean hasImage = false;
+        User user = userRepository.findUserByOpenId(userId).get();
+        List<DateData> dateDataList = user.getDateDataList();
+        user.setGold(user.getGold() + gold);
+
+        String dateDataId = DateDataIdGenerator.next(userId);
         Optional<DateData> dop = dateDataRepository.findDateDataById(dateDataId);
         DateData dateData;
         if(dop.isPresent()){
@@ -168,7 +177,7 @@ public class TrainingServiceImpl implements TrainingService {
                 hasImage = true;
             }
         }else{
-            dateData = new DateData(response.getMessage());
+            dateData = new DateData(userId);
             dateDataList.add(dateData);
         }
 
@@ -207,10 +216,9 @@ public class TrainingServiceImpl implements TrainingService {
         user.setDateDataList(dateDataList);
         dateDataRepository.save(dateData);
         userRepository.save(user);
-        response.setContent(hasImage);
-        response.setMessage("保存成功");
-        return response;
+        return hasImage;
     }
+
 
     /**
      * 查询训练对应的图
@@ -477,7 +485,7 @@ public class TrainingServiceImpl implements TrainingService {
                     dateData.setComment(text);
                     dateDataRepository.save(dateData);
                 }
-                if(!audioFile.isEmpty())
+                if(audioFile != null &&  !audioFile.isEmpty())
                     if(!generalUploadService.handleAudioFileSave(audioFile, user.getWxOpenId(), user.getNickName())){
                         response.setSuccess(false);
                         response.setMessage("音频保存出错");

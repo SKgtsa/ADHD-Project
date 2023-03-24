@@ -12,4 +12,6 @@ public interface GeneralUploadService {
 
     boolean handleAudioFileSave(MultipartFile audioFile, String wxOpenId, String nickName);
 
+    String[] handleForumImageSave(MultipartFile[] images);
+
 }

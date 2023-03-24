@@ -1,68 +1,154 @@
 /* pages/main-community/index.wxss */
-.popOutWindow{
-    width: 100%;
-    height: 65vh;
-    background-color: #100964;
-    text-align: center;
-    padding-top: 5vh;
+.scrollBox{
+  background-color: #FFF;
+  padding-top: 5vh;
+  padding-bottom: 10vh;
+  border-radius: 3vh;
+  min-height: 65vh;
 }
-.container{
-    background-color: #FFF;
+.scroll{
+  height: 100vh;
+}
+.containerA{
+  background-color: #007af2;
+  display: flex;
+  flex-direction: column;
+}
+.bottomArea{
+  height: 10vh;
+  width: 100%;
+  display: flex;
+}
+.bottomText{
+  font-size: 4vh;
+  color: #FFF;
+  font-weight: bold;
+  margin: auto;
 }
 .textTop{
-    color: #FFF;
-    width: 100vw;
-    font-size: 5vw;
+  color: #FFF;
+  width: 100vw;
+  font-size: 5vw;
 }
 .textDown{
-    color: #FFF;
-    width: 100vw;
-    font-size: 8vw;
+  color: #FFF;
+  width: 100vw;
+  font-size: 8vw;
 }
 .inputArea{
-    text-align: left;
-    position: center;
-    padding: 8vw;
+  text-align: left;
+  position: center;
+  padding: 8vw;
+}
+.contentInput{
+  border-style: solid;
+  border-width: 2px;
+  border-color: darkgrey;
+  width: 95%;
+  margin: auto;
+  background-color: #FFF;
 }
 .input{
-    width: 80vw;
-    height: 30vh;
-    border: 5px solid #000;
-    background-color: #FFF;
-
+  width: 80vw;
+  height: 30vh;
+  border: 5px solid #000;
+  background-color: #FFF;
+  color: #000;
 }
 .community-note{
-    text-align: center;
-    background-color: #007af2;
-    width: 94vw;
-    height: 20vh;
-    padding-top: 10vh;
-    border-radius: 8vw;
+  text-align: center;
+  width: 95%;
+  height: 20vh;
+  border-radius: 8vw;
+  display: flex;
+  margin: auto;
 }
 .submitButton{
-    text-align: center;
-    width: 70vw;
-    padding-left: 15vw;
+  text-align: center;
+  width: 70vw;
+  padding-left: 15vw;
 }
 .note{
-    color: #FFF;
-    font-size: 5vh;
-    font-weight: bold;
+  color: #FFF;
+  font-size: 5vh;
+  font-weight: bold;
+  margin: auto;
+}
+.searchArea{
+  display: flex;
+  flex-direction: row;
+  width: 90vw;
+  margin: auto;
+  padding-bottom: 2vh;
+}
+.input{
+  width: 80vw;
+  height: 10vw;
+  border-style: solid;
+  border-color: darkgray;
+  border-width: 2px;
+}
+.searchButton{
+  width: 10vw;
+  height: 10vw;
 }
 .adviceButton{
-    width: 60vw;
-    height: 10vh;
-    background-color: #100964;
-    font-size: 3.5vh;
-    color: #FFF;
-    font-weight: bold;
+  width: 60vw;
+  height: 10vh;
+  background-color: #100964;
+  font-size: 3.5vh;
+  color: #FFF;
+  font-weight: bold;
 }
-.unit{
-  height: 9vh;
-  width: 90vw;
-  padding-left: 5vw;
+.writeButton{
+  width: 12vh;
+  height: 12vh;
+  border-radius: 6vh;
+  z-index: 20;
+  background-color: #007af2;
+  position: absolute;
+  right: 3vh;
+  bottom: 3vh;
+  display: flex;
 }
-.articleButton{
+.writeButtonIcon{
+  width: 8vh;
+  height: 8vh;
+  margin: 20% auto;
+}
+.popOutWindow{
+  background-color: #FFF;
+  border-radius: 0 0 3vh 3vh;
+}
+.bottomCard{
+  width: 100%;
+  background-color: #007af2;
+  border-radius: 3vh;
+  padding-bottom: 8vh;
+  padding-top: 4vh;
+  color: #FFF;
+  font-size: 2.8vh;
+  font-weight: bold;
+}
+.writePageName{
+  font-size: 6vh;
+  font-weight: bold;
+  color: #007af2;
+}
+.wrapper{
+  padding: 1.5vh;
+}
+.submitButton{
+  width: 90%;
+  height: 8vh;
+  margin: auto;
+}
+.rowName{
+  margin: 0 2%;
+}
+
+
+.button{
   border-style: none;
   width: 100%;
   padding: 1.2vh;
@@ -72,18 +158,30 @@
   font-size: 2vh;
   line-height: 3vh;
   border-width: 0;
-  border-radius: 3vw;
+  border-radius: 2vh;
   background-color: rgba(150, 187, 255, 0.233);
-  box-shadow: 10px 10px 10px 5px rgba(40, 29, 167, 0.4);
   padding-left: 4vw;
   padding-right: 4vw;
   color: #486484;
-  
+  border-style: none;
 }
-.articleHeader{
-
+.bottomBox{
+  display: flex;
+  flex-direction: row;
 }
-.button{
-  
-  
+.unit{
+  height: 10vh;
+  width: 90vw;
+  padding-left: 5vw;
+}
+.left{
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+.right{
+  display: flex;
+  flex-direction: column-reverse;
+  width: 50%;
+  text-align: right;
 }

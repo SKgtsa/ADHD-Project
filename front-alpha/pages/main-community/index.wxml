@@ -1,10 +1,14 @@
 <!--pages/main-community/index.wxml-->
-<view class="container">
-    <view class="community-note">
-        <text class="note">社区</text>
-    </view>
-    <scroll-view class="scroll" >
+<scroll-view class="scroll" scroll-y="true" bindscrolltolower="refreshList" lower-threshold="250px">
+  <view class="containerA">
+      <view class="community-note">
+          <text class="note">社区</text>
+      </view>
       <view class="scrollBox">
+        <view class="searchArea" >
+          <input bindblur="onSearchChange" value="{{keyword}}" bind:input="onSearchChange" class="input" />
+          <image src="../../img/icons/checkIn.png" class="searchButton" />
+        </view>
         <block wx:for="{{post}}" wx:key="index">
           <view class="unit">
             <button class="articleButton" bind:tap="showDetail({{index}})">
@@ -13,15 +17,57 @@
           </view>
         </block>
       </view>
-    </scroll-view>
-    <page-container show="{{showDetailPage}}" overlay="{{true}}"  position="top" custom-style="">
-        <view class="popOutWindow">
-            <view>
-                <text class="title">{{postPresent.title}}</text>
+      <view class="bottomArea">
+        <text class="bottomText" >没有更多了</text>
+      </view>
+  </view>
+</scroll-view>
+<button class="writeButton" bindtap="showWrite"><image src="../../img/icons/checkIn.png" class="writeButtonIcon"  /></button>
+<page-container show="{{showWritePage}}" overlay="{{true}}"  position="top" custom-style="background-color: rgba(0,0,0,0);">
+  <view class="popOutWindow">
+    <view style="height: 10vh;">
+      <text class="writePageName" >发帖</text>
+    </view>
+    <view>
+      <text class="rowName">标题:</text>
+      <input bindblur="onHeadingChange" value="{{newPost.heading}}" bind:input="onHeadingChange" class="input" style="width: 95%;margin: auto;" />
+    </view>
+    <view>
+      <text class="rowName">匿名</text>
+      <switch checked="{{newPost.anonymous}}" bindchange="switchAnonymousChange"/>
+    </view>
+    <view style="min-height: 6vh;">
+      <text class="rowName">附带训练图像</text>
+      <switch checked="{{newPost.withGraph}}" bindchange="switchGraphChange"/>
+      <view wx:if="{{withGraph}}" style="min-height: 10vh;display: flex;width: 95%;margin: 0 auto;" >
+        <button wx:if="{{!graphSelected}}" class="button" style="margin: auto;">选择图像</button>
+        <view wx:if="{{graphSelected}}" class="unit">
+          <button class="button">
+            <view class="bottomBox">
+              <view class="left">
+                <text style="font-size: 6vw;">第<text style="color: #007af2; font-weight: 800;">{{targetTraining.mark}}</text>次训练</text>
+                <text>共训练<text style="color: #007af2; font-weight: 800;">{{utils.handleTime(targetTraining.length)}}</text></text>
+              </view>
+              <view class="right">
+                <text>获得<text style="color: #007af2; font-weight: 800;">{{targetTraining.gold}}</text>枚金币</text>
+                <text>平均专注度: <text style="color: #007af2; font-weight: 800;">{{targetTraining.average}}</text></text>
+              </view>
             </view>
-            <view>
-                <text class="content">{{postPresent.content}}</text>
-            </view>
+          </button>
         </view>
-    </page-container>
-</view>
+      </view>
+    </view>
+    <view class="bottomCard">
+      <view>
+        <text class="rowName">正文:</text>
+        <textarea bind:input="onTextChange" style="color: #000;" value="{{newPost.content}}" class="contentInput" auto-focus="true"></textarea>
+      </view>
+      <view>
+        <text class="rowName">图片:</text>
+      </view>
+      <view class="wrapper">
+        <button class="submitButton">发布</button>
+      </view>
+    </view>
+  </view>
+</page-container>

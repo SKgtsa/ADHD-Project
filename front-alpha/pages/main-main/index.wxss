@@ -282,7 +282,7 @@ ec-canvas {
 }
 .guideButton{
   width: 90vw;
-  height: 28vh;
+  height: 13vh;
   background-color: #FFF;
   color: #707070;
   border-radius: 5vw;

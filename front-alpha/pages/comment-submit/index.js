@@ -141,28 +141,29 @@ Page({
     })
   },
   submit(){
-    if(this.data.text == '' && this.data.filePath == ''){
+    var that = this;
+    if(that.data.text == '' && that.data.filePath == ''){
       wx.showToast({
         title: '请选择一种方式记录',
       })
     }else{
-      if(this.data.text == ''){
-        this.data.text = null;
+      if(that.data.text == ''){
+        that.data.text = null;
       }
-      if(this.data.filePath == ''){
+      if(that.data.filePath == ''){
         wx.request({
-          url: app.globalData.baseURL + '/api/training/saveCommentText',
-          formData: {
-            'token': wx.getStorageSync('token'),
-            'text': this.data.text
+          data: {
+            token: wx.getStorageSync('token'),
+            text: that.data.text
           },
+          url: app.globalData.baseURL + '/api/training/saveCommentText',
+          method: 'POST',
           success: (res) => {
             const data = res.data;
             console.log('提交成功')
             console.log(res)
             wx.setStorageSync('token', data.token)
             app.globalData.login = data.success;
-
             wx.showToast({
               title: '提交成功',
               icon: 'success',
@@ -191,12 +192,13 @@ Page({
         })
       }else{
         wx.uploadFile({
-          filePath: this.data.filePath,
+          method: 'POST',
+          filePath: that.data.filePath,
           name: 'audio',
           url: app.globalData.baseURL + '/api/training/saveComment',
           formData: {
-            'token': wx.getStorageSync('token'),
-            'text': this.data.text
+            token: wx.getStorageSync('token'),
+            text: that.data.text
           },
           success: (res) => {
             const data = JSON.parse(res.data);

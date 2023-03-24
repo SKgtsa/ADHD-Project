@@ -107,7 +107,7 @@ Page({
                 //正在发送
                 //截取末三位 作为控制信号 控制数据收取的停止时机
                 const endMark = input.substring(input.length - 1);
-                console.log('endMark: ' + endMark)
+                console.log('接收到: ' + input)
                 if(endMark === "c" || endMark === "d"){
                   console.log('endMark: ' + endMark)
                   //接收到数据发送终止符 发送数据 取字符串开头到倒数第四位为数据
@@ -261,7 +261,6 @@ Page({
     return out
   },
   ab2hex(buffer) {
-    console.log('ab2hex方法正常执行')
     var hexArr = Array.prototype.map.call(
       new Uint8Array(buffer),
       function (bit) {

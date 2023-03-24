@@ -15,6 +15,37 @@ Page({
       lazyLoad: true
     },
     oneComponent: null,
+    lowNum: 0,
+    highNum: 0,
+    guide: [
+      "请尝试专注一下，这样你就能完成任务并感到自豪。",
+      "我们可以一起来完成这个任务，你需要专注一下才能做得更好。",
+      "请看着我，让我们一起来完成这个任务。",
+      "如果你专注完成这个任务，你就可以获得更多的奖励或自由时间。",
+      "请注意力集中，让我们完成这个任务并尽快完成，然后我们就可以做更有趣的事情了。",
+      "你需要专注才能做得更好，但如果你需要休息一下，也可以和我说一声。",
+      "请把注意力集中在这个任务上，完成它可能比你想象的更快，这样我们就可以做更多有趣的事情了。"
+    ],
+    releasePressure: [
+      "我知道这很难，但你已经做得很好了，我们会一直在你身边帮助你的。",
+      "不要担心，我们会一起克服这个问题。",
+      "我知道你觉得很难，但我相信你可以克服困难。",
+      "我知道你有能力克服这个问题，我们会找到正确的方法来帮助你的。",
+      "请别灰心，这只是一个小挑战，我们可以一起来解决它。",
+      "我们可以一起来解决这个问题，如果我们一起合作，我们肯定会找到解决方案。",
+      "我知道你在挑战自己，但这也是你成长的一部分。你在做得很好，继续努力吧！",
+      "你正在做得非常好，不要放弃！",
+    ],
+    encourage: [
+      "太棒了，你现在非常专注！",
+      "你的专注力真的很出色！",
+      "你现在的专注力很棒，继续保持这样的状态。",
+      "你的专注力正在让你变得更加出色，很棒！",
+      "你的努力和专注是非常值得称赞的。",
+    ],
+    statusString: '未开始训练',
+    commentString: '请启动小车',
+    statusNum: 0,
     // {
     //   onInit: function (canvas, width, height, dpr) {
     //     const lineChart = echarts.init(canvas, null, {
@@ -27,6 +58,51 @@ Page({
     //     return lineChart;
     //   }
     // },
+  },
+  encourage(){
+    var that = this;
+    that.setData({
+      statusString: "孩子很棒!",
+      commentString: that.data.encourage[Math.floor(that.data.encourage.length * Math.random())]
+    })
+  },
+  guideConcentration(){
+    var that = this;
+    that.setData({
+      statusString: "孩子专注力低于阈值",
+      commentString: "请引导孩子专注。您可以说: " + that.data.guide[Math.floor(that.data.guide.length * Math.random())]
+    })
+  },
+  releasePressure(){
+    var that = this;
+    that.setData({
+      statusString: "专注力持续低于阈值",
+      commentString: "请不要给孩子过多压力。您可以说: " + that.data.releasePressure[Math.floor(that.data.releasePressure.length * Math.random())]
+    })
+  },
+  updateStatus(){
+    var that = this;
+    if(app.globalData.detailedGraphY[app.globalData.detailedGraphY.length - 1] >= that.data.threshold){
+      that.data.lowNum = 0;
+      that.data.statusNum ++;
+      that.data.highNum ++;
+      if(that.data.highNum === 0){
+        that.encourage();
+      }else if(that.data.highNum === 10){
+        that.encourage();
+        that.data.highNum = 0;
+      }
+    }else{
+      that.data.highNum = 0;
+      that.data.statusNum --;
+      that.data.lowNum ++;
+      if(that.data.lowNum === 3){
+        that.guideConcentration();
+      }else if(that.data.lowNum % 10 === 0){
+        that.releasePressure();
+      }
+    }
+    
   },
   changeMap(){
     var that = this;
@@ -169,6 +245,7 @@ Page({
                   app.globalData.detailedGraphY.shift();
                 }
                 wx.setStorageSync('token', res.data.token);
+                that.updateStatus();
               }
               console.log(app.globalData.detailedGraphY)
             },

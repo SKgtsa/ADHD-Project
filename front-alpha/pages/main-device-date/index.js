@@ -123,11 +123,6 @@ Page({
     if(!this.data.requesting){
       this.setData({startIndex: -1, dataList: []})
       this.refresh();
-      // setTimeout(function() {
-      //   wx.hideNavigationBarLoading();
-      //   wx.stopPullDownRefresh();
-      //   this.setData({requesting: false})
-      // },2000)
     }
     
   },

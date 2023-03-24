@@ -56,6 +56,12 @@
       <text>⽐上⼀周训练进步了: <text style="color: #FF9811;font-weight: bolder;">{{improvementLastWeek}}</text></text>
       <text style="font-size: 2vh;font-weight: 400;padding-top: 0.8vh;">每⼀次进步来之不易！⿎励⼀下宝⻉吧！</text>
     </view>
+    <button class="guideButton" bindtap="toForum">
+      <view class="guideText" >
+        <text class="guideTop">社区</text>
+        <text class="guideBottom">交流与分享</text>
+      </view>
+    </button>
     <button class="guideButton">
       <view class="guideText">
         <text class="guideTop">训练指南</text>
@@ -64,22 +70,4 @@
     </button>
   </view>
 </view>
-
-
-<page-container show="{{showAdvicePage}}" overlay="{{true}}"  position="top" custom-style="">
-        <view class="popOutWindow">
-            <view>
-                <text class="textTop">您可以在这里反馈问题，或是提出建议</text>
-            </view>
-            <view>
-                <text class="textDown">这能帮助我们更好地改进软件</text>
-            </view>
-            <view class="inputArea">
-                <textarea bind:input="onChange" value="{{suggestion}}" class="input" auto-focus="true" />
-            </view>
-            <view class="submitButton">
-                <button bind:tap="adviceSubmit" >提交</button>
-            </view>
-        </view>
-    </page-container>
-    <loading hidden="{{hideLoading}}">请稍候</loading>
+<loading hidden="{{hideLoading}}">请稍候</loading>

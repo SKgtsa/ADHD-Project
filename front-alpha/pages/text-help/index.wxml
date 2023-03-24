@@ -7,9 +7,15 @@
       <a wx:if="{{!training}}">当前没有进行训练</a>
     </view>
   </view>
-  <view>
+  <view class="bottomCard" >
+    <view style="height: 3vh;" />
+    <view class="suggesttionBubble" >
+      <text class="status" >{{statusString}}</text>
+      <text class="comment" >{{commentString}}</text>
+    </view>
+    <text style="color: slategrey;padding-left: 5%;" >当前阈值:</text>
     <slider bindchange="sliderChange" step="1" show-value min="0" max="100" value="{{threshold}}" />
-    <button bind:tap="changeMap" >更换地图</button>
+    <button bind:tap="changeMap" class="changeMapButton" >更换地图</button>
   </view>
 
   

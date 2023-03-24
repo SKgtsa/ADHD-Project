@@ -21,11 +21,15 @@ public class CartController {
 
     @PostMapping("/updateDot")
     public CommonResponse updateDot(@RequestBody UpdateDotRequest request){
+        System.out.println("updateDot接口接收到讯息");
+        System.out.println(request);
         return cartService.updateDot(request.getId(), request.getDot());
     }
 
     @PostMapping("/upload")
-    public CommonResponse updateDot(@RequestBody CartUploadRequest request){
+    public CommonResponse upload(@RequestBody CartUploadRequest request){
+        System.out.println("upload接口接收到讯息");
+        System.out.println(request);
         return cartService.upload(request.getId(), request.getGraph(), request.getMark(), request.getGold(), request.getTime());
     }
 
