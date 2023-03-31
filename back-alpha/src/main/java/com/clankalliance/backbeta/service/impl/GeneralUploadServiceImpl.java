@@ -6,7 +6,6 @@ import com.clankalliance.backbeta.repository.DateDataRepository;
 import com.clankalliance.backbeta.repository.UserRepository;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.service.GeneralUploadService;
-import com.clankalliance.backbeta.service.TrainingService;
 import com.clankalliance.backbeta.utils.TokenUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

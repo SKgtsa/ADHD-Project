@@ -1,11 +1,12 @@
 /* pages/main-device-date/index.wxss */
 .wrapper{
-  padding-left: 4vw;
-  padding-bottom: 3vh;
+  display: flex;
+  flex-direction: column;
 }
 .container{
-  height: 41vh;
-  width: 90vw;
+  margin: auto;
+  height: 30vh;
+  width: 92vw;
   padding: 3vw;
   border-radius: 5vw;
   background-color: #FFF;
@@ -26,10 +27,8 @@
   padding-left: 5vw;
   font-size: 2.5vh;
 }
-.chartName{
-
-}
 .main{
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: #007af2;
@@ -45,12 +44,27 @@
 }
 .pageContainer{
   padding-top: 4vh;
-  background-color: #fff;
+  background-color: #FFF;
   border-style: solid;
-  border-radius: 8vw;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
+  border-radius: 2vh;
   border-width: 0;
+  height: 18vh;
+  display: flex;
+  flex-direction: row;
+  width: 95%;
+  margin: auto;
+}
+.pageContainerB{
+  padding-top: 4vh;
+  background-color: #FFF;
+  border-style: solid;
+  border-radius: 2vh;
+  border-width: 0;
+  height: 12vh;
+  display: flex;
+  flex-direction: row;
+  width: 95%;
+  margin: auto;
 }
 .button{
   border-style: none;
@@ -70,13 +84,20 @@
   color: #486484;
   
 }
+.scrollArea{
+  display: flex;
+  flex-direction: row;
+}
 .unit{
   height: 17vh;
   width: 90vw;
   padding-left: 5vw;
 }
 .scroll{
-  height: 100vh;
+  height: 40vh;
+  display: flex;
+  flex-direction: row;
+  white-space: nowrap;
 }
 .left{
   display: flex;
@@ -112,4 +133,40 @@
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
   border-width: 0;
+}
+
+.buttomContainer{
+  width: 95%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  padding-top: 2vh;
+}
+.goldCard{
+  background-color: #FFF;
+  width: 96%;
+  border-radius: 2vh;
+  display: flex;
+  flex-direction: column;
+  color: #486484;
+  margin: auto;
+}
+.timeCard{
+  background-color: #FFF;
+  border-radius: 1.5vh;
+  width: 18vh;
+  height: 18vh;
+  margin: auto;
+}
+.markCard{
+  background-color: #FFF;
+  border-radius: 1.5vh;
+  margin: auto;
+  height: 18vh;
+}
+.bottomWrapper{
+  display: flex;
+  flex-direction: row;
+  padding: 3vh 0 3vh 0;
+  color: #486484;
 }

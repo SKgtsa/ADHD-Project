@@ -17,6 +17,18 @@
     <slider bindchange="sliderChange" step="1" show-value min="0" max="100" value="{{threshold}}" />
     <button bind:tap="changeMap" class="changeMapButton" >更换地图</button>
   </view>
+  <page-container  show="{{showSelectMap}}" overlay="{{true}}"  position="top" custom-style="background-color: rgba(0,0,0,0);">
+    <view class="selectMapContainer">
+      <radio-group bindchange="radioChange">
+        <label wx:for="{{maps}}" wx:key="{{item.value}}">
+          <view>
+            <radio value="{{item.value}}" checked="true"/>
+          </view>
+          <view >{{item.name}}</view>
+        </label>
+      </radio-group>
+    </view>
+  </page-container>
 
   
   <!-- <h1 style="font-size: 5vh;font-weight: bolder;line-height: 10vh;">这里是标题</h1>

@@ -134,7 +134,6 @@ Page({
 
 function getLineOption() {
   return {
-
     grid: {
       containLabel: true,
       left: 0,

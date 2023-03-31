@@ -1,57 +1,111 @@
 <!--显示训练过的日期，点选对应日期可以检索数据-->
 <wxs module="utils" src="../../utils/utils.wxs"></wxs>
-<scroll-view class="scroll" scroll-y="true" bindscrolltolower="scrollToLower" lower-threshold="250px">
-  <view class="main">
-    <view class="pageName">
-      <text>训练信息</text>
-    </view>
-    <view class="wrapper">
-      
-      <view class="container">
-        <!-- <view class="nameWrapper">
-          <text class="chartName">过去七天训练时长</text>
-        </view> -->
-        <ec-canvas class="lineChart" id="mychart-dom-line" wx:if="graphReady" canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>
-      </view>
-    </view>
+<view class="main">
+  <!-- <view class="pageName">
+    <text>训练信息</text>
+  </view> -->
+  <view class="wrapper">
+    <!-- <view class="container">
+      <ec-canvas class="lineChart" id="mychart-dom-line" wx:if="graphReady" canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>
+    </view> -->
+    <view style="height: 2vh;" />
     <view class="pageContainer">
-        <view class="unit" wx:for="{{dataList}}" wx:for-index="index" wx:key="id">
-          <button class="button" bind:tap="jump" data-target="{{index}}">
-            <text class="time"  style="color: #007af2;">{{item.year}}年{{item.month + 1}}月{{item.day}}日</text>
-            <view class="bottomBox">
-              <view class="left">
-                <text>共训练<text style="color: #007af2; font-weight: 800;">{{utils.handleTime(item.time)}}</text></text>
-                <text>平均专注度: {{item.concentrationE}}</text>
-              </view>
-              <view class="right">
-                <text>获得<text style="color: #007af2; font-weight: 800;">{{item.gold}}</text>枚金币</text>
-                <text>{{item.timeVariance > 300000? "训练不太规范":"训练很规范"}}</text>
-                <text><text style="color: #007af2; font-weight: 800;">{{item.trainingNum}}</text>次训练</text>
-              </view>
-            </view>
-          </button>
-        </view>
-        <!--骨架屏-->
-        <view class="unit"  wx:if="{{showMask}}" wx:for="{{tempList}}" wx:key="key">
-          <button class="button">
-            <view style="background-color: #486484;width: 50vw;height: 4vh;border-radius: 3vw;"></view>
-            <view class="bottomBox">
-              <view class="left" style="padding-top: 0.8vh;">
-                <view style=" background-color: #486484;width: 35vw;height: 2.5vh;border-radius: 2vw;"></view>
-                <view style="padding-top: 0.8vh;">
-                  <view style=" background-color: #486484;width: 30vw;height: 2.5vh;border-radius: 2vw;"></view>
+      <scroll-view class="scroll" scroll-x="true" bindscrolltolower="scrollToLower" lower-threshold="250px">
+        <view class="scrollArea" >
+          <view class="unit" wx:for="{{dataList}}" wx:for-index="index" wx:key="id">
+            <button class="button" bind:tap="jumpToDate" data-target="{{index}}">
+              <text class="time"  style="color: #007af2;">{{item.year}}年{{item.month + 1}}月{{item.day}}日</text>
+              <view class="bottomBox">
+                <view class="left">
+                  <text>共训练<text style="color: #007af2; font-weight: 800;">{{utils.handleTime(item.time)}}</text></text>
+                  <text>平均专注度: {{item.concentrationE}}</text>
+                </view>
+                <view class="right">
+                  <text>获得<text style="color: #007af2; font-weight: 800;">{{item.gold}}</text>枚金币</text>
+                  <text>{{item.timeVariance > 300000? "训练不太规范":"训练很规范"}}</text>
+                  <text><text style="color: #007af2; font-weight: 800;">{{item.trainingNum}}</text>次训练</text>
                 </view>
               </view>
-              <view class="right" style="padding-top: 0.8vh;">
-            </view>
-            </view>
-          </button>
+            </button>
+          </view>
+          <!--骨架屏-->
+          <view class="unit"  wx:if="{{showMask}}" wx:for="{{tempList}}" wx:key="key">
+            <button class="button">
+              <view style="background-color: #486484;width: 50vw;height: 4vh;border-radius: 3vw;"></view>
+              <view class="bottomBox">
+                <view class="left" style="padding-top: 0.8vh;">
+                  <view style=" background-color: #486484;width: 35vw;height: 2.5vh;border-radius: 2vw;"></view>
+                  <view style="padding-top: 0.8vh;">
+                    <view style=" background-color: #486484;width: 30vw;height: 2.5vh;border-radius: 2vw;"></view>
+                  </view>
+                </view>
+                <view class="right" style="padding-top: 0.8vh;">
+              </view>
+              </view>
+            </button>
+          </view>
+          <view style="height: 70vh;width: 10vw;background-color: #FFF;" wx:if="{{dataList.length < 6}}"></view>
         </view>
-        <view style="height: 70vh;width: 10vw;background-color: #FFF;" wx:if="{{dataList.length < 6}}"></view>
-        <view class='bottom'>
-          <text>沒有更多了</text>
+      </scroll-view>
+    </view>
+    <view style="height: 2vh;" />
+    <view class="pageContainerB" >
+      <scroll-view class="scroll" scroll-x="true">
+        <view class="scrollArea" >
+          <view class="unit" wx:for="{{trainingList}}" wx:for-index="index" wx:key="id">
+            <button class="button" bind:tap="jump" data-target="{{index}}">
+              <view class="bottomBox">
+                <view class="left">
+                  <text style="font-size: 6vw;">第<text style="color: #007af2; font-weight: 800;">{{item.mark}}</text>次训练</text>
+                  <text>共训练<text style="color: #007af2; font-weight: 800;">{{utils.handleTime(item.length)}}</text></text>
+                </view>
+                <view class="right">
+                  <text>获得<text style="color: #007af2; font-weight: 800;">{{item.gold}}</text>枚金币</text>
+                  <text>平均专注度: <text style="color: #007af2; font-weight: 800;">{{item.average}}</text></text>
+                </view>
+              </view>
+            </button>
+          </view>
+          <!--骨架屏-->
+          <view class="unit"  wx:if="{{showMask}}" wx:for="{{tempList}}">
+            <button class="button">
+              <view style="background-color: #486484;width: 50vw;height: 3vh;border-radius: 2vw;"></view>
+              <view class="bottomBox">
+                <view class="left" style="padding-top: 0.8vh;">
+                  <view style=" background-color: #486484;width: 35vw;height: 2vh;border-radius: 1.5vw;"></view>
+                </view>
+              </view>
+            </button>
+          </view>
         </view>
+      </scroll-view>
+    </view>
+    <view style="height: 2vh;" />
+    <view wx:if="{{targetTraining}}">
+      <view class="container">
+        <ec-canvas class="lineChart" id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ecLine }}"></ec-canvas>
+      </view>
+      <view class="buttomContainer">
+        <view class="goldCardWrapper">
+          <view class="goldCard">
+            <a>本次获得金币数：<text style="font-weight: 700; color: #0273f1;">{{targetTraining.gold}}</text></a>
+            <!--放置对本次训练的评价或对用户的鼓励-->
+            <text style="font-weight: 500; color: #0273f1;">{{targetTraining.trainingMessage}}</text>
+          </view>
+        </view>
+        <view class="bottomWrapper">
+          <view class="timeCard">
+            <ec-canvas class="gaugeChart" id="mychart-dom-gauge" canvas-id="mychart-gauge" ec="{{ ecGauge }}"></ec-canvas>
+          </view>
+          <view class="markCard">
+            <a>训练编号：</a>
+            <view style="display: flex;flex-direction: row-reverse;">
+              <text style="font-weight: 700; color: #0273f1;font-size: 8vh;padding-right: 4vw;">{{targetTraining.mark}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
     </view>
   </view>
-</scroll-view>
+</view>
 <loading hidden="{{hideLoading}}">请稍候</loading>

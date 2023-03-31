@@ -14,9 +14,15 @@ Page({
     ecLine: {
       lazyLoad: true
     },
+    showSelectMap: false,
     oneComponent: null,
     lowNum: 0,
     highNum: 0,
+    maps:[
+      {value: 1, name: '恐龙'},
+      {value: 2, name: '魔女'},
+      {value: 3, name: '青蛙'}
+    ],
     guide: [
       "请尝试专注一下，这样你就能完成任务并感到自豪。",
       "我们可以一起来完成这个任务，你需要专注一下才能做得更好。",
@@ -58,6 +64,43 @@ Page({
     //     return lineChart;
     //   }
     // },
+  },
+  radioChange(e){
+    for(let i = 0,length = this.data.maps.length;i < length;i ++){
+      this.data.maps[i] = this.data.maps[i].value === e.detail.value;
+    }
+    wx.request({
+      url: app.globalData.baseURL + '/api/cart/updateMap',
+      method: 'POST',
+      data: {
+        token: wx.getStorageSync('token'),
+        map: e.detail.value
+      },
+      success: (res) => {
+        if(res.data.success){
+          wx.setStorageSync('token', res.data.token)
+          wx.showToast({
+            title: '更换成功',
+            duration: 900
+          })
+        }else{
+          wx.showToast({
+            title: '发生错误',
+            content: '请联系技术人员',
+            icon: 'error',
+            duration: 900
+          })
+        }
+      },
+      fail: (res) => {
+        wx.showToast({
+          title: '发生错误',
+          content: '请联系技术人员',
+          icon: 'error',
+          duration: 900
+        })
+      }
+    })
   },
   encourage(){
     var that = this;
@@ -105,55 +148,25 @@ Page({
     
   },
   changeMap(){
-    var that = this;
-    wx.scanCode({
-      success(res){
-        var result = res.result;
-        try{
-          Number(result);
-        }catch(e){
-          wx.showToast({
-            title: '二维码错误',
-            content: '请扫描官方地图二维码',
-            icon: 'error',
-            duration: 900
-          })
-          return;
-        }
-        wx.request({
-          url: app.globalData.baseURL + '/api/cart/updateMap',
-          method: 'POST',
-          data: {
-            token: wx.getStorageSync('token'),
-            map: result
-          },
-          success: (res) => {
-            if(res.data.success){
-              wx.setStorageSync('token', res.data.token)
-              wx.showToast({
-                title: '更换成功',
-                duration: 900
-              })
-            }else{
-              wx.showToast({
-                title: '发生错误',
-                content: '请联系技术人员',
-                icon: 'error',
-                duration: 900
-              })
-            }
-          },
-          fail: (res) => {
-            wx.showToast({
-              title: '发生错误',
-              content: '请联系技术人员',
-              icon: 'error',
-              duration: 900
-            })
-          }
-        })
-      }
+    this.setData({
+      showSelectMap: true
     })
+    // wx.scanCode({
+    //   success(res){
+    //     var result = res.result;
+    //     try{
+    //       Number(result);
+    //     }catch(e){
+    //       wx.showToast({
+    //         title: '二维码错误',
+    //         content: '请扫描官方地图二维码',
+    //         icon: 'error',
+    //         duration: 900
+    //       })
+    //       return;
+    //     }
+    //   }
+    // })
   },
   sliderChange(e){
     var that = this;

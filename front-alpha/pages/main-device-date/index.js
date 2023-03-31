@@ -17,6 +17,7 @@ Page({
     dataList: [
 
     ],
+    targetTraining: null,
     graphReady: false,
     requesting: false,
     colorSet: ['#7ecbff','#ffa447','#ffa6c4','#1eccc3','#ffa4a3'],
@@ -31,14 +32,136 @@ Page({
           height: height,
           devicePixelRatio: dpr // new
         });
-        console.log("width: " + width);
-        console.log("height: " + height);
         canvas.setChart(lineChart);
         lineChart.setOption(getLineOption());
 
         return lineChart;
       }
     },
+    ecGauge: {
+      onInit: function (canvas, width, height, dpr) {
+        const gaugeChart = echarts.init(canvas, null, {
+          width: width,
+          height: height,
+          devicePixelRatio: dpr // new
+        });
+        canvas.setChart(gaugeChart);
+        gaugeChart.setOption(getGaugeOption());
+
+        return gaugeChart;
+      }
+    },
+    target: {
+      year: null,
+      month: null,
+      day: null,
+      gold: null,
+      concentrationE: null,
+      time: null,
+      startIndex: null,
+      trainingNum: null,
+      timeVariance: null
+    },
+    trainingList: [],
+  },
+  jump(target){
+    const data = this.data;
+    const index = target.target.dataset.target;
+    this.setData({targetTraining: data.trainingList[index]})
+    console.log(app.globalData.baseURL)
+    console.log(app)
+    wx.request({
+      url: app.globalData.baseURL + '/api/training/findGraph',
+      method :'POST',
+      data: {
+        token: wx.getStorageSync('token'),
+        id: this.data.targetTraining.id
+      },
+      success: (res) => {
+        const data = res.data;
+        if(data.token == null){
+          app.globalData.login = false;
+          wx.showToast({
+            title: '登录过期',
+            icon: 'error'
+          })
+          setTimeout(() => {
+            wx.switchTab({
+              url: '../main-personal/index',
+            })
+          },500)
+        }
+        console.log(res)
+        //将后端传来的图像数据存入data的targetGraph中
+        //起到将之前获得的简略数据与本次的详细图像数据整合的作用
+        this.data.targetTraining.graph = data.graph;
+        this.data.concentration = data.concentration;
+        //保存token 保留登陆状态
+        wx.setStorageSync('token', res.data.token)
+        this.data.average = 0;
+        const target = this.data.targetTraining;
+
+        for(let i = 0;i < target.graph.length;i ++){
+          this.data.average += target.graph[i];
+        }
+        this.data.average = (this.data.average/ target.graph.length).toFixed(0);
+        app.globalData.detailedGraphY = target.graph;
+        app.globalData.gaugeData = this.data.average;
+        console.log("app.globalData.gaugeData: " + app.globalData.gaugeData);
+        //图像的x轴数据
+        let graphX = new Array(target.graph.length);
+        //时 分 秒数据 统计并写入x轴
+        let h = 0;
+        let m = 0;
+        let s = 0;
+        const passage = data.sec/target.graph.length;
+        for(let i = 0;i < graphX.length;i ++){
+          graphX[i] = '';
+          if(h != 0)
+            graphX[i] += h.toFixed(0) + '时';
+          if(m != 0)
+            graphX[i] += m.toFixed(0) + '分';
+          graphX[i] += s.toFixed(0) + '秒';
+          s += passage;
+          //进位
+          if(s >= 60){
+            m += s / 60;
+            s %= 60;
+          }
+          if(m >= 60){
+            h += m / 60;
+            m %= 60;
+          }
+        }
+        //设置x轴数据
+        app.globalData.detailedGraphX = graphX;
+        this.setData({
+          targetTraining: {
+            mark: target.mark,
+            year: target.year,
+            month: target.month,
+            day: target.day,
+            gold: target.gold,
+            average: target.average,
+            trainingMessage: "做的不错"
+          }
+        })
+      },
+      fail: (res) => {
+        console.log(res)
+        app.globalData.login = false;
+        wx.showToast({
+          title: '发生错误',
+          content: '请联系技术人员',
+          icon: 'error'
+        })
+        setTimeout(() => {
+          wx.switchTab({
+            url: '../main-personal/index',
+          })
+        },500)
+      }
+    })
   },
   refresh(){
     if(this.data.startIndex == -2){
@@ -169,11 +292,54 @@ Page({
       this.refresh();
     }
   },
-  jump: function(target){
-    const data = this.data;
+  jumpToDate: function(target){
     const index = target.target.dataset.target;
-    wx.navigateTo({
-      url: '../main-device-date-detail/index?year=' + data.dataList[index].year + '&month=' + data.dataList[index].month + '&day=' + data.dataList[index].day + '&gold=' + data.dataList[index].gold + '&concentrationE=' + data.dataList[index].concentrationE + '&time=' + data.dataList[index].time + '&startIndex=' + data.dataList[index].startIndex + '&trainingNum=' + data.dataList[index].trainingNum + '&timeVariance' + data.dataList[index].timeVariance + '&id=' + data.dataList[index].id + '&dayOfTheWeek=' + data.dataList[index].dayOfTheWeek + '&weekOfTheYear=' + data.dataList[index].weekOfTheYear + '&imageName=' + data.dataList[index].imageName
+    this.setData({
+      target: this.data.dataList[index]
+    })
+    this.setData({hideLoading: false})
+    console.log({
+      token: wx.getStorageSync('token'),
+      id: this.data.target.id
+    })
+    wx.request({
+      url: app.globalData.baseURL + '/api/training/findDateTraining',
+      method: 'POST',
+      data: {
+        token: wx.getStorageSync('token'),
+        id: this.data.target.id
+      },
+      success: (res) => {
+        console.log("data:")
+        console.log(this.data)
+        const data = res.data;
+        this.setData({trainingList: data.content})
+        let graphX = new Array();
+        let graphY = new Array();
+        for(let i = 0;i < data.content.length;i ++){
+          graphX[i] = '第' + data.content[i].mark + '次训练';
+          graphY[i] = (this.data.trainingList[i].length/60).toFixed(0);
+        }
+        app.globalData.detailedGraphX = graphX;
+        app.globalData.detailedGraphY = graphY;
+        console.log(app.globalData.detailedGraphY);
+        wx.setStorageSync('token', data.token)
+        this.setData({hideLoading: true,chartReady: true,showMask: false})
+      },
+      fail: (res) => {
+        console.log(res)
+        app.globalData.login = false;
+        wx.showToast({
+          title: '发生错误',
+          content: '请联系技术人员',
+          icon: 'error'
+        })
+        setTimeout(() => {
+          wx.switchTab({
+            url: '../main-personal/index',
+          })
+        },500)
+      }
     })
   },
 
@@ -286,4 +452,56 @@ function getLineOption() {
     }],
     needImage: false,
   };
+}
+function getGaugeOption() {
+  return{
+    series: [{
+      title: {
+        offsetCenter: [0,'70%'],
+        show: true,
+        color: '#486484',
+        fontWeight: 'bold',
+        fontSize: 20
+      },
+      type: 'gauge',
+      radius: '90%',
+      center: ['50%','55%'],
+      detail: {
+        formatter: '{value}%',
+        textStyle: {
+          fontWeight: 'normal',
+          color: '#007af2'
+        },
+      },
+      axisLine: {
+        show: true,
+        lineStyle: {
+          color: [[1,'#486484']],
+          width:7
+        }
+      },
+      axisTick: {
+        show: false
+      },
+      axisLabel: {
+        show: false
+      },
+      splitLine: {
+        show: false
+      },
+      pointer: {
+        width: 15,
+        itemStyle: {
+          color: '#486484'
+        }
+      },
+      data: [{
+        value: app.globalData.gaugeData,
+        name: '平均专注率',
+        textStyle: {
+          color: '#FFF'
+        }
+      }]
+
+    }]};
 }

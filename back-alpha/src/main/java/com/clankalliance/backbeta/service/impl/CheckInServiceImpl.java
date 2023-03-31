@@ -1,13 +1,8 @@
 package com.clankalliance.backbeta.service.impl;
 
 import com.clankalliance.backbeta.entity.DateData;
-import com.clankalliance.backbeta.entity.User;
-import com.clankalliance.backbeta.entity.arrayTraining.Training;
-import com.clankalliance.backbeta.repository.UserRepository;
-import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.service.CheckInService;
 import com.clankalliance.backbeta.service.TrainingService;
-import com.clankalliance.backbeta.utils.TokenUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

@@ -19,11 +19,11 @@ Page({
       trainingNum: null,
       timeVariance: null
     },
+    tempList: [1,1,1,1,1,1,1,1,1,1],
+    trainingList: [],
     //骨架屏用的两个参数
     showMask: true,
     hideLoading: true,
-    tempList: [1,1,1,1,1,1,1,1,1,1],
-    trainingList: [],
     ecLine: null,
     chartReady: false,
     ecLine: {

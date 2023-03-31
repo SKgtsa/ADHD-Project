@@ -62,3 +62,8 @@
 .comment{
   font-size: 3vh;
 }
+.selectMapContainer{
+  padding-bottom: 20vh;
+  border-radius: 0 0 3vh 3vh;
+  background-color: #007af2;
+}
