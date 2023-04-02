@@ -211,7 +211,7 @@ public class TrainingServiceImpl implements TrainingService {
         }
 
         dateData.addTraining(training);
-
+        user.setThreshold(average + 5);
         dateDataList.set(dateDataList.size() - 1, dateData);
         user.setDateDataList(dateDataList);
         dateDataRepository.save(dateData);

@@ -19,6 +19,7 @@ Page({
     lowNum: 0,
     highNum: 0,
     maps:[
+      {value: 0, name: '不使用地图'},
       {value: 1, name: '恐龙'},
       {value: 2, name: '魔女'},
       {value: 3, name: '青蛙'}
@@ -66,6 +67,7 @@ Page({
     // },
   },
   radioChange(e){
+    var that = this;
     for(let i = 0,length = this.data.maps.length;i < length;i ++){
       this.data.maps[i] = this.data.maps[i].value === e.detail.value;
     }
@@ -83,6 +85,7 @@ Page({
             title: '更换成功',
             duration: 900
           })
+          that.setData({showSelectMap: false})
         }else{
           wx.showToast({
             title: '发生错误',
