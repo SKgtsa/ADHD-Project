@@ -93,6 +93,7 @@ Page({
                 //截取前三位 作为控制信号
                 const startMark = input.substring(0,1);
                 console.log("StartMark: " + startMark)
+                console.log(input)
                 //头部标记为aaa
                 if(startMark === 'a'){
                   //取控制信号后的整个字符串 拼接进syncResult 进行同步数据的积累
@@ -102,6 +103,20 @@ Page({
                   //设置布尔值inProcess
                   //代表已进入数据收取过程
                   inProcess = true;
+                }else if(startMark === 'd'){
+                  setTimeout(() => {
+                    this.setData({showBlueToothPage: false})
+                    setTimeout(() => {
+                      wx.reLaunch({
+                        url: 'index',
+                      }) 
+                    },1000)
+                  } ,1000)
+                  wx.showToast({
+                    title: '数据全部发送成功',
+                    icon: 'success',
+                    duration: 2000
+                  })
                 }
               }else{
                 //正在发送

@@ -5,7 +5,7 @@
 }
 .container{
   margin: auto;
-  height: 30vh;
+  height: 40vh;
   width: 92vw;
   padding: 3vw;
   border-radius: 5vw;

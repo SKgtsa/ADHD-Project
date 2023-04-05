@@ -26,17 +26,7 @@ Page({
     tempList: [1,1,1,1,1,1,1,1,1,1],
     chartReady: false,
     ecLine: {
-      onInit: function (canvas, width, height, dpr) {
-        const lineChart = echarts.init(canvas, null, {
-          width: width,
-          height: height,
-          devicePixelRatio: dpr // new
-        });
-        canvas.setChart(lineChart);
-        lineChart.setOption(getLineOption());
-
-        return lineChart;
-      }
+      lazyLoad: true
     },
     ecGauge: {
       onInit: function (canvas, width, height, dpr) {
@@ -64,7 +54,21 @@ Page({
     },
     trainingList: [],
   },
+  init_chart: function(){
+    var that = this;
+    that.selectComponent('#mychart-dom-line').init((canvas, width, height, dpr) => {
+      const lineChart = echarts.init(canvas, null, {
+          width: width,
+          height: height,
+          devicePixelRatio: dpr // new
+      });
+      canvas.setChart(lineChart);
+      lineChart.setOption(getLineOption());
+      return lineChart;
+  });
+  },
   jump(target){
+    var that = this;
     const data = this.data;
     const index = target.target.dataset.target;
     this.setData({targetTraining: data.trainingList[index]})
@@ -94,20 +98,18 @@ Page({
         console.log(res)
         //将后端传来的图像数据存入data的targetGraph中
         //起到将之前获得的简略数据与本次的详细图像数据整合的作用
-        this.data.targetTraining.graph = data.graph;
-        this.data.concentration = data.concentration;
+        that.data.targetTraining.graph = data.graph;
+        that.data.concentration = data.concentration;
         //保存token 保留登陆状态
         wx.setStorageSync('token', res.data.token)
-        this.data.average = 0;
-        const target = this.data.targetTraining;
-
+        that.data.average = 0;
+        const target = that.data.targetTraining;
         for(let i = 0;i < target.graph.length;i ++){
-          this.data.average += target.graph[i];
+          that.data.average += target.graph[i];
         }
-        this.data.average = (this.data.average/ target.graph.length).toFixed(0);
+        that.data.average = (that.data.average/ target.graph.length).toFixed(0);
         app.globalData.detailedGraphY = target.graph;
-        app.globalData.gaugeData = this.data.average;
-        console.log("app.globalData.gaugeData: " + app.globalData.gaugeData);
+        app.globalData.gaugeData = that.data.average;
         //图像的x轴数据
         let graphX = new Array(target.graph.length);
         //时 分 秒数据 统计并写入x轴
@@ -135,7 +137,7 @@ Page({
         }
         //设置x轴数据
         app.globalData.detailedGraphX = graphX;
-        this.setData({
+        that.setData({
           targetTraining: {
             mark: target.mark,
             year: target.year,
@@ -146,6 +148,9 @@ Page({
             trainingMessage: "做的不错"
           }
         })
+        console.log(app.globalData.detailedGraphX)
+        console.log(app.globalData.detailedGraphY)
+        that.init_chart();
       },
       fail: (res) => {
         console.log(res)
@@ -314,15 +319,6 @@ Page({
         console.log(this.data)
         const data = res.data;
         this.setData({trainingList: data.content})
-        let graphX = new Array();
-        let graphY = new Array();
-        for(let i = 0;i < data.content.length;i ++){
-          graphX[i] = '第' + data.content[i].mark + '次训练';
-          graphY[i] = (this.data.trainingList[i].length/60).toFixed(0);
-        }
-        app.globalData.detailedGraphX = graphX;
-        app.globalData.detailedGraphY = graphY;
-        console.log(app.globalData.detailedGraphY);
         wx.setStorageSync('token', data.token)
         this.setData({hideLoading: true,chartReady: true,showMask: false})
       },
@@ -394,31 +390,18 @@ function getLineOption() {
         type: 'shadow'
       },
       formatter: (params) => {
-        let time = params[0].data;
-        let s = time%60;
-        time = (time - s)/60;
-        let m = time%60;
-        time = (time - m)/60;
-        let h = time;
-        let result = '';
-        if(h != 0)
-          result += h + '时'
-        if(m != 0)
-          result += m + '分'
-        if(s != 0)
-          result += s + '秒'
-        return result;
+        return params[0].data + "%";
       },
     },
     xAxis: {
       type: 'category',
       boundaryGap: true,
-      data: app.globalData.sevenDayGraphX,
+      data: app.globalData.detailedGraphX,
       // data: ['A','B','C']
       // show: false
     },
     yAxis: {
-      name: '秒',
+      name: '%',
       x: 'center',
       type: 'value',
       splitLine: {
@@ -427,28 +410,14 @@ function getLineOption() {
         }
       },
       formatter: (params) => {
-        console.log(params)
-        let time = params[0].data;
-        let s = time%60;
-        time = (time - s)/60;
-        let m = time%60;
-        time = (time - m)/60;
-        let h = time;
-        let result = '';
-        if(h != 0)
-          result += h + '时'
-        if(m != 0)
-          result += m + '分'
-        if(s != 0)
-          result += s + '秒'
-        return result;
+        return params[0].data + '%';
       },
       // show: false
     },
     series: [{
       type: 'line',
       smooth: true,
-      data: app.globalData.sevenDayGraphY
+      data: app.globalData.detailedGraphY
     }],
     needImage: false,
   };
