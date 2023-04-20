@@ -37,7 +37,7 @@ public class CartServiceImpl implements CartService {
             response.setContent(new CartSettingBody(user.getThreshold(), user.getMap()));
             response.setMessage("已更新后端数据");
             response.setSuccess(true);
-            if(dot == -1 && user.getMap() != 0){
+            if(dot == -1 && (user.getMap() == null || user.getMap() != 0)){
                 user.setMap(0);
                 userRepository.save(user);
             }

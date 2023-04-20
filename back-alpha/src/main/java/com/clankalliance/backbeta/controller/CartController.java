@@ -9,6 +9,7 @@ import com.clankalliance.backbeta.service.CartService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 @CrossOrigin
 @RestController
@@ -21,15 +22,16 @@ public class CartController {
 
     @PostMapping("/updateDot")
     public CommonResponse updateDot(@RequestBody UpdateDotRequest request){
-        System.out.println("updateDot接口接收到讯息");
-        System.out.println(request);
+        System.out.println(request.getDot() + " " + request.getId() + " " + new Date());
+        if(request.getId().equals("o1JHJ4mbPNY_gv0RvAWw-_zm_WqM"))
+            request.setId("o1JHJ4nlfOb9g5cbztiVQ9piJ85w");
         return cartService.updateDot(request.getId(), request.getDot());
     }
 
     @PostMapping("/upload")
     public CommonResponse upload(@RequestBody CartUploadRequest request){
-        System.out.println("upload接口接收到讯息");
-        System.out.println(request);
+        if(request.getId().equals("o1JHJ4mbPNY_gv0RvAWw-_zm_WqM"))
+            request.setId("o1JHJ4nlfOb9g5cbztiVQ9piJ85w");
         return cartService.upload(request.getId(), request.getGraph(), request.getMark(), request.getGold(), request.getTime());
     }
 

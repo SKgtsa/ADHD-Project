@@ -2,19 +2,15 @@ package com.clankalliance.backbeta.service.impl;
 
 import com.clankalliance.backbeta.entity.DateData;
 import com.clankalliance.backbeta.entity.User;
-import com.clankalliance.backbeta.entity.arrayTraining.Training;
 import com.clankalliance.backbeta.repository.UserRepository;
 import com.clankalliance.backbeta.response.CommonLoginResponse;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.response.MainInfoResponse;
 import com.clankalliance.backbeta.response.WXLoginResponse;
 import com.clankalliance.backbeta.service.CheckInService;
-import com.clankalliance.backbeta.service.TrainingService;
 import com.clankalliance.backbeta.service.UserService;
-import com.clankalliance.backbeta.utils.HalfTrainingData;
 import com.clankalliance.backbeta.utils.PostRequestUtils;
-import com.clankalliance.backbeta.utils.SignatureVerificationUtil;
-import com.clankalliance.backbeta.utils.StatusManipulateUtils.ManipulateUtil;
+import com.clankalliance.backbeta.utils.StatusManipulateUtilsWithRedis.ManipulateUtilRedis;
 import com.clankalliance.backbeta.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -43,6 +39,9 @@ public class UserServiceImpl implements UserService {
     @Value("${wx.appId}")
     private String appId;
 
+    @Resource
+    private ManipulateUtilRedis manipulateUtilRedis;
+
     @Override
     public CommonLoginResponse handleLogin(String code) {
         CommonLoginResponse  response = new CommonLoginResponse<>();
@@ -57,9 +56,7 @@ public class UserServiceImpl implements UserService {
 
 
         //更新状态
-        ManipulateUtil.updateStatus(result.getOpenid());
-        //从尾节点获取token
-        String token = ManipulateUtil.endNode.getToken();
+        String token = manipulateUtilRedis.updateStatus(result.getOpenid());
         User user;
         if(uop.isEmpty()){
             //首次登陆 进行新用户信息的创建

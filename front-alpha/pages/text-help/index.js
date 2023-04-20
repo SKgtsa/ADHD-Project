@@ -238,83 +238,83 @@ Page({
     var that = this;
     app.globalData.detailedGraphY = [];
     app.globalData.detailedGraphX = [];
-    app.globalData.timer = setInterval(
-      function() {
-        if(!that.data.changeT){
-          wx.request({
-            url: app.globalData.baseURL + '/api/cart/getDot',
-            method: 'POST',
-            data: {
-              token: wx.getStorageSync('token')
-            },
-            success: (res) => {
-              if(res.data.success){
-                if(res.data.content === -1){
-                  that.setData({training: false});
-                  return;
-                }
-                that.setData({training: true});
-                app.globalData.detailedGraphY.push(res.data.content);
-                if(app.globalData.detailedGraphX.length !== 60){
-                  app.globalData.detailedGraphX.unshift(app.globalData.detailedGraphX.length + '秒');
-                }else{
-                  app.globalData.detailedGraphY.shift();
-                }
+    setTimeout(() => {
+      app.globalData.timer = setInterval(
+        function() {
+          if(!that.data.changeT){
+            wx.request({
+              url: app.globalData.baseURL + '/api/cart/getDot',
+              method: 'POST',
+              data: {
+                token: wx.getStorageSync('token')
+              },
+              success: (res) => {
                 wx.setStorageSync('token', res.data.token);
-                that.updateStatus();
-              }
-              console.log(app.globalData.detailedGraphY)
-            },
-            fail: (res) => {
-              wx.showToast({
-                title: '发生错误',
-                content: '请联系技术人员',
-                icon: 'error',
-                duration: 900
-              })
-            }
-          })
-        }else{
-          that.setData({
-            changeT: false
-          })
-          wx.request({
-            url: app.globalData.baseURL + '/api/cart/getDotWithT',
-            method: 'POST',
-            data: {
-              token: wx.getStorageSync('token'),
-              threshold: that.data.threshold
-            },
-            success: (res) => {
-              if(res.data.success){
-                if(res.data.content === -1){
-                  that.setData({training: false});
-                  return;
+                if(res.data.success){
+                  if(res.data.content === -1){
+                    that.setData({training: false});
+                    return;
+                  }
+                  that.setData({training: true});
+                  app.globalData.detailedGraphY.push(res.data.content);
+                  if(app.globalData.detailedGraphX.length !== 60){
+                    app.globalData.detailedGraphX.unshift(app.globalData.detailedGraphX.length + '秒');
+                  }else{
+                    app.globalData.detailedGraphY.shift();
+                  }
+                  that.updateStatus();
                 }
-                that.setData({training: true});
-                app.globalData.detailedGraphY.push(res.data.content);
-                if(app.globalData.detailedGraphX.length !== 60){
-                  app.globalData.detailedGraphX.unshift(app.globalData.detailedGraphX.length + '秒');
-                }else{
-                  app.globalData.detailedGraphY.shift();
-                }
-                console.log(app.globalData.detailedGraphY)
-                wx.setStorageSync('token', res.data.token);
+              },
+              fail: (res) => {
+                wx.showToast({
+                  title: '发生错误',
+                  content: '请联系技术人员',
+                  icon: 'error',
+                  duration: 900
+                })
               }
-            },
-            fail: (res) => {
-              wx.showToast({
-                title: '发生错误',
-                content: '请联系技术人员',
-                icon: 'error',
-                duration: 900
-              })
-            }
-          })
+            })
+          }else{
+            that.setData({
+              changeT: false
+            })
+            wx.request({
+              url: app.globalData.baseURL + '/api/cart/getDotWithT',
+              method: 'POST',
+              data: {
+                token: wx.getStorageSync('token'),
+                threshold: that.data.threshold
+              },
+              success: (res) => {
+                if(res.data.success){
+                  wx.setStorageSync('token', res.data.token);
+                  if(res.data.content === -1){
+                    that.setData({training: false});
+                    return;
+                  }
+                  that.setData({training: true});
+                  app.globalData.detailedGraphY.push(res.data.content);
+                  if(app.globalData.detailedGraphX.length !== 60){
+                    app.globalData.detailedGraphX.unshift(app.globalData.detailedGraphX.length + '秒');
+                  }else{
+                    app.globalData.detailedGraphY.shift();
+                  }
+                }
+              },
+              fail: (res) => {
+                wx.showToast({
+                  title: '发生错误',
+                  content: '请联系技术人员',
+                  icon: 'error',
+                  duration: 900
+                })
+              }
+            })
+          }
+          that.init_chart();
         }
-        that.init_chart();
-      }
-    ,1000)
+      ,1000)
+    }, 1000)
   },
 
   /**

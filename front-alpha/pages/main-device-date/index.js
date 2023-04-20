@@ -117,6 +117,7 @@ Page({
         let m = 0;
         let s = 0;
         const passage = data.sec/target.graph.length;
+        // const passage = 1;
         for(let i = 0;i < graphX.length;i ++){
           graphX[i] = '';
           if(h != 0)
