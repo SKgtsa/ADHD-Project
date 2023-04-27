@@ -21,8 +21,6 @@ public class Post {
 
     private String heading;
 
-    private String graph;
-
     @OneToMany
     private List<Comment> commentList;
 

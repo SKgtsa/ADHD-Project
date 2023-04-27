@@ -150,7 +150,7 @@ public class ManipulateUtilRedis {
      */
     public StatusNodeWithRedis findStatusByToken(String token){
         StatusNodeWithRedis status = null;
-        if(hasKey(token, statusRedisTemplate)){
+        if(token != null && hasKey(token, statusRedisTemplate)){
             status = getObject(token, statusRedisTemplate, StatusNodeWithRedis.class);
         }
         return status;
@@ -163,7 +163,7 @@ public class ManipulateUtilRedis {
      */
     public StatusNodeWithRedis findStatusById(String id){
         StatusNodeWithRedis status = null;
-        if(hasKey(id, idRedisTemplate)){
+        if(id != null && hasKey(id, idRedisTemplate)){
             status = getObject(getObject(id, idRedisTemplate, String.class), statusRedisTemplate, StatusNodeWithRedis.class);
         }
         return status;
@@ -176,11 +176,10 @@ public class ManipulateUtilRedis {
      */
     public String updateStatus(String id){
         int dot = -1;
-        String oldToken = null;
+        String oldToken;
         long updateTime = System.currentTimeMillis();
         String newToken = DigestUtils.sha1Hex(id + updateTime);
-        boolean temp = hasKey(id, idRedisTemplate);
-        if(hasKey(id, idRedisTemplate)){
+        if(id != null && hasKey(id, idRedisTemplate)){
             oldToken = getObject(id, idRedisTemplate, String.class);
             dot = (getObject(oldToken, statusRedisTemplate, StatusNodeWithRedis.class)).getCurrentDot();
             delete(oldToken, statusRedisTemplate);
@@ -199,7 +198,7 @@ public class ManipulateUtilRedis {
      * @param dot 新的点数据
      */
     public void updateStatus(String id,int dot){
-        if(!hasKey(id, idRedisTemplate))
+        if(id == null || !hasKey(id, idRedisTemplate))
             return;
         String token = getObject(id, idRedisTemplate, String.class);
         StatusNodeWithRedis status = getObject(token, statusRedisTemplate, StatusNodeWithRedis.class);

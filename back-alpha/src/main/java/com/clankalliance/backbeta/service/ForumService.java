@@ -8,9 +8,11 @@ public interface ForumService {
 
     CommonResponse getPost(String token,Integer pageNum,Integer size,String identity);
 
-    CommonResponse savePost(MultipartFile[] files,String fId,String token,boolean withGraph,String trainingId, String content,String heading,boolean anonymous);
+    CommonResponse savePost(String fId,String token, String content,String heading,boolean anonymous);
 
-    CommonResponse saveComment(MultipartFile[] files,String cId,String token,String content,boolean anonymous);
+    CommonResponse savePostImage(MultipartFile file, String cId, String token, boolean needDelete);
+
+    CommonResponse saveComment(String cId,String token,String content,boolean anonymous);
 
     CommonResponse deletePost(String token,String pId);
 

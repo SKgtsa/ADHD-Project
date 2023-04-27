@@ -1,8 +1,8 @@
 package com.clankalliance.backbeta.controller;
 
-import com.clankalliance.backbeta.request.CommonDeleteRequest;
 import com.clankalliance.backbeta.request.CommonPageableRequest;
 import com.clankalliance.backbeta.request.Forum.DeleteRequest;
+import com.clankalliance.backbeta.request.Forum.SavePostRequest;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.service.ForumService;
 import org.springframework.web.bind.annotation.*;
@@ -24,30 +24,29 @@ public class ForumController {
     }
 
     @PostMapping("/savePost")
-    public CommonResponse savePost(HttpSession session,
-                                   // 路径变量 解决前后端不一致
-                                   @RequestParam("file")MultipartFile[] files,
-                                   @RequestParam("fId")String fId,
-                                   @RequestParam("token")String token,
-                                   @RequestParam("withGraph")boolean withGraph,
-                                   @RequestParam("trainingId")String trainingId,
-                                   @RequestParam("content")String content,
-                                   @RequestParam("heading")String heading,
-                                   @RequestParam("anonymous")boolean anonymous
-                                   ){
-        return forumService.savePost(files,fId,token,withGraph,trainingId,content,heading,anonymous);
+    public CommonResponse savePost(@RequestBody SavePostRequest request){
+        return forumService.savePost(request.getFId(),request.getToken(),request.getContent(), request.getHeading(), request.isAnonymous());
+    }
+
+    @PostMapping("/saveForumImage")
+    public CommonResponse savePostImage(HttpSession session,
+                                        @RequestParam("file")MultipartFile file,
+                                        @RequestParam("cId")String cId,
+                                        @RequestParam("token")String token,
+                                        @RequestParam("needDelete")String needDelete
+    ){
+        return forumService.savePostImage(file, cId, token, needDelete.equals("true"));
     }
 
     @PostMapping("/saveComment")
     public CommonResponse saveComment(HttpSession session,
                                       // 路径变量 解决前后端不一致
-                                      @RequestParam("file")MultipartFile[] files,
                                       @RequestParam("cId")String cId,
                                       @RequestParam("token")String token,
                                       @RequestParam("content")String content,
                                       @RequestParam("anonymous")boolean anonymous
     ){
-        return forumService.saveComment(files,cId,token,content,anonymous);
+        return forumService.saveComment(cId,token,content,anonymous);
     }
 
     @PostMapping("/deletePost")

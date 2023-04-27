@@ -23,26 +23,124 @@ Page({
     requesting: false,
     first: true,
     last: false,
-    withGraph: false,
     anonymous: false,
-    graphSelected: false,
     newPost: {
       heading: '',
       content: '',
-      files: [],
-      withGraph: false,
       anonymous: false,
       trainingId: null,
       token: '',
+    },
+    uploadCount: 0,
+    imageList: [],
+    cId: '',
+    imageNeedDelete: false,
+    hideLoading: true
+  },
+  deleteThisImage: function(index){
+    let tempList = this.data.imageList;
+    tempList.splice(index.currentTarget.dataset.index, 1);
+    this.setData({imageList: tempList});
+  },
+  chooseImage: function(){
+    var that = this;
+    wx.chooseMedia({
+      mediaType: ['image'],
+      sourceType: ['album', 'camera'],
+      sizeType: ['compressed'],
+      success(res) {
+        let tempList = that.data.imageList;
+        for(let i = 0;i < res.tempFiles.length;i ++){
+          tempList.push(res.tempFiles[i].tempFilePath);
+        }
+        that.setData({imageList: tempList});
+      }
+    })
+  },
+  submit: function(){
+    var that = this;
+    if(that.data.newPost.heading == '' || that.data.newPost.content == ''){
+      wx.showToast({
+        title: '标题与正文不能为空',
+        icon: 'error'
+      })
+      return;
+    }
+    that.setData({hideLoading: false})
+    that.data.newPost.token = wx.getStorageSync('token');
+    wx.request({
+      method: 'POST',
+      url: app.globalData.baseURL + '/api/forum/savePost',
+      data: that.data.newPost,
+      success: (res) => {
+        that.setData({
+          cId: res.data.content,
+          uploadCount: 0,
+          imageNeedDelete: false
+        })
+        that.uploadNextImage(res.data.token);
+      },
+      fail: (res) => {
+        console.log(res);
+        that.setData({hideLoading: true})
+        wx.showToast({
+          title: '发生内部错误 请告知管理员',
+          icon: 'success',
+          duration: 1000
+        })
+      }
+    })
+  },
+  uploadNextImage: function(token){
+    console.log('uploadNextImage');
+    console.log(token)
+    var that = this;
+    if(that.data.uploadCount < that.data.imageList.length){
+      console.log('upload')
+      wx.uploadFile({
+        method: 'POST',
+        filePath: that.data.imageList[that.data.uploadCount],
+        name: 'file',
+        url: app.globalData.baseURL + '/api/forum/saveForumImage',
+        formData: {
+          token: token,
+          cId: that.data.cId,
+          needDelete: that.data.imageNeedDelete + ""
+        },
+        success: (res) => {
+          that.data.uploadCount ++;
+          that.uploadNextImage(JSON.parse(res.data).token);
+        },
+        fail: (res) => {
+          wx.setStorageSync('token', token)
+          that.setData({hideLoading: true})
+          wx.showToast({
+            title: '发生内部错误 请告知管理员',
+            icon: 'success',
+            duration: 1000
+          })
+        }
+      })
+
+    }else{
+      //上传完成
+      console.log('Finished')
+      wx.setStorageSync('token', token);
+      that.setData({
+        hideLoading: true,
+        showWritePage: false
+      })
+      that.search()
+      wx.showToast({
+        title: '上传完成',
+        icon: 'success'
+      })
     }
   },
   switchAnonymousChange: function(e){
     this.setData({anonymous: e.detail.value})
     this.data.anonymous = e.detail.value;
-  },
-  switchGraphChange: function(e){
-    this.setData({withGraph: e.detail.value})
-    this.data.withGraph = e.detail.value;
+    this.data.newPost.anonymous = e.detail.value;
   },
   showWrite: function(){
     console.log('click')
@@ -66,6 +164,7 @@ Page({
   refreshList(){
     var that = this;
     that.data.getData.token = wx.getStorageSync('token');
+    console.log(that.data)
     if(that.data.requesting || that.data.last)
       return;
     that.data.requesting = true;
@@ -85,6 +184,8 @@ Page({
             first: res.data.content.first,
             last: res.data.content.last
           });
+          that.data.getData.pageNum ++;
+          console.log('UpdatePageNum: ' + that.data.getData.pageNum);
         }
         that.data.requesting = false;
       },
@@ -103,7 +204,8 @@ Page({
         size: that.data.getData.size,
         identity: that.data.keyword
       },
-      post: []
+      post: [],
+      last: false
     })
     that.refreshList();
   },

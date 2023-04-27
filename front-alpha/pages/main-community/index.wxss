@@ -88,9 +88,18 @@
   border-color: darkgray;
   border-width: 2px;
 }
+.searchButtonOut{
+  width: 11vw;
+  height: 11vw;
+  border-style: none;
+  box-shadow: rgba(0, 0, 0, 0);
+}
 .searchButton{
-  width: 10vw;
-  height: 10vw;
+  width: 11vw;
+  height: 11vw;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 .adviceButton{
   width: 60vw;
@@ -99,6 +108,95 @@
   font-size: 3.5vh;
   color: #FFF;
   font-weight: bold;
+}
+.avatarButton{
+  width: 12vw;
+  height: 12vw;
+  border-radius: 6vw;
+  margin: 0 5%;
+}
+.avatarImage{
+  width: 12vw;
+  height: 12vw;
+  border-radius: 6vw;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.articleButton{
+  display: flex;
+  flex-direction: column;
+  color: #486484;
+  background-color: rgba(150, 187, 255, 0.233);
+  border-radius: 1vh;
+  border: none;
+}
+.imageArea{
+  width: 100%;
+  display: inline-block;
+  padding: 1vh 0.5vh 0.5vh 1vh;
+}
+.imageUnit{
+  width: 18vw;
+  height:18vw;
+  display: inline-block;
+}
+.zhuige-share::after {
+	border: none;
+}
+.unitImage{
+  width: 15vw;
+  height: 15vw;
+  margin-left: 1vw;
+  margin-top: 1vw;
+  border-radius: 1vh;
+}
+.addImage{
+  width: 15vw;
+  height: 15vw;
+  margin-left: 1vw;
+  margin-top: 1vw;
+  border-radius: 1vh;
+  color: #486484;
+  display: flex;
+  background-color: #FFF;
+}
+.addText{
+  font-size: 15vw;
+  line-height: 0;
+  margin: 40% auto;
+}
+.deleteImageButton{
+  position: absolute;
+  display: flex;
+  background-color: #486484;
+  width: 5vw;
+  height: 5vw;
+  border-radius: 2.5vw;
+  right: 0;
+  top: 0;
+  color: #FFF;
+  font-size: 1.5vh;
+}
+.imageFunctionArea{
+  position: absolute;
+}
+.userInfo{
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: row-reverse;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+}
+.articleInfo{
+  display: flex;
+  flex-direction: column;
+  font-size: 2vh;
+  line-height: 3vh;
+}
+.infoText{
+  text-align: left;
 }
 .writeButton{
   width: 12vh;
@@ -170,7 +268,7 @@
   flex-direction: row;
 }
 .unit{
-  height: 10vh;
+  padding-bottom: 2vh;
   width: 90vw;
   padding-left: 5vw;
 }

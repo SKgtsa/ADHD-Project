@@ -7,12 +7,19 @@
       <view class="scrollBox">
         <view class="searchArea" >
           <input bindblur="onSearchChange" value="{{keyword}}" bind:input="onSearchChange" class="input" />
-          <image src="../../img/icons/checkIn.png" class="searchButton" />
+          <button bindtap="search" class="searchButtonOut" ><image src="../../img/icons/checkIn.png" class="searchButton" /></button>
         </view>
         <block wx:for="{{post}}" wx:key="index">
           <view class="unit">
             <button class="articleButton" bind:tap="showDetail({{index}})">
-              <text>{{item.title}}</text>
+              <div class="articleInfo">
+                <text class="infoText" style="font-size: 3.5vh;font-weight: 500;" >{{item.heading}}</text>
+                <text class="infoText">{{item.time}}</text>
+              </div>
+              <div class='userInfo' wx:if="{{!item.commentList[0].anonymous}}">
+                <text>{{item.commentList[0].user.nickName}}</text>
+                <button class="avatarButton" ><image class="avatarImage" src="{{'http://localhost:5174' + item.commentList[0].user.imageURL}}" /></button>
+              </div>
             </button>
           </view>
         </block>
@@ -36,27 +43,6 @@
       <text class="rowName">匿名</text>
       <switch checked="{{newPost.anonymous}}" bindchange="switchAnonymousChange"/>
     </view>
-    <view style="min-height: 6vh;">
-      <text class="rowName">附带训练图像</text>
-      <switch checked="{{newPost.withGraph}}" bindchange="switchGraphChange"/>
-      <view wx:if="{{withGraph}}" style="min-height: 10vh;display: flex;width: 95%;margin: 0 auto;" >
-        <button wx:if="{{!graphSelected}}" class="button" style="margin: auto;">选择图像</button>
-        <view wx:if="{{graphSelected}}" class="unit">
-          <button class="button">
-            <view class="bottomBox">
-              <view class="left">
-                <text style="font-size: 6vw;">第<text style="color: #007af2; font-weight: 800;">{{targetTraining.mark}}</text>次训练</text>
-                <text>共训练<text style="color: #007af2; font-weight: 800;">{{utils.handleTime(targetTraining.length)}}</text></text>
-              </view>
-              <view class="right">
-                <text>获得<text style="color: #007af2; font-weight: 800;">{{targetTraining.gold}}</text>枚金币</text>
-                <text>平均专注度: <text style="color: #007af2; font-weight: 800;">{{targetTraining.average}}</text></text>
-              </view>
-            </view>
-          </button>
-        </view>
-      </view>
-    </view>
     <view class="bottomCard">
       <view>
         <text class="rowName">正文:</text>
@@ -64,10 +50,24 @@
       </view>
       <view>
         <text class="rowName">图片:</text>
+        <div class="imageArea">
+          <div class="imageUnit" wx:for="{{imageList}}" wx:key="index">
+            <div class="imageFunctionArea">
+              <div class="deleteImageButton" bindtap="deleteThisImage" data-index="{{index}}" ><text style="text-align: center;display: flex;margin: auto;" >X</text></div>
+              <image src="{{item}}" class="unitImage"></image>
+            </div>
+          </div>
+          <div class="imageUnit">
+            <div class="imageFunctionArea">
+              <div class="addImage" bindtap="chooseImage" ><text class="addText" >+</text></div>
+            </div>
+          </div>
+        </div>
       </view>
       <view class="wrapper">
-        <button class="submitButton">发布</button>
+        <button class="submitButton" bindtap="submit" >发布</button>
       </view>
     </view>
   </view>
 </page-container>
+<loading hidden="{{hideLoading}}">请稍候</loading>

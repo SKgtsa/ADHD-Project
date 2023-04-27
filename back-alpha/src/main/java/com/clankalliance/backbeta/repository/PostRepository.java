@@ -15,7 +15,7 @@ public interface PostRepository extends JpaRepository<Post,String> {
     @Query("from Post p where p.id=?1")
     Optional<Post> findById(String id);
 
-    @Query("from Post p where ?1='' or p.heading like %?1%")
-    Page<Post> findAllByHeading(String keyWord, Pageable pageable);
+//    @Query("from Post p where ?1='' or p.heading like %?1%")
+    Page<Post> findByHeadingContaining(String heading, Pageable pageable);
 
 }

@@ -2,7 +2,6 @@ package com.clankalliance.backbeta.controller;
 
 
 import com.clankalliance.backbeta.request.*;
-import com.clankalliance.backbeta.request.Forum.SaveCommentRequest;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.response.FindGraphResponse;
 import com.clankalliance.backbeta.response.LastSevenResponse;
