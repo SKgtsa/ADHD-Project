@@ -7,6 +7,7 @@ import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.response.cart.CartSettingBody;
 import com.clankalliance.backbeta.service.CartService;
 import com.clankalliance.backbeta.service.TrainingService;
+import com.clankalliance.backbeta.utils.ErrorHandle;
 import com.clankalliance.backbeta.utils.TokenUtil;
 import org.springframework.stereotype.Service;
 
@@ -66,9 +67,7 @@ public class CartServiceImpl implements CartService {
         try{
             trainingService.handleSaveGraph(id, mark, gold, graph + ',', average, time);
         }catch (Exception e){
-            response.setMessage(e.toString());
-            response.setSuccess(false);
-            return response;
+            return ErrorHandle.handleSaveException(e,response);
         }
 
         response.setMessage("上传成功");
@@ -92,8 +91,7 @@ public class CartServiceImpl implements CartService {
         try{
             userRepository.save(user);
         }catch (Exception e){
-            response.setSuccess(false);
-            response.setMessage(e.toString());
+            return ErrorHandle.handleSaveException(e,response);
         }
         return response;
     }
@@ -118,10 +116,7 @@ public class CartServiceImpl implements CartService {
         try{
             userRepository.save(user);
         }catch (Exception e){
-            response.setContent(e);
-            response.setSuccess(false);
-            response.setMessage("保存错误");
-            return response;
+            return ErrorHandle.handleSaveException(e,response);
         }
         response.setMessage("保存成功");
         return response;

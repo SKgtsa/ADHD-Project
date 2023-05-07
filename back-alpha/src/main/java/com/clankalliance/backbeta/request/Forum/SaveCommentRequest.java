@@ -13,10 +13,12 @@ public class SaveCommentRequest {
 
     private String token;
 
-    private String id;
+    private String cId;
+
+    private String pId;
 
     private String content;
 
-
+    private boolean anonymous;
 
 }

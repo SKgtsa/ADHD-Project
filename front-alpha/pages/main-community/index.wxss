@@ -91,15 +91,10 @@
 .searchButtonOut{
   width: 11vw;
   height: 11vw;
-  border-style: none;
-  box-shadow: rgba(0, 0, 0, 0);
 }
 .searchButton{
   width: 11vw;
   height: 11vw;
-  position: absolute;
-  left: 0;
-  top: 0;
 }
 .adviceButton{
   width: 60vw;
@@ -282,4 +277,81 @@
   flex-direction: column-reverse;
   width: 50%;
   text-align: right;
+}
+.detailedPage{
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+  margin: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+}
+.postInfo{
+  margin: auto;
+  width: 95vw;
+  height: 93vh;
+  background-color: #FFF;
+  border-radius: 2vh;
+  display: flex;
+  flex-direction: column;
+}
+.functionArea{
+  display: flex;
+  flex-direction: row-reverse;
+  z-index: 11;
+}
+.contentArea{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 80vh;
+}
+.commentArea{
+  display: flex;
+  flex-direction: column;
+}
+.commentDeleteButton{
+  display: flex;
+  flex-direction: row-reverse;
+  height: 2vh;
+}
+.deleteImage{
+  width: 3vh;
+  height: 3vh;
+}
+.commentScroll{
+  height: 100%;
+}
+.headingArea{
+  background-color: #007af2;
+  width: 95%;
+  border-radius: 2vh 2vh 0 0;
+  color: #FFF;
+  font-size: 4vh;
+  padding: 1vh;
+  margin: 0 auto;
+  font-weight: 600;
+}
+.commentBox{
+  display: flex;
+  flex-direction: column;
+  font-size: 2.5vh;
+  padding: 1vh;
+  width: 95%;
+}
+.closeButton{
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  width: 4vh;
+  height: 4vh;
+  text-align: center;
+  display: flex;
+  font-size: 3vh;
+}
+.closeText{
+  margin: auto;
 }

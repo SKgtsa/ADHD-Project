@@ -6,13 +6,12 @@ Page({
    * 页面的初始数据
    */
   data: {
+    showDetail: false,
     showWritePage: false,
+    postOnShow: null,
+    onShowIndex: 0,
     suggestion: '',
     post: [],
-    postPresent: {
-      title: '',
-      content: ''
-    },
     keyword: '',
     getData: {
       token: '',
@@ -57,9 +56,24 @@ Page({
       }
     })
   },
+  openDetail: function(index){
+    console.log(this.data)
+    this.data.onShowIndex = index.target.dataset.index;
+    this.setData({
+      showDetail: true,
+      postOnShow: this.data.post[index.target.dataset.index]
+    });
+    console.log(this.data);
+  },
+  closeDetail: function(){
+    this.setData({
+      showDetail: false,
+      postOnShow: null
+    });
+  },
   submit: function(){
     var that = this;
-    if(that.data.newPost.heading == '' || that.data.newPost.content == ''){
+    if((that.data.newPost.heading == '' && !that.data.showDetail ) || that.data.newPost.content == ''){
       wx.showToast({
         title: '标题与正文不能为空',
         icon: 'error'
@@ -68,32 +82,50 @@ Page({
     }
     that.setData({hideLoading: false})
     that.data.newPost.token = wx.getStorageSync('token');
-    wx.request({
-      method: 'POST',
-      url: app.globalData.baseURL + '/api/forum/savePost',
-      data: that.data.newPost,
-      success: (res) => {
-        that.setData({
-          cId: res.data.content,
-          uploadCount: 0,
-          imageNeedDelete: false
-        })
-        that.uploadNextImage(res.data.token);
-      },
-      fail: (res) => {
-        console.log(res);
-        that.setData({hideLoading: true})
-        wx.showToast({
-          title: '发生内部错误 请告知管理员',
-          icon: 'success',
-          duration: 1000
-        })
-      }
-    })
+    if(!that.data.showDetail){
+      wx.request({
+        method: 'POST',
+        url: app.globalData.baseURL + '/api/forum/savePost',
+        data: that.data.newPost,
+        success: (res) => {
+          that.setData({
+            cId: res.data.content,
+            uploadCount: 0,
+            imageNeedDelete: false
+          })
+          that.uploadNextImage(res.data.token);
+        },
+        fail: (res) => {
+          that.requestFail();
+        }
+      })
+    }else{
+      wx.request({
+        url: app.globalData.baseURL + '/api/forum/saveComment',
+        method: 'POST',
+        data: {
+          pid: that.data.postOnShow.id,
+          cid: null,
+          content: that.data.newPost.content,
+          token: that.data.newPost.token,
+          anonymous: that.data.newPost.anonymous
+        },
+        success: (res) => {
+          that.setData({
+            cId: res.data.content,
+            uploadCount: 0,
+            imageNeedDelete: false,
+            postOnShow: that.data.post[that.data.onShowIndex]
+          })
+          that.uploadNextImage(res.data.token);
+        },
+        fail: (res) => {
+          that.requestFail();
+        }
+      })
+    }
   },
   uploadNextImage: function(token){
-    console.log('uploadNextImage');
-    console.log(token)
     var that = this;
     if(that.data.uploadCount < that.data.imageList.length){
       console.log('upload')
@@ -177,12 +209,23 @@ Page({
         wx.setStorageSync('token', res.data.token);
         if(res.data.success){
           let postList = that.data.post;
-          for(let i = 0;i < res.data.content.content.length;i ++)
-            postList.push(res.data.content.content[i]);
+          for(let i = 0;i < res.data.content.content.length;i ++){
+            let temp = res.data.content.content[i];
+            console.log(res.data.content)
+            console.log(temp);
+            for(let j = 0;j < temp.commentList.length; j ++){
+              temp.commentList[j].images = temp.commentList[j].images.substring(1, temp.commentList[j].images.length - 1).split(',');
+              for(let k = 0;k < temp.commentList[j].images.length;k ++){
+                temp.commentList[j].images[k] = temp.commentList[j].images[k].substring(temp.commentList[j].images[k].indexOf('/'));
+              }
+            }
+            postList.push(temp);
+          }
           that.setData({
             post: postList,
             first: res.data.content.first,
-            last: res.data.content.last
+            last: res.data.content.last,
+            postOnShow: postList[that.data.onShowIndex]
           });
           that.data.getData.pageNum ++;
           console.log('UpdatePageNum: ' + that.data.getData.pageNum);
@@ -193,6 +236,78 @@ Page({
         that.requestFail();
         that.data.requesting = false;
       }
+    })
+  },
+  deleteComment(e){
+    const index = e.currentTarget.dataset.index;
+    console.log(index)
+    console.log(e)
+    const that = this;
+    wx.showModal({
+      title: '提示',
+      content: '确认删除' + (index === 0? '帖子':'评论'),
+      complete: (res) => {
+        if (res.confirm) {
+          wx.request({
+            url: app.globalData.baseURL + '/api/forum/deleteComment',
+            method: 'POST',
+            data: {
+              token: wx.getStorageSync('token'),
+              id: that.data.postOnShow.commentList[index].id
+            },
+            success: (res) => {
+              console.log(res)
+              wx.setStorageSync('token', res.data.token);
+              if(res.data.success){
+                if(index === 0){
+                  let tempPost = that.data.post;
+                  tempPost.splice(that.data.onShowIndex, 1);
+                  that.setData({
+                    post: tempPost
+                  })
+                  that.closeDetail();
+                }else{
+                  let tempPostOnShow = that.data.postOnShow;
+                  tempPostOnShow.commentList.splice(index, 1);
+                  that.setData({
+                    postOnShow: tempPostOnShow
+                  })
+                }
+                wx.showToast({
+                  title: '删除成功',
+                  icon: 'success'
+                })
+              }else{
+                wx.showToast({
+                  title: '删除失败',
+                  icon: 'error'
+                })
+              }
+            },
+            fail: (res) => {
+              console.log(res)
+              // that.requestFail();
+            }
+          })
+        }
+      }
+    })
+  },
+  clickImage(e){
+    const that = this;
+    const indexImage = e.currentTarget.dataset.indeximage;
+    const indexComment = e.currentTarget.dataset.indexcomment;
+    that.imagePreview(that.data.postOnShow.commentList[indexComment].images, indexImage);
+  },
+  imagePreview(urls, currentIndex){
+    console.log(currentIndex)
+    let newURLs = [];
+    for(let i = 0;i < urls.length;i ++){
+      newURLs[i] = app.globalData.baseURL + urls[i];
+    }
+    wx.previewImage({
+      current: newURLs[currentIndex],
+      urls: newURLs
     })
   },
   search(){
@@ -238,6 +353,7 @@ Page({
         url: '../main-personal/index',
       })
     }
+    this.search();
   },
 
   /**

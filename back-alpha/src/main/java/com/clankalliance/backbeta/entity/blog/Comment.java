@@ -1,6 +1,7 @@
 package com.clankalliance.backbeta.entity.blog;
 
 import com.clankalliance.backbeta.entity.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,5 +31,9 @@ public class Comment {
     private Date time;
 
     private boolean anonymous;
+
+    @OneToOne
+    @JsonIgnore
+    private Post post;
 
 }

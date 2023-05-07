@@ -2,6 +2,7 @@ package com.clankalliance.backbeta.service.impl;
 
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.service.TencentSmsService;
+import com.clankalliance.backbeta.utils.ErrorHandle;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 
@@ -94,9 +95,7 @@ public class TencentSmsServiceImpl implements TencentSmsService {
             System.out.println(res.getRequestId());
         } catch (TencentCloudSDKException e) {
             e.printStackTrace();
-            response.setSuccess(false);
-            response.setMessage("发送失败" + e);
-            return response;
+            return ErrorHandle.handleSaveException(e,response);
         }
         response.setSuccess(true);
         response.setMessage("验证码已发送");

@@ -7,11 +7,11 @@
       <view class="scrollBox">
         <view class="searchArea" >
           <input bindblur="onSearchChange" value="{{keyword}}" bind:input="onSearchChange" class="input" />
-          <button bindtap="search" class="searchButtonOut" ><image src="../../img/icons/checkIn.png" class="searchButton" /></button>
+          <div bindtap="search" class="searchButtonOut" ><image src="../../img/icons/search.png" class="searchButton" /></div>
         </view>
         <block wx:for="{{post}}" wx:key="index">
           <view class="unit">
-            <button class="articleButton" bind:tap="showDetail({{index}})">
+            <button class="articleButton" bind:tap="openDetail" data-index="{{index}}" >
               <div class="articleInfo">
                 <text class="infoText" style="font-size: 3.5vh;font-weight: 500;" >{{item.heading}}</text>
                 <text class="infoText">{{item.time}}</text>
@@ -29,13 +29,13 @@
       </view>
   </view>
 </scroll-view>
-<button class="writeButton" bindtap="showWrite"><image src="../../img/icons/checkIn.png" class="writeButtonIcon"  /></button>
+<button class="writeButton" bindtap="showWrite"><image src="../../img/icons/write.png" class="writeButtonIcon"  /></button>
 <page-container show="{{showWritePage}}" overlay="{{true}}"  position="top" custom-style="background-color: rgba(0,0,0,0);">
   <view class="popOutWindow">
     <view style="height: 10vh;">
-      <text class="writePageName" >发帖</text>
+      <text class="writePageName" >{{showDetail? '评论':'发帖'}}</text>
     </view>
-    <view>
+    <view wx:if="{{!showDetail}}" >
       <text class="rowName">标题:</text>
       <input bindblur="onHeadingChange" value="{{newPost.heading}}" bind:input="onHeadingChange" class="input" style="width: 95%;margin: auto;" />
     </view>
@@ -70,4 +70,36 @@
     </view>
   </view>
 </page-container>
+<div class="detailedPage" wx:if="{{showDetail}}">
+  <!-- <scroll-view class="scroll" scroll-y="true"> -->
+    <div class="postInfo">
+      <div class="functionArea">
+        <div class="closeButton" bindtap="closeDetail" ><text class="closeText">x</text></div>
+      </div>
+      <div class="contentArea">
+        <div class="headingArea">
+          <text>{{postOnShow.heading}}</text>
+        </div>
+        <scroll-view class="commentScroll"  scroll-y="true">
+          <div class="commentArea">
+            <div class="commentBox" wx:for="{{postOnShow.commentList}}" wx:for-item="comment" wx:key="index" wx:for-index="indexComment" style="background-color: {{indexComment === 0? '#007af2':'#d1e0f1'}};color: {{indexComment === 0?'#FFF':'rgb(6, 22, 48)'}};border-radius: {{indexComment === 0?'0 0 2vh 2vh':'2vh'}};margin: {{indexComment === 0? '0 auto':'2% auto'}}">
+              <div class="commentDeleteButton" bindtap="deleteComment" data-index="{{indexComment}}" ><image class="deleteImage" src="../../img/icons/delete.png"></image></div>
+              <text>{{comment.content}}</text>
+              <div class="postImageArea" >
+                <image wx:for="{{comment.images}}" wx:key="index" wx:for-item="image" wx:for-index="indexImage" wx:if="{{image !== ''}}" src="{{'http://localhost:5174' + image}}" bindtap="clickImage" data-indexImage="{{indexImage}}" data-indexComment="{{indexComment}}" class="unitImage"></image>
+              </div>
+              <div class='userInfo' wx:if="{{!comment.anonymous}}">
+                <text>{{comment.user.nickName}}</text>
+                  <button class="avatarButton" ><image class="avatarImage" src="{{'http://localhost:5174' + comment.user.imageURL}}" /></button>
+                </div>
+            </div>
+          </div>
+        </scroll-view>
+      </div>
+      <div class="commentArea">
+        
+      </div>
+    </div>
+  <!-- </scroll-view> -->
+</div>
 <loading hidden="{{hideLoading}}">请稍候</loading>

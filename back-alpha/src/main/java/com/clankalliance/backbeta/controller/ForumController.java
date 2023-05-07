@@ -2,6 +2,7 @@ package com.clankalliance.backbeta.controller;
 
 import com.clankalliance.backbeta.request.CommonPageableRequest;
 import com.clankalliance.backbeta.request.Forum.DeleteRequest;
+import com.clankalliance.backbeta.request.Forum.SaveCommentRequest;
 import com.clankalliance.backbeta.request.Forum.SavePostRequest;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.service.ForumService;
@@ -39,19 +40,8 @@ public class ForumController {
     }
 
     @PostMapping("/saveComment")
-    public CommonResponse saveComment(HttpSession session,
-                                      // 路径变量 解决前后端不一致
-                                      @RequestParam("cId")String cId,
-                                      @RequestParam("token")String token,
-                                      @RequestParam("content")String content,
-                                      @RequestParam("anonymous")boolean anonymous
-    ){
-        return forumService.saveComment(cId,token,content,anonymous);
-    }
-
-    @PostMapping("/deletePost")
-    public CommonResponse deletePost(@RequestBody DeleteRequest request){
-        return forumService.deletePost(request.getToken(),request.getId());
+    public CommonResponse saveComment(@RequestBody SaveCommentRequest request){
+        return forumService.saveComment(request.getPId(), request.getCId(),request.getToken(),request.getContent() ,request.isAnonymous());
     }
 
     @PostMapping("/deleteComment")

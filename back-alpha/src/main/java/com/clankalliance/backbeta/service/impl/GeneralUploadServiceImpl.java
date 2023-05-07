@@ -6,6 +6,7 @@ import com.clankalliance.backbeta.repository.DateDataRepository;
 import com.clankalliance.backbeta.repository.UserRepository;
 import com.clankalliance.backbeta.response.CommonResponse;
 import com.clankalliance.backbeta.service.GeneralUploadService;
+import com.clankalliance.backbeta.utils.ErrorHandle;
 import com.clankalliance.backbeta.utils.TokenUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -77,7 +78,7 @@ public class GeneralUploadServiceImpl implements GeneralUploadService {
             file.transferTo(dest); //将file文件中的数据写入到dest文件中
         }
         catch (Exception e) {
-            System.out.println("文件状态异常或文件读写异常");
+            return ErrorHandle.handleSaveException("文件状态异常或文件读写异常",response);
         }
 
         // 返回文件的路径/upload/test.png
@@ -141,7 +142,7 @@ public class GeneralUploadServiceImpl implements GeneralUploadService {
             file.transferTo(dest); //将file文件中的数据写入到dest文件中
         }
         catch (Exception e) {
-            System.out.println("文件状态异常或文件读写异常");
+            return ErrorHandle.handleSaveException("文件状态异常或文件读写异常",response);
         }
         // 返回文件的路径/upload/test.png
         String filePath =  "/static/avatar/" + filename;

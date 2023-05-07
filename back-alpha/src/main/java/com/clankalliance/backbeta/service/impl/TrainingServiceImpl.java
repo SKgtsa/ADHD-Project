@@ -14,6 +14,7 @@ import com.clankalliance.backbeta.service.GeneralUploadService;
 import com.clankalliance.backbeta.service.TrainingService;
 
 import com.clankalliance.backbeta.utils.DateDataIdGenerator;
+import com.clankalliance.backbeta.utils.ErrorHandle;
 import com.clankalliance.backbeta.utils.TokenUtil;
 import com.clankalliance.backbeta.utils.TrainingIdGenerator;
 import org.springframework.beans.factory.annotation.Value;
@@ -117,9 +118,7 @@ public class TrainingServiceImpl implements TrainingService {
         try{
             average = Integer.parseInt("" + total/ graph.length);
         }catch (Exception e){
-            response.setMessage("请不要上传空数据");
-            response.setSuccess(false);
-            return response;
+            return ErrorHandle.handleSaveException("上传数据为空",response);
         }
         //**********************************************************
         //为训练数据制定的更短的id生成规则
@@ -149,9 +148,7 @@ public class TrainingServiceImpl implements TrainingService {
         try{
             hasImage = handleSaveGraph(response.getMessage(), mark, gold, data[data.length - 1], average, time);
         }catch (Exception e){
-            response.setSuccess(false);
-            response.setMessage("保存失败");
-            return response;
+            return ErrorHandle.handleSaveException(e,response);
         }
 
         response.setContent(hasImage);

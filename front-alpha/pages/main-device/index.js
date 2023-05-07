@@ -2,13 +2,10 @@
 const app = getApp();
 Page({
   bleGetDeviceServices(deviceId){
-    console.log('1')
     var that = this;
     wx.getBLEDeviceServices({
       deviceId, // 搜索到设备的 deviceId
       success: (res) => {
-        console.log(res.services)
-        console.log('2')
         for (let i = 0; i < res.services.length; i++) {
           if (res.services[i].isPrimary) {
             // 可根据具体业务需要，选择一个主服务进行通信
@@ -35,16 +32,13 @@ Page({
     return 0;
   },
   bleGetDeviceCharacteristics(deviceId,serviceId){
-    console.log('3')
     var that = this;
     wx.getBLEDeviceCharacteristics({
       deviceId, // 搜索到设备的 deviceId
       serviceId, // 上一步中找到的某个服务
       success: (res) => {
-        console.log('4')
         for (let i = 0; i < res.characteristics.length; i++) {
           let item = res.characteristics[i]
-          console.log(item)
           if (item.properties.write) { // 该特征值可写
             var buffer = that.stringToBytes(JSON.stringify(that.data.cartSetting));
             this.setData({
@@ -63,7 +57,6 @@ Page({
             })
           }
           if (item.properties.read) { // 改特征值可读
-            console.log('5')
             wx.readBLECharacteristicValue({
               deviceId,
               serviceId,
@@ -82,7 +75,6 @@ Page({
             })
             //正在同步数据
             let inProcess = false;
-            console.log('8')
             wx.onBLECharacteristicValueChange((result) => {
               this.setData({onBLECharaValueChange: true})
               let hex = this.ab2hex(result.value)
@@ -92,8 +84,6 @@ Page({
                 //没有在发送 此时检测开始信号
                 //截取前三位 作为控制信号
                 const startMark = input.substring(0,1);
-                console.log("StartMark: " + startMark)
-                console.log(input)
                 //头部标记为aaa
                 if(startMark === 'a'){
                   //取控制信号后的整个字符串 拼接进syncResult 进行同步数据的积累
@@ -122,28 +112,33 @@ Page({
                 //正在发送
                 //截取末三位 作为控制信号 控制数据收取的停止时机
                 const endMark = input.substring(input.length - 1);
-                console.log('接收到: ' + input)
                 if(endMark === "c" || endMark === "d"){
                   console.log('endMark: ' + endMark)
                   //接收到数据发送终止符 发送数据 取字符串开头到倒数第四位为数据
                   //拼接给syncResult 之后发送给后端
+
                   if(endMark === 'c'){
-                    this.data.syncResult += input.substring(0,this.findLastFirstChar('c',input))
+                    that.data.syncResult = input.substring(0,this.findLastFirstChar('c',input)).concat(that.data.syncResult);
                   }else{
-                    this.data.syncResult += input.substring(0,this.findLastFirstChar('d',input))
+                    that.data.syncResult = input.substring(0,this.findLastFirstChar('d',input)).concat(that.data.syncResult);
                   }
-                  if(this.data.syncResult.charAt(0) === 'a'){
-                    this.setData({syncResult: this.data.syncResult.substring(this.findFirstLastChar('a',input) + 1)})
+                  if(that.data.syncResult.charAt(0) === 'a'){
+                    that.data.syncResult = that.data.syncResult.substring(this.findFirstLastChar('a',input) + 1)
                   }
-                  console.log( "同步结果: " + this.data.syncResult)
+                  console.log( "同步结果: " + that.data.syncResult)
                   let str = '';
                   console.log('发送数据')
+                  const rawData = that.data.syncResult;
+                  console.log({
+                    token: wx.getStorageSync('token'),
+                    rawData: rawData
+                  })
                   wx.request({
                     url: 'https://chenanbella.cn/api/training/save',
                     method: 'POST',
                     data: {
                       token: wx.getStorageSync('token'),
-                      rawData: this.data.syncResult
+                      rawData: rawData
                     },
                     success(res){
                       console.log("发送成功 收到反馈如下")
@@ -224,7 +219,7 @@ Page({
                       },300)
                     },
                   })
-                  this.data.syncResult = '';
+                  that.data.syncResult = '';
                   if(endMark === 'd' || error){
                     //本次发送的数据包结尾为ddd 代表所有数据已发送完毕
                     //error代表出现了错误
@@ -237,7 +232,7 @@ Page({
                           url: 'index',
                         }) 
                       },1000)
-                    } ,1000)
+                    } ,500)
                     wx.showToast({
                       title: '数据全部发送成功',
                       icon: 'success',
@@ -247,7 +242,7 @@ Page({
                 }else{
                   //接收数据 因为设备连接后会首先发来Nero_Car_Service 所以滤过该信号
                   if(input != 'Nero_Car_Service'){
-                    this.data.syncResult += input;
+                    that.data.syncResult = input.concat(that.data.syncResult);
                   }
                 }
               }
@@ -393,8 +388,6 @@ Page({
   // },
   //计时器 会调用自己 起到刷新时间的作用
   timing(){
-    console.log('timing')
-    console.log(this.data.deviceFoundStart)
     if(this.data.deviceFoundStart){
       let timeNow = new Date().getTime();
       if(timeNow - this.data.startFindTime > 30*1000){
@@ -426,7 +419,6 @@ Page({
       wx.onBluetoothDeviceFound((res) => {
         res.devices.forEach((device) => {
           // 这里可以做一些过滤
-          console.log('Device Found', device.name)
           if(device.name == "Nero_Car_Service"){
             console.log('found Nero_Car_Service!!')
             // 找到设备开始连接
@@ -435,7 +427,6 @@ Page({
             this.setData({deviceFoundStart: false, deviceId: device.deviceId})
             app.globalData.deviceId = device.deviceId;
           }else{
-            console.log("not Nero_Car_Service")
           }
         })
         // 找到要搜索的设备后，及时停止扫描
@@ -453,7 +444,6 @@ Page({
           console.log(res)
         }
       })
-      console.log('9')
       // 初始化蓝牙模块
       wx.openBluetoothAdapter({
         mode: 'central',
@@ -564,7 +554,6 @@ Page({
   //点击开始同步
   startSync: function (){
     this.setData({showBlueToothPage: true})
-    console.log('startSync')
     console.log(wx.getSetting({
       withSubscriptions: true,
     }))

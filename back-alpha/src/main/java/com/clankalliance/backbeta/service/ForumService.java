@@ -12,9 +12,7 @@ public interface ForumService {
 
     CommonResponse savePostImage(MultipartFile file, String cId, String token, boolean needDelete);
 
-    CommonResponse saveComment(String cId,String token,String content,boolean anonymous);
-
-    CommonResponse deletePost(String token,String pId);
+    CommonResponse saveComment(String pId, String cId,String token,String content,boolean anonymous);
 
     CommonResponse deleteComment(String token,String cId);
 
