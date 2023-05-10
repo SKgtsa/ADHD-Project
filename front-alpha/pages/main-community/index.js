@@ -184,7 +184,7 @@ Page({
   requestFail(){
     wx.showToast({
       title: '发生内部错误 请告知管理员',
-      icon: 'success',
+      icon: 'error',
       duration: 1000
     })
     setTimeout(() => {

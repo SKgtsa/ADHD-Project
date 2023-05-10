@@ -12,6 +12,9 @@
       <button bind:tap="startSync" class="button">同步数据</button>
     </view>
     <view class="buttonWrapper">
+      <button bind:tap="bindCar" class="button">绑定小车</button>
+    </view>
+    <view class="buttonWrapper">
       <button class="button" bind:tap="detailedButton">查看训练数据</button>
     </view>
     <view class="buttonWrapper">

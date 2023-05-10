@@ -14,6 +14,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -48,6 +49,10 @@ public class User {
     @Value("${user.map:0}")
     //用户选定的地图编号(0代表未选择地图)
     private Integer map = 0;
+
+    @JsonIgnore
+    @OneToMany(cascade={CascadeType.ALL},fetch = FetchType.EAGER)
+    private Set<Car> carSet;
 
 //    @JsonIgnore
 //    @Value("${user.manager:false}")

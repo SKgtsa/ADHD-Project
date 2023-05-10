@@ -2,7 +2,7 @@ package com.clankalliance.backbeta.service;
 
 import com.clankalliance.backbeta.response.CommonResponse;
 
-public interface CartService {
+public interface CarService {
 
     CommonResponse updateDot(String id,int dot);
 
@@ -16,4 +16,9 @@ public interface CartService {
 
     CommonResponse updateMap(String token,Integer map);
 
+    CommonResponse addCar(String id, String pass);
+
+    CommonResponse deleteCar(String id, String pass);
+
+    CommonResponse bindCar(String token, String id);
 }

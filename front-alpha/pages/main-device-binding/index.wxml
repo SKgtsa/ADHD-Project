@@ -1,0 +1,6 @@
+<!--pages/main-device-binding/index.wxml-->
+<view class="mainContainer" >
+  <text class="upperText">小车id</text>
+  <input bindblur="onIdChange" value="{{id}}" bind:input="onIdChange" class="input" placeholder="请输入id"/>
+  <view bindtap="binding" class="submitButton" ><text class="bindText" >绑定</text></view>
+  </view>

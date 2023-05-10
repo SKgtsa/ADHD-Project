@@ -10,8 +10,8 @@ App({
     this.globalData.infoChanged = false;
   },
   globalData: {
-    // baseURL: 'https://chenanbella.cn',
-    baseURL: 'http://localhost:5174',
+    baseURL: 'https://chenanbella.cn',
+    // baseURL: 'http://localhost:5174',
     // baseURL: 'http://clankalliance.com',
     detailedGraphX: null,
     detailedGraphY: null,

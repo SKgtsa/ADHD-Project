@@ -23,7 +23,7 @@
 .mainContainer{
     text-align: center;
     background-color: #6FA3FC;
-    height: 100vh;
+    min-height: 100vh;
 }
 .titleContainer{
   width: 100vw;

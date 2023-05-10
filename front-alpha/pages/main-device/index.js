@@ -615,6 +615,11 @@ Page({
       url: '../main-device-setting/index',
     })
   },
+  bindCar: function() {
+    wx.navigateTo({
+      url: '../main-device-binding/index',
+    })
+  },
   onReady() {
   },
   /**
